@@ -5,3 +5,26 @@ test1 or test2
 test1 | test2
 -test1
 test1=test2
+highway|route=ferry
+tourism OR amenity
+natural=peak OR natural=volcano OR mountain_pass=yes OR natural=water OR tourism=viewpoint OR amenity=drinking_water OR natural=spring OR place=locality
+information=guidepost
+highway|route=ferry|leisure=track
+public_transport=stop_position (train=yes OR subway=yes OR monorail=yes OR tram=yes OR light_rail=yes)
+public_transport=platform
+railway
+public_transport=stop_position (bus=yes OR trolleybus=yes)
+highway
+type=route
+public_transport=stop_position
+public_transport=platform
+railway=subway_entrance
+amenity|public_transport=station
+highway=bus_stop OR railway=station OR railway=halt OR railway=tram_stop
+highway=platform OR railway=platform
+leisure=fitness_station
+power=line|power=cable
+power
+railway|route=ferry
+"addr:housenumber" | "addr:interpolation" | "addr:housename"
+waterway -waterway:riverbank
