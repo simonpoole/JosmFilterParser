@@ -16,8 +16,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import ch.poole.osm.josmfilterparser.Util;
-
 
 /**
  * Tests for the OpeningHoursParser
@@ -31,7 +29,6 @@ public class JosmFilterParserTest {
 	public void regressionTest() {
 		parseData("test-data/filter.txt", "test-data/filter.txt-result");
 	}
-	
 	
 	/**
 	 * This completes successfully if parsing gives the same success result and for successful parses the same regenerated OH string
@@ -61,6 +58,7 @@ public class JosmFilterParserTest {
 			String expectedResult = null;
 			int lineCount = 0;
 			while ((line = inputRules.readLine()) != null) {
+			    System.out.println("Line " + lineCount);
 				if (inputExpected != null) {
 					String[] expected = inputExpected.readLine().split("\t");
 					expectedResultCode = expected[0];
@@ -89,7 +87,7 @@ public class JosmFilterParserTest {
 					if (pex.toString().contains("Lexical")) {
 						lexical++;
 					} else {
-						System.out.println("Parser exception on line  " + lineCount + " for " + line + " " + pex.toString());
+						System.err.println("Parser exception on line  " + lineCount + " for " + line + " " + pex.toString());
 					}
 					pex.printStackTrace();
 					errors++;
@@ -99,7 +97,7 @@ public class JosmFilterParserTest {
 					}
 				}
 				catch (NumberFormatException nfx) {
-					System.out.println("Parser exception for " + line + " " + nfx.toString());
+					System.err.println("Parser exception for " + line + " " + nfx.toString());
 					// pex.printStackTrace();
 					lexical++;
 					errors++;
@@ -112,7 +110,7 @@ public class JosmFilterParserTest {
 					if (err.toString().contains("Lexical")) {
 						lexical++;
 					} else {
-						System.out.println("Parser err for " + line + " " + err.toString());
+						System.err.println("Parser err for " + line + " " + err.toString());
 						// err.printStackTrace();
 					}
 					errors++;
@@ -125,12 +123,12 @@ public class JosmFilterParserTest {
 			}
 		} catch (FileNotFoundException fnfex)
 		{
-			System.out.println("File not found " + fnfex.toString());
+			System.err.println("File not found " + fnfex.toString());
 		}  catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (AssertionError ae) {
-			System.out.println("Assertion failed for " + line);
+			System.err.println("Assertion failed for " + line);
 			throw ae;
 		} finally {
 			if (inputRules != null) {

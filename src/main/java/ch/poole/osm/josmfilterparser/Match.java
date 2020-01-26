@@ -2,6 +2,7 @@ package ch.poole.osm.josmfilterparser;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +12,7 @@ public class Match implements Condition {
     final String value;
     final String op;
 
-    public Match(@NotNull String key, String op, @Nullable String value) {
+    public Match(@NotNull String key, @Nullable String op, @Nullable String value) {
         this.key = key;
         this.value = value;
         this.op = op;
@@ -50,7 +51,7 @@ public class Match implements Condition {
                 case ">":
                 case "<":
                 default:
-                    System.out.println("Unsupported " + op);
+                    throw new IllegalArgumentException("Unsupported comparision " + op);
                 }
             }
         }
@@ -58,9 +59,17 @@ public class Match implements Condition {
         return false;
 
     }
+    
+    private static Pattern needsQuotes = Pattern.compile(".*[ \t:].*");
+    public static String quote(@NotNull String text) {
+        if (needsQuotes.matcher(text).matches()) {
+            return "\"" + text + "\"";
+        }
+        return text;
+    }
 
     @Override
     public String toString() {
-        return key + (op != null ? " " + op : "") + (value != null ? " " + value : "");
+        return quote(key) + (op != null ? " " + op : "") + (value != null ? " " + quote(value) : "");
     }
 }

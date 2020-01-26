@@ -3,7 +3,7 @@
  *
  * @author Simon Poole
  *
- * Copyright (c) 2019 Simon Poole
+ * Copyright (c) 2019, 2020 Simon Poole
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -23,16 +23,16 @@
 
 options
 {
-  JDK_VERSION = "1.7";
+  JDK_VERSION = "1.8";
 
   static = false;
 
-  LOOKAHEAD= 4;
+  LOOKAHEAD= 255;
   IGNORE_CASE = true;
   FORCE_LA_CHECK = true;
   CHOICE_AMBIGUITY_CHECK = 2;
   OTHER_AMBIGUITY_CHECK = 2;
-  DEBUG_PARSER = false;
+  DEBUG_PARSER = true;
   DEBUG_LOOKAHEAD = false;
   DEBUG_TOKEN_MANAGER = false;
   UNICODE_INPUT = true;
@@ -45,9 +45,22 @@ import java.util.Collections;
 import java.util.List;
 import java.io.ByteArrayInputStream;
 import java.util.Locale;
+import java.util.Stack;
 
 public class JosmFilterParser
 {
+  Stack < Boolean > startParen = new Stack < Boolean > ();
+
+  void unsupported() throws ParseException
+  {
+    ParseException pex = new ParseException("\"" + token.image + "\" unsupported " + token.next.beginLine + ", column " + token.next.beginColumn);
+    pex.currentToken = token;
+    throw pex;
+  }
+  Condition not(Token notToken, Condition condition)
+  {
+    return notToken == null ? condition : new Not(condition);
+  }
 }
 
 PARSER_END(JosmFilterParser)
@@ -55,19 +68,27 @@ PARSER_END(JosmFilterParser)
 TOKEN_MGR_DECLS :
 {
   int bracketNestingDepth;
-  int prevState;
+  Stack < Integer > state = new Stack < Integer > ();
 }
 
+< DEFAULT, LITERAL_STRING_STATE >
 TOKEN :
 {
-  < CHAR : ~[ "-", "\"", "\\", "|", " ", "\t", "<", "=", ">" ] >
+  < CHAR : ~[ "-", "\"", "\\", "|", " ", "\t", "<", "=", ">", ":", "(", ")" ] > : LITERAL_STRING_STATE
 }
 
+< FRAGMENT_STRING_STATE >
+TOKEN :
+{
+  < FRAGMENTCHAR : ~[ "\"", "\\", "|", " ", "\t", "<", "=", ">", "(", ")" ] > : FRAGMENT_STRING_STATE
+}
+
+< DEFAULT >
 TOKEN :
 {
   < QUOTE : "\"" >
   {
-    prevState = curLexState;
+    state.push(curLexState);
   }
   : QUOTED_STRING_STATE // save current state
 }
@@ -77,132 +98,48 @@ TOKEN :
 {
   < ENDQUOTE : < QUOTE > >
   {
-    SwitchTo(prevState);
+    SwitchTo(state.pop());
   } // need to switch to prev state 
 | < QUOTED_STRING_CHAR : ~[ "\"", "\\" ] >
 }
 
-< CONDITION_STATE >
+< DEFAULT, LITERAL_STRING_STATE, FRAGMENT_STRING_STATE >
 TOKEN :
 {
-  < CONDITION_QUOTE : "\"" >
-  {
-    prevState = curLexState;
-  }
-  : QUOTED_STRING_STATE // save current state
+  < WS_COND : [ " ", "\t" ] > : DEFAULT
 }
 
+< DEFAULT >
 TOKEN :
 {
- < WS_COND : [ " ", "\t" ] >
-| < LPAREN : "(" >
-  {
-    bracketNestingDepth = 1;
-  }
-  : PAREN_STATE
-| < DOUBLECOLON : ":" >
-| < AND : "AND" >
+  < AND : "AND" >
 | < OR : "OR" >
-| < BAR : "|" >
-| < EQ : "=" >
-| < GT : ">" >
-| < LT : "<" >
 | < MINUS : "-" >
 }
 
-< PAREN_STATE >
+< DEFAULT, LITERAL_STRING_STATE >
 TOKEN :
 {
-  < PAREN_QUOTE : "\"" >
-  {
-    prevState = curLexState;
-  }
-  : QUOTED_STRING_STATE // save current state
+  < BAR : "|" > : DEFAULT
+| < EQ : "=" > : DEFAULT
+| < GT : ">" > : DEFAULT
+| < LT : "<" > : DEFAULT
+| < DOUBLECOLON : ":" > : FRAGMENT_STRING_STATE
 }
 
-< PAREN_STATE >
+< DEFAULT, LITERAL_STRING_STATE >
 TOKEN :
 {
-  < PAREN_LPAREN : "(" >
+  < LPAREN : "(" >
   {
     bracketNestingDepth += 1;
   }
+  : DEFAULT
 | < RPAREN : ")" >
   {
     bracketNestingDepth -= 1;
-    SwitchTo(bracketNestingDepth == 0 ? CONDITION_STATE : PAREN_STATE);
   }
-| < PAREN_CHAR : ~[ "(", ")", "\"", "\\", " ", "\t", "<", "=", ">" ] >
-| < WS_PAREN : [ " ", "\t" ] >
-| < PAREN_AND : "AND" >
-| < PAREN_EQ : "=" >
-| < PAREN_GT : ">" >
-| < PAREN_GTEQ : ">=" >
-| < PAREN_LT : "<" >
-| < PAREN_LTEQ : "<=" >
-}
-
-TOKEN :
-{
-  < STATE :
-    "modified"
-  | "new"
-  | "selected"
-  | "incomplete"
-  | "deleted" >
-  {
-    matchedToken.image = image.toString().toLowerCase(Locale.US);
-  }
-}
-
-TOKEN :
-{
-  < METADATA :
-    "user"
-  | "id"
-  | "version"
-  | "changeset"
-  | "timestamp" >
-  {
-    matchedToken.image = image.toString().toLowerCase(Locale.US);
-  }
-}
-
-TOKEN :
-{
-  < TYPE :
-    "node"
-  | "way"
-  | "relation" >
-  {
-    matchedToken.image = image.toString().toLowerCase(Locale.US);
-  }
-}
-
-TOKEN :
-{
-  < PROPERTIES :
-    "nodes"
-  | "ways"
-  | "tags"
-  | "role"
-  | "areasize"
-  | "waylength" >
-  {
-    matchedToken.image = image.toString().toLowerCase(Locale.US);
-  }
-}
-
-TOKEN :
-{
-  < VIEW :
-    "inview"
-  | "allinview"
-  | "indownloadedarea"
-  | "allindownloadedarea" >
-  {
-    matchedToken.image = image.toString().toLowerCase(Locale.US);
-  }
+  : DEFAULT
 }
 
 /**
@@ -233,7 +170,49 @@ void getChar(StringBuilder builder) :
   (
     (t = < CHAR >)
     {
-      if (t.image.length() < 2)
+      if (t.image.length() == 1)
+      {
+        // CHAR
+        builder.append(t.image.charAt(0));
+      }
+    }
+  | 
+    s = quotedLiteral()
+    {
+      builder.append(s);
+    }
+  )
+}
+
+/**
+ * Match a value
+ */
+String fragmentLiteral() :
+{
+  StringBuilder builder = new StringBuilder();
+}
+{
+  (
+    getFragmentChar(builder)
+  )+
+  {
+    return builder.toString().trim();
+  }
+}
+
+/**
+ * Add char to StringBuilder
+ */
+void getFragmentChar(StringBuilder builder) :
+{
+  Token t;
+  String s;
+}
+{
+  (
+    (t = < FRAGMENTCHAR >)
+    {
+      if (t.image.length() == 1)
       {
         // CHAR
         builder.append(t.image.charAt(0));
@@ -282,9 +261,7 @@ String quotedLiteral() :
 }
 {
   (
-    < QUOTE >
-  | < CONDITION_QUOTE >
-  | < PAREN_QUOTE >
+  < QUOTE >
   )
   (
     getQuotedStringChar(builder)
@@ -296,115 +273,290 @@ String quotedLiteral() :
 }
 
 /**
- * Match char inside parenthesis 
+ * This is fairly convoluted as we need to keep track of opening/closing parentheses  
  */
-void getParenChar(StringBuilder builder) :
-{
-  Token t;
-  String s;
-}
-{
-  (
-    (
-      t = < PAREN_CHAR >
-    | t = < WS_PAREN >
-    )
-    {
-      if (t.image.length() < 2)
-      {
-        // CHAR
-        builder.append(t.image.charAt(0));
-      }
-    }
-  | 
-    s = quotedLiteral()
-    {
-      builder.append(s);
-    }
-  )
-}
-
 Condition combination() :
 {
   Condition r1;
   Condition r2;
+  Condition result = null;
+  Token not1 = null;
+  Token not2 = null;
 }
 {
   (
+    (< WS_COND >)*
     (
-      r1 = match()
       (
         (
-          ( < WS_COND > )+
+        not1 = < MINUS >
+        )?
+        (
+          r1 = match()
+        )
+        {
+          result = r1;
+        }
+        (< WS_COND >)+ 
+        (
+        not2 = < MINUS >
+        )?
+        (
+          r2 = match()
+        )
+        {
+          result = new And(not(not1, r1), not(not2, r2));
+        }
+      )
+    |
+      (
+        (
           (
-            r2 = match()
-          | r2 = combination()
+          not1 = < MINUS >
+          )?
+          (
+            r1 = match()
           )
           {
-            return new And(r1, r2);
+            result = r1;
+          }
+          (
+            (
+              (< WS_COND >)+ 
+              < OR > 
+              (< WS_COND >)+
+            )
+          |
+            (
+              (< WS_COND >)* 
+              < BAR > 
+              (< WS_COND >)*
+            )
+          )
+          (
+          not2 = < MINUS >
+          )?
+          (
+            r2 = match()
+          )
+        )
+        {
+          result = new Or(not(not1, r1), not(not2, r2));
+        }
+      )
+    |
+      (
+        (
+        not1 = < MINUS >
+        )?
+        (
+          r1 = match()
+        )
+        {
+          result = not(not1, r1);
+        }
+      )
+    |
+      (
+        (
+          (
+          not1 = < MINUS >
+          )? 
+          < LPAREN > 
+          r1 = combination() 
+          (< WS_COND >)* 
+          < RPAREN >
+        )
+        {
+          result = not(not1, new Brackets(r1));
+        }
+      )
+    )
+    (
+      (
+        (
+          (< WS_COND >)+ 
+          (
+          not2 = < MINUS >
+          )?
+          (
+            r2 = match()
+          |
+            (
+              (
+                < LPAREN > 
+                r2 = combination() 
+                (< WS_COND >)* 
+                < RPAREN >
+              )
+              {
+                r2 = new Brackets(r2);
+              }
+            )
+          )
+          {
+            result = new And(result, not(not2, r2));
           }
         )
       |
         (
-          ( < WS_COND > )+
           (
-            < OR >
-          | < BAR >
+            (
+              (< WS_COND >)+ 
+              < OR > 
+              (< WS_COND >)+
+            )
+          |
+            (
+              (< WS_COND >)* 
+              < BAR > 
+              (< WS_COND >)*
+            )
           )
           (
-          < WS_COND >)+
+          not2 = < MINUS >
+          )?
           (
             r2 = match()
-          | r2 = combination()
+          |
+            (
+              (
+                < LPAREN > 
+                r2 = combination() 
+                (< WS_COND >)* 
+                < RPAREN >
+              )
+              {
+                r2 = new Brackets(r2);
+              }
+            )
           )
         )
         {
-          return new Or(r1, r2);
+          result = new Or(result, not(not2, r2));
         }
-      )?
-    )
-    {
-      return r1;
-    }
-  |
-    (
-      < MINUS > r1 = condition()
-      {
-        return new Not(r1);
-      }
-    )
+      )
+    )*
   )
+  {
+    return result;
+  }
 }
 
 Condition match() :
 {
   String s1 = null;
+  boolean s1Quoted = false;
   String s2 = null;
+  boolean s2Quoted = false;
   Token op = null;
 }
 {
   (
     (
       s1 = literal()
-    | s1 = quotedLiteral()
+    |
+      (
+        s1 = quotedLiteral()
+      )
+      {
+        s1Quoted = true;
+      }
     )
     (
-      (< WS_COND >)*
       (
-        op = < EQ >
-      | op = < GT >
-      | op = < LT >
-      | op = < DOUBLECOLON >
-      )
-      (
-        (< WS_COND >)* 
-        s2 = literal()
-      | s2 = quotedLiteral()
+        (
+          (< WS_COND >)*
+          (
+            op = < EQ >
+          | op = < GT >
+          | op = < LT >
+          )
+          (< WS_COND >)*
+        )
+        (
+          s2 = literal()
+        |
+          (
+            s2 = quotedLiteral()
+          )
+          {
+            s2Quoted = true;
+          }
+        )?
+      | (op = < DOUBLECOLON >)
+        (
+          s2 = fragmentLiteral()
+        |
+          (
+            s2 = quotedLiteral()
+          )
+          {
+            s2Quoted = true;
+          }
+        )
       )
     )?
   )
   {
-    return new Match(s1, op == null ? null : op.image, s2);
+    if (op != null && ":".equals(op.image))
+    {
+      if (s1Quoted)
+      {
+        return new ValueFragment(s1, s2);
+      }
+      else
+      {
+        switch (s1)
+        {
+          case "type" : return new ElementType(Type.valueOf(s2.toUpperCase()));
+          case "preset" : unsupported();
+          case "nodes" : return new Nodes(s2);
+          case "ways" : return new Ways(s2);
+          case "tags" : return new Tags(s2);
+          case "role" : return new Role(s2);
+          case "areasize" : return new AreaSize(s2);
+          case "waylength" : return new WayLength(s2);
+          case "user" : return new User(s2);
+          case "id" : return new Id(Long.parseLong(s2));
+          case "version" : return new Version(Long.parseLong(s2));
+          case "changeset" : return new Changeset(Long.parseLong(s2));
+          case "timestamp" : return new ElementTimestamp(s2);
+          case "hasRole" : unsupported();
+          case "nth" : unsupported();
+          case "nth%" : unsupported();
+          default : return new ValueFragment(s1, s2);
+        }
+      }
+    }
+    else
+    {
+      if (s1Quoted || op != null)
+      {
+        return new Match(s1, op == null ? null : op.image, s2);
+      }
+      else
+      {
+        switch (s1)
+        {
+          case "closed" : return new Closed();
+          case "untagged" : return new Untagged();
+          case "modified" : 
+          case "new" : 
+          case "deleted" : return new ElementState(ElementState.State.valueOf(s1.toUpperCase()));
+          case "selected" : unsupported();
+          case "incomplete" : unsupported();
+          case "inview" : unsupported();
+          case "allinview" : unsupported();
+          case "indownloadedarea" : unsupported();
+          case "allindownloadedarea" : unsupported();
+          // the following two need special handling in the parser
+          case "child" : unsupported();
+          case "parent" : unsupported();
+          default : return new Match(s1, null, null);
+        }
+      }
+    }
   }
 }
 
@@ -414,7 +566,7 @@ Condition condition() :
 }
 {
   (
-   r = combination()
+    r = combination()
   )
   < EOF >
   {

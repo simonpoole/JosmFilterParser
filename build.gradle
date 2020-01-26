@@ -8,20 +8,21 @@
  */
 
 plugins {
-    id "ca.coglinc.javacc" version "2.3.1"
+    id "ca.coglinc.javacc" version "2.4.0"
     id "com.jfrog.bintray" version "1.7.1"
 }
 
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: "jacoco"
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 
 version = '0.0.1'
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 ext {
     javaccOutput = file(project.buildDir.absolutePath + '/generated/javacc/ch/poole/osm/josmfilterparser')
@@ -65,6 +66,8 @@ task replaceVersion << {
 }
 build.dependsOn replaceVersion
 
+// test input may change and require rerunning the tests
+test.inputs.files("test-data/filter.txt")
 
 publishing {
     publications {

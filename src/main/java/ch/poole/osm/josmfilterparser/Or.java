@@ -15,7 +15,7 @@ public class Or implements Condition {
 
     @Override
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
-        return c1.eval(type, meta, tags) || c1.eval(type, meta, tags);
+        return c1.eval(type, meta, tags) || c2.eval(type, meta, tags);
     }
 
     @Override
