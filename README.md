@@ -22,54 +22,54 @@ This is what the parser currently supports not necessarily what can be supported
 
 |    |Syntax                         | 
 |--- |--- |
-|- [x]| Baker Street                   | 
-|- [x]| __"Baker Street"__             | 
-|- [x]| _key_**:**_valuefragment_      |
-|- [x]| **-**_key_**:**_valuefragment_ |
-|- [x]| _key_                          | 
-|- [x]| _key_**=**_value_              | 
-|- [x]| *key*__=*__                    | 
-|- [x]| _key_**=**                     | 
-|- [x]| __*=__*value*                  | 
-|- [ ]| _key_**>**_value_              | 
-|- [ ]| _key_**<**_value_              | 
-|- [x]|_expr_ _expr_                   |
-|- [x]|_expr_ __&#124;__ _expr_        | 
-|- [x]|_expr_ __OR__ _expr_            | 
-|- [x]|__-__*expr*                     | 
-|- [x]|__(__*expr*__)__                | 
-|- [x]|__type:node__                       | 
-|- [x]|__type:way__                        | 
-|- [x]|__type:relation__                   | 
-|- [x]|__closed__                          | 
-|- [x]|__untagged__                        |
-|- [ ]|__preset:"__preset item path__"__ | 
-|- [ ]|__preset:"__preset group path/*__"__ | 
-|- [x]| __user:__                    |
-|- [x]|__id:__                       | 
-|- [x]|__version:__                  |
-|- [x]|__changeset:__                |
-|- [x]|__timestamp:__                | 
-|- [x]|__nodes:__*range*               |
-|- [x]|__ways:__*range*                 |
-|- [x]|__tags:__*range*               | 
-|- [x]|__role:__*role*               |
-|- [x]|__areasize:__*range*           | 
-|- [x]|__waylength:__*range*          | 
-|- [x]|__modified__                  | 
-|- [x]|__new__                       | 
-|- [ ]|__selected__                  |
-|- [ ]|__incomplete__                | 
-|- [x]|__deleted__                   | 
-|- [ ]|__child__ _expr_              | 
-|- [ ]|__parent__ _expr_             | 
-|- [ ]|__hasRole:__*stop*            | 
-|- [ ]|__nth:__*number*              | 
-|- [ ]|__nth%:__*number*             |
-|- [ ]|__inview__                    | 
-|- [ ]|__allinview__                 | 
-|- [ ]|__indownloadedarea__          | 
-|- [ ]|__allindownloadedarea__       | 
+|✅| Baker Street                   | 
+|✅| __"Baker Street"__             | 
+|✅| _key_**:**_valuefragment_      |
+|✅| **-**_key_**:**_valuefragment_ |
+|✅| _key_                          | 
+|✅| _key_**=**_value_              | 
+|✅| *key*__=*__                    | 
+|✅| _key_**=**                     | 
+|✅| __*=__*value*                  | 
+|| _key_**>**_value_              | 
+|| _key_**<**_value_              | 
+|✅|_expr_ _expr_                   |
+|✅|_expr_ __&#124;__ _expr_        | 
+|✅|_expr_ __OR__ _expr_            | 
+|✅|__-__*expr*                     | 
+|✅|__(__*expr*__)__                | 
+|✅|__type:node__                       | 
+|✅|__type:way__                        | 
+|✅|__type:relation__                   | 
+|✅|__closed__                          | 
+|✅|__untagged__                        |
+||__preset:"__preset item path__"__ | 
+||__preset:"__preset group path/*__"__ | 
+|✅| __user:__                    |
+|✅|__id:__                       | 
+|✅|__version:__                  |
+|✅|__changeset:__                |
+|✅|__timestamp:__                | 
+|✅|__nodes:__*range*               |
+|✅|__ways:__*range*                 |
+|✅|__tags:__*range*               | 
+|✅|__role:__*role*               |
+|✅|__areasize:__*range*           | 
+|✅|__waylength:__*range*          | 
+|✅|__modified__                  | 
+|✅|__new__                       | 
+||__selected__                  |
+||__incomplete__                | 
+|✅|__deleted__                   | 
+||__child__ _expr_              | 
+||__parent__ _expr_             | 
+||__hasRole:__*stop*            | 
+||__nth:__*number*              | 
+||__nth%:__*number*             |
+||__inview__                    | 
+||__allinview__                 | 
+||__indownloadedarea__          | 
+||__allindownloadedarea__       | 
 
 ## Including in your project
 
