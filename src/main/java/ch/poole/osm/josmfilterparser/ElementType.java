@@ -1,6 +1,5 @@
 package ch.poole.osm.josmfilterparser;
 
-
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;

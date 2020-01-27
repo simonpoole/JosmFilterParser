@@ -2,20 +2,15 @@ package ch.poole.osm.josmfilterparser;
 
 import java.util.Map;
 
-public class Id implements Condition {
-    final long id;
-
-    public Id(long id) {
-        this.id = id;
-    }
+public class Selected implements Condition {
 
     @Override
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
-        return id == meta.getId();
+        return meta.isSelected();
     }
 
     @Override
     public String toString() {
-        return "id:" + Long.toString(id);
+        return "selected";
     }
 }

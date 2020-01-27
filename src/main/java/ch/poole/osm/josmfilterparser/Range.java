@@ -11,10 +11,16 @@ public abstract class Range implements Condition {
     private int lower = -1;
 
     protected String name;
-    
+
+    /**
+     * Check if a value is in the specified range
+     * 
+     * @param range the range ( "-" is the from - to separator)
+     * @throws ParseException if the range can't be parsed
+     */
     public Range(@NotNull String range) throws ParseException {
         if (range.indexOf('-') >= 0) {
-            String[] lowerUpper = range.split("-",2);
+            String[] lowerUpper = range.split("-", 2);
             if (lowerUpper.length != 2) {
                 throw new ParseException("Illegal range " + range + " split resulted in " + lowerUpper.length + " parts");
             }
@@ -34,13 +40,13 @@ public abstract class Range implements Condition {
         int value = getValue(meta, tags);
         return (upper == -1 && lower == -1) ? value == exact : (value >= lower) && (upper == -1 || value <= upper);
     }
-    
+
     /**
      * Retrieve the value that we want to compare against
      * 
-     * @param meta
-     * @param tags
-     * @return the value
+     * @param meta the object implementing the Meta interface to the OSM element
+     * @param tags a Map containing the tags
+     * @return the value the value to check against the range
      */
     abstract int getValue(@Nullable Meta meta, @Nullable Map<String, String> tags);
 

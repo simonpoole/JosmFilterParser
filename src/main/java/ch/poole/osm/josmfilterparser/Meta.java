@@ -6,6 +6,12 @@ import org.jetbrains.annotations.NotNull;
 
 import ch.poole.osm.josmfilterparser.ElementState.State;
 
+/**
+ * Interface to a real OSM object
+ * 
+ * @author simon
+ *
+ */
 public interface Meta {
 
     /**
@@ -67,7 +73,7 @@ public interface Meta {
     /**
      * If the object is a Node return the number of ways it is a member of
      * 
-     * @return the number of ways the Node is a memeber of
+     * @return the number of ways the Node is a member of
      */
     int getWayCount();
 
@@ -93,4 +99,25 @@ public interface Meta {
     @NotNull
     Collection<String> getRoles();
 
+    /**
+     * Check if the element is selected
+     * 
+     * @return
+     */
+    boolean isSelected();
+
+    /**
+     * Check if a relation has a member with role
+     * 
+     * @param role the role
+     * @return true if there is a member with the role
+     */
+    boolean hasRole(@NotNull String role);
+
+    /**
+     * Check if the object matches with a preset or a preset group
+     * 
+     * @param preset the path to the preset or group
+     */
+    boolean matchesPreset(@NotNull String preset);
 }

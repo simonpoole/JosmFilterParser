@@ -31,8 +31,8 @@ This is what the parser currently supports not necessarily what can be supported
 |✅| *key*__=*__                    | 
 |✅| _key_**=**                     | 
 |✅| __*=__*value*                  | 
-|| _key_**>**_value_              | 
-|| _key_**<**_value_              | 
+|✅| _key_**>**_value_              | 
+|✅| _key_**<**_value_              | 
 |✅|_expr_ _expr_                   |
 |✅|_expr_ __&#124;__ _expr_        | 
 |✅|_expr_ __OR__ _expr_            | 
@@ -43,8 +43,8 @@ This is what the parser currently supports not necessarily what can be supported
 |✅|__type:relation__                   | 
 |✅|__closed__                          | 
 |✅|__untagged__                        |
-||__preset:"__preset item path__"__ | 
-||__preset:"__preset group path/*__"__ | 
+|✅|__preset:"__preset item path__"__ | 
+|✅|__preset:"__preset group path/*__"__ | 
 |✅| __user:__                    |
 |✅|__id:__                       | 
 |✅|__version:__                  |
@@ -58,12 +58,12 @@ This is what the parser currently supports not necessarily what can be supported
 |✅|__waylength:__*range*          | 
 |✅|__modified__                  | 
 |✅|__new__                       | 
-||__selected__                  |
+✅|__selected__                  |
 ||__incomplete__                | 
 |✅|__deleted__                   | 
 ||__child__ _expr_              | 
 ||__parent__ _expr_             | 
-||__hasRole:__*stop*            | 
+|✅|__hasRole:__*role*            | 
 ||__nth:__*number*              | 
 ||__nth%:__*number*             |
 ||__inview__                    | 

@@ -6,7 +6,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class Brackets implements Condition {
     final Condition c;
-    
+
+    /**
+     * "Bracket" this condition
+     * 
+     * @param c the Condition
+     */
     public Brackets(@NotNull Condition c) {
         this.c = c;
     }
@@ -19,5 +24,5 @@ public class Brackets implements Condition {
     @Override
     public String toString() {
         return "(" + c.toString() + ")";
-    }  
+    }
 }

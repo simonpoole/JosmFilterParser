@@ -40,16 +40,50 @@ public class JosmFilterIntegrationTest {
 
         c = parse("test1=grrr");
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
-        
+
         c = parse("*=grrr");
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
-        
+
         tags.clear();
         tags.put("test1", "");
         c = parse("test1=");
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
     }
-    
+
+    @Test
+    public void valueComparisionTest() {
+
+        Map<String, String> tags = new HashMap<>();
+        tags.put("test1", "123");
+        tags.put("test", "2004-12-01");
+
+        // numerical
+        Condition c = parse("test1<200");
+        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        c = parse("test1<100");
+        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        c = parse("test1>100");
+        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        c = parse("test1>200");
+        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+
+        // alphanumberical
+        c = parse("test<\"2005-01-01\"");
+        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        c = parse("test<\"2004-01-01\"");
+        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        c = parse("test>\"2005-01-01\"");
+        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        c = parse("test>\"2004-01-01\"");
+        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+
+        // other stuff
+        c = parse("test2<100");
+        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        c = parse("test<100");
+        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+    }
+
     @Test
     public void orTest() {
 
@@ -62,7 +96,7 @@ public class JosmFilterIntegrationTest {
 
         c = parse("test1=grrr | test2=grrr");
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
-        
+
         c = parse("test1 | test");
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
     }
@@ -118,7 +152,7 @@ public class JosmFilterIntegrationTest {
         c = parse("id:321");
         Assert.assertFalse(c.eval(Type.WAY, meta, tags));
     }
-    
+
     @Test
     public void changesetTest() {
         Condition c = parse("changeset:123");
@@ -149,7 +183,7 @@ public class JosmFilterIntegrationTest {
         meta.state = ElementState.State.MODIFIED;
         Assert.assertTrue(c.eval(Type.WAY, meta, tags));
     }
-    
+
     @Test
     public void closedTest() {
         Condition c = parse("closed");
@@ -160,214 +194,253 @@ public class JosmFilterIntegrationTest {
         meta.isClosed = false;
         Assert.assertFalse(c.eval(Type.WAY, meta, tags));
     }
-    
+
     @Test
     public void tagsTest() {
         Condition c = parse("tags:1");
         Map<String, String> tags = new HashMap<>();
         tags.put("test1", "grrr");
         tags.put("test", "grrr");
-        
+
         Assert.assertFalse(c.eval(Type.WAY, null, tags));
-        
+
         c = parse("tags:2");
         Assert.assertTrue(c.eval(Type.WAY, null, tags));
-        
+
         c = parse("tags:1-2");
         Assert.assertTrue(c.eval(Type.WAY, null, tags));
-        
+
         c = parse("tags:-3");
         Assert.assertTrue(c.eval(Type.WAY, null, tags));
-        
+
         c = parse("tags:1-");
         Assert.assertTrue(c.eval(Type.WAY, null, tags));
-        
+
         c = parse("tags:0");
         Assert.assertTrue(c.eval(Type.WAY, null, null));
-    }   
-    
+    }
+
     @Test
     public void untaggedTest() {
         Map<String, String> tags = new HashMap<>();
         tags.put("test1", "grrr");
         tags.put("test", "grrr");
-        
+
         Condition c = parse("untagged");
         Assert.assertFalse(c.eval(Type.WAY, null, tags));
-        
+
         tags.clear();
         Assert.assertTrue(c.eval(Type.WAY, null, tags));
-        
+
         Assert.assertTrue(c.eval(Type.WAY, null, null));
-    }   
-    
+    }
+
     @Test
     public void nodesTest() {
         TestMeta meta = new TestMeta();
         meta.nodeCount = 2;
         Condition c = parse("nodes:1");
-        
+
         Assert.assertFalse(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("nodes:2");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("nodes:1-2");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("nodes:-3");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("nodes:1-");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-    }   
-    
+    }
+
     @Test
     public void waysTest() {
         TestMeta meta = new TestMeta();
         meta.wayCount = 2;
         Condition c = parse("ways:1");
-        
+
         Assert.assertFalse(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("ways:2");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("ways:1-2");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("ways:-3");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("ways:1-");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-    }  
-    
+    }
+
     @Test
     public void wayLengthTest() {
         TestMeta meta = new TestMeta();
         meta.wayLength = 20;
         Condition c = parse("waylength:1");
-        
+
         Assert.assertFalse(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("waylength:20");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("waylength:10-20");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("waylength:-30");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("waylength:10-");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-    }   
-    
+    }
+
     @Test
     public void areaSizeTest() {
         TestMeta meta = new TestMeta();
         meta.areaSize = 200;
         Condition c = parse("areasize:100");
-        
+
         Assert.assertFalse(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("areasize:200");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("areasize:100-200");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("areasize:-300");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("areasize:100-");
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-    }   
-    
+    }
+
     @Test
     public void timestampTest() {
         TestMeta meta = new TestMeta();
         meta.timestamp = ElementTimestamp.parseDateTime("2005-10-01");
         Condition c = parse("timestamp:2004-1-5T14:00/2010");
-        
+
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("timestamp:2011/");
         Assert.assertFalse(c.eval(Type.WAY, meta, null));
-    }   
+    }
 
     @Test
     public void roleTest() {
         TestMeta meta = new TestMeta();
         meta.roles.add("stop");
         Condition c = parse("role:stop");
-        
+
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("role:false");
         Assert.assertFalse(c.eval(Type.WAY, meta, null));
-    }   
-    
+    }
+
+    @Test
+    public void hasRoleTest() {
+        TestMeta meta = new TestMeta();
+        meta.hasRole = "stop";
+        Condition c = parse("hasRole:stop");
+
+        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+
+        c = parse("hasRole:platform");
+        Assert.assertFalse(c.eval(Type.WAY, meta, null));
+    }
+
     @Test
     public void userTest() {
         TestMeta meta = new TestMeta();
         meta.user = "SimonPoole";
         Condition c = parse("user:SimonPoole");
-        
+
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
-        
+
         c = parse("user:PooleSimon");
         Assert.assertFalse(c.eval(Type.WAY, meta, null));
-    }   
-    
+    }
+
     @Test
     public void parentheseTest() {
         Map<String, String> tags = new HashMap<>();
         tags.put("test1", "grrr");
         tags.put("test", "grrr");
-        
+
         Condition c = parse("(test1 test2) | test3");
         Assert.assertFalse(c.eval(Type.NODE, null, tags));
-        
+
         c = parse("(test1 | test2)  test");
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
 
         c = parse("test1 (test2 | test)");
         System.err.println(c.toString());
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
-    }   
-    
+    }
+
     @Test
     public void affinityTest() {
         Map<String, String> tags = new HashMap<>();
         tags.put("test1", "grrr");
         tags.put("test", "grrr");
-        
+
         Condition c = parse("test1 test2 | test3");
         Assert.assertFalse(c.eval(Type.NODE, null, tags));
         c = parse("test1 test2 | test");
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
         c = parse("test1 | test2 test");
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
-    }   
-    
+    }
+
     @Test
     public void notTest() {
         Map<String, String> tags = new HashMap<>();
         tags.put("test1", "grrr");
         tags.put("test", "grrr");
-        
+
         Condition c = parse("-test1");
         Assert.assertFalse(c.eval(Type.NODE, null, tags));
-        
+
         c = parse("-test2");
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
 
         c = parse("-(test2 | test3)");
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
-    }   
-    
+    }
+
+    @Test
+    public void selectedTest() {
+        TestMeta meta = new TestMeta();
+        meta.selected = true;
+
+        Condition c = parse("selected");
+        Assert.assertTrue(c.eval(Type.NODE, meta, null));
+
+        c = parse("-selected");
+        Assert.assertFalse(c.eval(Type.NODE, meta, null));
+
+        meta.selected = false;
+        Assert.assertTrue(c.eval(Type.NODE, meta, null));
+    }
+
+    @Test
+    public void presetTest() {
+        TestMeta meta = new TestMeta();
+        meta.preset = "test1/test2";
+
+        Condition c = parse("preset:\"test1/test2\"");
+        Assert.assertTrue(c.eval(Type.NODE, meta, null));
+
+        c = parse("preset:\"test1/test\"");
+        Assert.assertFalse(c.eval(Type.NODE, meta, null));
+    }
+
     private Condition parse(String filterString) {
 
         try {

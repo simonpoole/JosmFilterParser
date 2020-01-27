@@ -8,6 +8,12 @@ import org.jetbrains.annotations.NotNull;
 
 import ch.poole.osm.josmfilterparser.ElementState.State;
 
+/**
+ * Dummy Meta implementation for testing
+ * 
+ * @author simon
+ *
+ */
 public class TestMeta implements Meta {
 
     long         id;
@@ -21,7 +27,10 @@ public class TestMeta implements Meta {
     int          areaSize;
     int          wayLength;
     List<String> roles = new ArrayList<>();
-    String      user;
+    String       user;
+    boolean      selected;
+    String       hasRole;
+    String       preset;
 
     @Override
     public String getUser() {
@@ -81,5 +90,20 @@ public class TestMeta implements Meta {
     @Override
     public @NotNull Collection<String> getRoles() {
         return roles;
+    }
+
+    @Override
+    public boolean isSelected() {
+        return selected;
+    }
+
+    @Override
+    public boolean hasRole(@NotNull String role) {
+        return role.equals(hasRole);
+    }
+
+    @Override
+    public boolean matchesPreset(@NotNull String preset) {
+        return preset.equals(this.preset);
     }
 }

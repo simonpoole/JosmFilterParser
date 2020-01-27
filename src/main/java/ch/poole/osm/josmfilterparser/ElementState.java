@@ -1,17 +1,22 @@
 package ch.poole.osm.josmfilterparser;
 
-
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
 public class ElementState implements Condition {
-    
-    
-    enum State {NEW, MODIFIED, DELETED}
-    
+
+    enum State {
+        NEW, MODIFIED, DELETED
+    }
+
     final State elementState;
 
+    /**
+     * Check an OSM element has a specified state
+     * 
+     * @param elementState the state
+     */
     public ElementState(@NotNull State elementState) {
         this.elementState = elementState;
     }

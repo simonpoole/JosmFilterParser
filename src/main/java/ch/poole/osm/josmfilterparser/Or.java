@@ -7,7 +7,13 @@ import org.jetbrains.annotations.NotNull;
 public class Or implements Condition {
     final Condition c1;
     final Condition c2;
-    
+
+    /**
+     * Logically OR two conditions
+     * 
+     * @param c1 first Condition
+     * @param c2 second Condition
+     */
     public Or(@NotNull Condition c1, @NotNull Condition c2) {
         this.c1 = c1;
         this.c2 = c2;
@@ -21,5 +27,5 @@ public class Or implements Condition {
     @Override
     public String toString() {
         return c1.toString() + " OR " + c2.toString();
-    }  
+    }
 }

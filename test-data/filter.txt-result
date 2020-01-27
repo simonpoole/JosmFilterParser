@@ -1,0 +1,71 @@
+0	test1
+0	test1 test2
+0	"test1 test2"
+0	test1 test2 test3
+0	test1 OR test2
+0	test1 OR test2
+0	test1 OR test2
+0	-test1
+0	test1 = test2
+0	test1 = test2
+0	test1 test2 = 123
+0	test1 = 123 test2 = 456
+0	test1 > test2
+0	test1 < test2
+0	type:way
+1
+0	type:modified
+0	type:deleted
+0	type:new
+0	closed
+0	tags:1-3
+0	tags:-3
+0	tags:3
+0	untagged selected
+0	test nodes:200-300
+0	id:123456
+0	version:2
+0	changeset:123456
+0	waylength:1000-2000 areasize:-200
+0	timestamp:2004-12-01T00:00:00/2019-01-131T14:00:01
+0	timestamp:2004-12-01T00:00:00/
+0	role:stop node
+0	hasRole:stop
+0	user:SimonPoole
+0	(test1 test2) test3
+0	(test1 OR test2) test3
+0	test1 (test2 OR test3)
+0	test1 (test2 OR test3) test4
+1
+0	nested (parentheses (must work))
+0	"addr:street" = "test test"
+0	"addr:street" = test "addr:postcode" = 1234
+0	preset:"test1/test2/test3"
+0	preset:"test1/test2/*"
+0	test1:test2
+0	"test 1":"test 2"
+0	test1:"test 2"
+0	"test 1":test2
+0	highway OR route = ferry
+0	tourism OR amenity
+0	natural = peak OR natural = volcano OR mountain_pass = yes OR natural = water OR tourism = viewpoint OR amenity = drinking_water OR natural = spring OR place = locality
+0	information = guidepost
+0	highway OR route = ferry OR leisure = track
+0	public_transport = stop_position (train = yes OR subway = yes OR monorail = yes OR tram = yes OR light_rail = yes)
+0	public_transport = platform
+0	railway
+0	public_transport = stop_position (bus = yes OR trolleybus = yes)
+0	highway
+0	type = route
+0	public_transport = stop_position
+0	public_transport = platform
+0	railway = subway_entrance
+0	amenity OR public_transport = station
+0	highway = bus_stop OR railway = station OR railway = halt OR railway = tram_stop
+0	highway = platform OR railway = platform
+0	leisure = fitness_station
+0	power = line OR power = cable
+0	power
+0	railway OR route = ferry
+0	"addr:housenumber" OR "addr:interpolation" OR "addr:housename"
+0	waterway -waterway:riverbank

@@ -51,9 +51,9 @@ public class JosmFilterParser
 {
   Stack < Boolean > startParen = new Stack < Boolean > ();
 
-  void unsupported() throws ParseException
+  void unsupported(String thing) throws ParseException
   {
-    ParseException pex = new ParseException("\"" + token.image + "\" unsupported " + token.next.beginLine + ", column " + token.next.beginColumn);
+    ParseException pex = new ParseException("\"" + thing + "\" is unsupported " + token.next.beginLine + ", column " + token.next.beginColumn);
     pex.currentToken = token;
     throw pex;
   }
@@ -83,7 +83,7 @@ TOKEN :
   < FRAGMENTCHAR : ~[ "\"", "\\", "|", " ", "\t", "<", "=", ">", "(", ")" ] > : FRAGMENT_STRING_STATE
 }
 
-< DEFAULT >
+< DEFAULT, FRAGMENT_STRING_STATE >
 TOKEN :
 {
   < QUOTE : "\"" >
@@ -273,7 +273,7 @@ String quotedLiteral() :
 }
 
 /**
- * This is fairly convoluted as we need to keep track of opening/closing parentheses  
+ * This is fairly convoluted to avoid left recursion 
  */
 Condition combination() :
 {
@@ -454,14 +454,14 @@ Condition match() :
 {
   (
     (
-      s1 = literal()
-    |
       (
         s1 = quotedLiteral()
       )
       {
         s1Quoted = true;
       }
+    | 
+      s1 = literal()
     )
     (
       (
@@ -484,16 +484,19 @@ Condition match() :
             s2Quoted = true;
           }
         )?
-      | (op = < DOUBLECOLON >)
+      )
+    |
+      (
+        op = < DOUBLECOLON >
         (
-          s2 = fragmentLiteral()
-        |
           (
             s2 = quotedLiteral()
           )
           {
             s2Quoted = true;
           }
+        | 
+          s2 = fragmentLiteral()
         )
       )
     )?
@@ -510,7 +513,7 @@ Condition match() :
         switch (s1)
         {
           case "type" : return new ElementType(Type.valueOf(s2.toUpperCase()));
-          case "preset" : unsupported();
+          case "preset" : return new Preset(s2);
           case "nodes" : return new Nodes(s2);
           case "ways" : return new Ways(s2);
           case "tags" : return new Tags(s2);
@@ -522,9 +525,10 @@ Condition match() :
           case "version" : return new Version(Long.parseLong(s2));
           case "changeset" : return new Changeset(Long.parseLong(s2));
           case "timestamp" : return new ElementTimestamp(s2);
-          case "hasRole" : unsupported();
-          case "nth" : unsupported();
-          case "nth%" : unsupported();
+          case "hasRole" : return new HasRole(s2);
+          ;
+          case "nth" : unsupported(s1);
+          case "nth%" : unsupported(s1);
           default : return new ValueFragment(s1, s2);
         }
       }
@@ -544,15 +548,15 @@ Condition match() :
           case "modified" : 
           case "new" : 
           case "deleted" : return new ElementState(ElementState.State.valueOf(s1.toUpperCase()));
-          case "selected" : unsupported();
-          case "incomplete" : unsupported();
-          case "inview" : unsupported();
-          case "allinview" : unsupported();
-          case "indownloadedarea" : unsupported();
-          case "allindownloadedarea" : unsupported();
+          case "selected" : return new Selected();
+          case "incomplete" : unsupported(s1);
+          case "inview" : unsupported(s1);
+          case "allinview" : unsupported(s1);
+          case "indownloadedarea" : unsupported(s1);
+          case "allindownloadedarea" : unsupported(s1);
           // the following two need special handling in the parser
-          case "child" : unsupported();
-          case "parent" : unsupported();
+          case "child" : unsupported(s1);
+          case "parent" : unsupported(s1);
           default : return new Match(s1, null, null);
         }
       }

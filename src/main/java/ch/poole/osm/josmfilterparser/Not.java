@@ -6,7 +6,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class Not implements Condition {
     final Condition c1;
-    
+
+    /**
+     * Logically NOT of a condition
+     * 
+     * @param c1 the Condition
+     */
     public Not(@NotNull Condition c1) {
         this.c1 = c1;
     }
@@ -19,5 +24,5 @@ public class Not implements Condition {
     @Override
     public String toString() {
         return "-" + c1.toString();
-    }  
+    }
 }

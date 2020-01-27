@@ -1,11 +1,15 @@
 package ch.poole.osm.josmfilterparser;
 
-
 import java.util.Map;
 
 public class Changeset implements Condition {
     final long changeset;
 
+    /**
+     * Check if an OSM element belongs to the specified changeset
+     * 
+     * @param changeset the changeset id
+     */
     public Changeset(long changeset) {
         this.changeset = changeset;
     }
