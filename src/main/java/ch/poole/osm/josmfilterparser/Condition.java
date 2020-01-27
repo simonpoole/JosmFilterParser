@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
  * @author simon
  *
  */
-interface Condition {
+public interface Condition {
     /**
      * Evaluate the Condition against a concrete OSM element
      * 
