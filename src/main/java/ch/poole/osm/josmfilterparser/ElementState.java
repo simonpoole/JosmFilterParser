@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ElementState implements Condition {
 
-    enum State {
+    public enum State {
         NEW, MODIFIED, DELETED
     }
 
