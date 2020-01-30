@@ -120,4 +120,39 @@ public interface Meta {
      * @param preset the path to the preset or group
      */
     boolean matchesPreset(@NotNull String preset);
+
+    /**
+     * Check if the element is incomplete (this is not defined in the documentation)
+     * 
+     * @return true if incomplete
+     */
+    boolean isIncomplete();
+
+    /**
+     * Check if the element is in the current view
+     * 
+     * @return true if in view
+     */
+    boolean isInview();
+
+    /**
+     * Check if the element and all member elements is in the current view
+     * 
+     * @return true if in view
+     */
+    boolean isAllInview();
+
+    /**
+     * Check if the element is in the downloaded areas
+     * 
+     * @return true if in view
+     */
+    boolean isInDownloadedArea();
+
+    /**
+     * Check if the element and all member elements is in the downloaded areas
+     * 
+     * @return true if in view
+     */
+    boolean isAllInDownloadedArea();
 }

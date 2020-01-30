@@ -430,6 +430,81 @@ public class JosmFilterIntegrationTest {
     }
 
     @Test
+    public void incompleteTest() {
+        TestMeta meta = new TestMeta();
+        meta.isIncomplete = true;
+
+        Condition c = parse("incomplete");
+        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+
+        c = parse("-incomplete");
+        Assert.assertFalse(c.eval(Type.RELATION, meta, null));
+
+        meta.isIncomplete = false;
+        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+    }
+    
+    @Test
+    public void inViewTest() {
+        TestMeta meta = new TestMeta();
+        meta.isInview = true;
+
+        Condition c = parse("inview");
+        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+
+        c = parse("-inview");
+        Assert.assertFalse(c.eval(Type.RELATION, meta, null));
+
+        meta.isInview = false;
+        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+    }
+
+    @Test
+    public void allInViewTest() {
+        TestMeta meta = new TestMeta();
+        meta.isAllInview = true;
+
+        Condition c = parse("allinview");
+        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+
+        c = parse("-allinview");
+        Assert.assertFalse(c.eval(Type.RELATION, meta, null));
+
+        meta.isAllInview = false;
+        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+    }
+    
+    @Test
+    public void inDownloadArea() {
+        TestMeta meta = new TestMeta();
+        meta.isInDownloadedArea = true;
+
+        Condition c = parse("indownloadedarea");
+        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+
+        c = parse("-indownloadedarea");
+        Assert.assertFalse(c.eval(Type.RELATION, meta, null));
+
+        meta.isInDownloadedArea = false;
+        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+    }
+    
+    @Test
+    public void allInDownloadArea() {
+        TestMeta meta = new TestMeta();
+        meta.isAllInDownloadedArea = true;
+
+        Condition c = parse("allindownloadedarea");
+        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+
+        c = parse("-allindownloadedarea");
+        Assert.assertFalse(c.eval(Type.RELATION, meta, null));
+
+        meta.isAllInDownloadedArea = false;
+        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+    }
+    
+    @Test
     public void presetTest() {
         TestMeta meta = new TestMeta();
         meta.preset = "test1/test2";

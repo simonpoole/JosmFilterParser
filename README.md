@@ -59,17 +59,17 @@ This is what the parser currently supports not necessarily what can be supported
 |✅|__modified__                  | 
 |✅|__new__                       | 
 ✅|__selected__                  |
-||__incomplete__                | 
+✅|__incomplete__                | 
 |✅|__deleted__                   | 
 ||__child__ _expr_              | 
 ||__parent__ _expr_             | 
 |✅|__hasRole:__*role*            | 
 ||__nth:__*number*              | 
 ||__nth%:__*number*             |
-||__inview__                    | 
-||__allinview__                 | 
-||__indownloadedarea__          | 
-||__allindownloadedarea__       | 
+|✅|__inview__                    | 
+|✅|__allinview__                 | 
+|✅|__indownloadedarea__          | 
+|✅|__allindownloadedarea__       | 
 
 ## Including in your project
 

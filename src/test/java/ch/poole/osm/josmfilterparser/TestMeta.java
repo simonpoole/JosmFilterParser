@@ -31,6 +31,11 @@ public class TestMeta implements Meta {
     boolean      selected;
     String       hasRole;
     String       preset;
+    boolean      isIncomplete;
+    boolean      isInview;
+    boolean      isAllInview;
+    boolean      isInDownloadedArea;
+    boolean      isAllInDownloadedArea;
 
     @Override
     public String getUser() {
@@ -105,5 +110,30 @@ public class TestMeta implements Meta {
     @Override
     public boolean matchesPreset(@NotNull String preset) {
         return preset.equals(this.preset);
+    }
+
+    @Override
+    public boolean isIncomplete() {
+        return isIncomplete;
+    }
+
+    @Override
+    public boolean isInview() {
+        return isInview;
+    }
+
+    @Override
+    public boolean isAllInview() {
+        return isAllInview;
+    }
+
+    @Override
+    public boolean isInDownloadedArea() {
+        return isInDownloadedArea;
+    }
+
+    @Override
+    public boolean isAllInDownloadedArea() {
+        return isAllInDownloadedArea;
     }
 }

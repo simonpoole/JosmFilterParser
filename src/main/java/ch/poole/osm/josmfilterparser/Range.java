@@ -24,12 +24,22 @@ public abstract class Range implements Condition {
             if (lowerUpper.length != 2) {
                 throw new ParseException("Illegal range " + range + " split resulted in " + lowerUpper.length + " parts");
             }
-            if (!"".equals(lowerUpper[0])) {
-                lower = Integer.parseInt(lowerUpper[0]);
+
+            try {
+                if (!"".equals(lowerUpper[0])) {
+                    lower = Integer.parseInt(lowerUpper[0]);
+                }
+            } catch (NumberFormatException e) {
+                throw new ParseException("Illegal integer " + lowerUpper[0]);
             }
-            if (!"".equals(lowerUpper[1])) {
-                upper = Integer.parseInt(lowerUpper[1]);
+            try {
+                if (!"".equals(lowerUpper[1])) {
+                    upper = Integer.parseInt(lowerUpper[1]);
+                }
+            } catch (NumberFormatException e) {
+                throw new ParseException("Illegal integer " + lowerUpper[1]);
             }
+
         } else {
             exact = Integer.parseInt(range);
         }

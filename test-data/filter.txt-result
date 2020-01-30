@@ -46,6 +46,10 @@
 0	"test 1":"test 2"
 0	test1:"test 2"
 0	"test 1":test2
+0	incomplete inview allinview indownloadedarea allindownloadedarea
+1
+0	child type:node
+0	parent node
 0	highway OR route = ferry
 0	tourism OR amenity
 0	natural = peak OR natural = volcano OR mountain_pass = yes OR natural = water OR tourism = viewpoint OR amenity = drinking_water OR natural = spring OR place = locality

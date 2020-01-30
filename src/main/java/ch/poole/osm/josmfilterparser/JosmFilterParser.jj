@@ -32,7 +32,7 @@ options
   FORCE_LA_CHECK = true;
   CHOICE_AMBIGUITY_CHECK = 2;
   OTHER_AMBIGUITY_CHECK = 2;
-  DEBUG_PARSER = true;
+  DEBUG_PARSER = false;
   DEBUG_LOOKAHEAD = false;
   DEBUG_TOKEN_MANAGER = false;
   UNICODE_INPUT = true;
@@ -282,6 +282,7 @@ Condition combination() :
   Condition result = null;
   Token not1 = null;
   Token not2 = null;
+  Token child = null;
 }
 {
   (
@@ -526,7 +527,6 @@ Condition match() :
           case "changeset" : return new Changeset(Long.parseLong(s2));
           case "timestamp" : return new ElementTimestamp(s2);
           case "hasRole" : return new HasRole(s2);
-          ;
           case "nth" : unsupported(s1);
           case "nth%" : unsupported(s1);
           default : return new ValueFragment(s1, s2);
@@ -549,14 +549,11 @@ Condition match() :
           case "new" : 
           case "deleted" : return new ElementState(ElementState.State.valueOf(s1.toUpperCase()));
           case "selected" : return new Selected();
-          case "incomplete" : unsupported(s1);
-          case "inview" : unsupported(s1);
-          case "allinview" : unsupported(s1);
-          case "indownloadedarea" : unsupported(s1);
-          case "allindownloadedarea" : unsupported(s1);
-          // the following two need special handling in the parser
-          case "child" : unsupported(s1);
-          case "parent" : unsupported(s1);
+          case "incomplete" : return new Incomplete();
+          case "inview" : return new Inview();
+          case "allinview" : return new AllInview();
+          case "indownloadedarea" : return new InDownloadedArea();
+          case "allindownloadedarea" : return new AllInDownloadedArea();
           default : return new Match(s1, null, null);
         }
       }
