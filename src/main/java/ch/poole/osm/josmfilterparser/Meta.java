@@ -120,6 +120,7 @@ public interface Meta {
      * @param presetPath the path
      * @return an Object that should be a instance of a preset for the syste,
      */
+    @Nullable
     Object getPreset(@NotNull String presetPath);
 
     /**
