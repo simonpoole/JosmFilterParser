@@ -106,9 +106,14 @@ public class TestMeta implements Meta {
     public boolean hasRole(@NotNull String role) {
         return role.equals(hasRole);
     }
-
+    
     @Override
-    public boolean matchesPreset(@NotNull String preset) {
+    public Object getPreset(@NotNull String presetPath) {
+        return presetPath;
+    }
+    
+    @Override
+    public boolean matchesPreset(@NotNull Object preset) {
         return preset.equals(this.preset);
     }
 

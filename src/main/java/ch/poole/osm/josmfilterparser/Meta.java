@@ -115,11 +115,19 @@ public interface Meta {
     boolean hasRole(@NotNull String role);
 
     /**
+     * Get a preset from a path specification
+     * 
+     * @param presetPath the path
+     * @return an Object that should be a instance of a preset for the syste,
+     */
+    Object getPreset(@NotNull String presetPath);
+
+    /**
      * Check if the object matches with a preset or a preset group
      * 
      * @param preset the path to the preset or group
      */
-    boolean matchesPreset(@NotNull String preset);
+    boolean matchesPreset(@NotNull Object preset);
 
     /**
      * Check if the element is incomplete (this is not defined in the documentation)
