@@ -17,6 +17,9 @@ import org.junit.Test;
  */
 public class JosmFilterIntegrationTest {
 
+    /**
+     * Test normal tag matching
+     */
     @Test
     public void matchTest() {
 
@@ -41,6 +44,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertFalse(c.eval(Type.NODE, null, null));
     }
 
+    /**
+     * Test tag matching with regexps
+     */
     @Test
     public void matchRegexpTest() {
 
@@ -75,6 +81,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
     }
 
+    /**
+     * Test alphanumeric value comparisons
+     */
     @Test
     public void valueComparisionTest() {
 
@@ -109,6 +118,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertFalse(c.eval(Type.NODE, null, tags));
     }
 
+    /**
+     * Test logical OR of conditions
+     */
     @Test
     public void orTest() {
 
@@ -126,6 +138,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
     }
 
+    /**
+     * Test logical AND of conditions
+     */
     @Test
     public void andTest() {
         Condition c = parse("test1 test2", false);
@@ -139,6 +154,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
     }
 
+    /**
+     * Test testing for type of OSM element
+     */
     @Test
     public void typeTest() {
         Condition c = parse("type:node", false);
@@ -148,6 +166,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
     }
 
+    /**
+     * Test value fragment matching
+     */
     @Test
     public void valueFragmentTest() {
         Condition c = parse("test1:rr", false);
@@ -167,6 +188,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertFalse(c.eval(Type.NODE, null, tags));
     }
 
+    /**
+     * Test OSM id matching
+     */
     @Test
     public void idTest() {
         Condition c = parse("id:123", false);
@@ -178,6 +202,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertFalse(c.eval(Type.WAY, meta, tags));
     }
 
+    /**
+     * Test changeset id matching
+     */
     @Test
     public void changesetTest() {
         Condition c = parse("changeset:123", false);
@@ -189,6 +216,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertFalse(c.eval(Type.WAY, meta, tags));
     }
 
+    /**
+     * Test version number matching
+     */
     @Test
     public void versionTest() {
         Condition c = parse("version:123", false);
@@ -200,6 +230,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertFalse(c.eval(Type.WAY, meta, tags));
     }
 
+    /**
+     * Test OSM element state matching
+     */
     @Test
     public void stateTest() {
         Condition c = parse("modified", false);
@@ -209,6 +242,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.WAY, meta, tags));
     }
 
+    /**
+     * Test checking for a closed way
+     */
     @Test
     public void closedTest() {
         Condition c = parse("closed", false);
@@ -220,6 +256,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertFalse(c.eval(Type.WAY, meta, tags));
     }
 
+    /**
+     * Test tag counts matching
+     */
     @Test
     public void tagsTest() {
         Condition c = parse("tags:1", false);
@@ -245,6 +284,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.WAY, null, null));
     }
 
+    /**
+     * Test checking for an untagged element
+     */
     @Test
     public void untaggedTest() {
         Map<String, String> tags = new HashMap<>();
@@ -260,6 +302,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.WAY, null, null));
     }
 
+    /**
+     * Test checking for number of way nodes
+     */
     @Test
     public void nodesTest() {
         TestMeta meta = new TestMeta();
@@ -281,6 +326,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
     }
 
+    /**
+     * Test for way membership count matching
+     */
     @Test
     public void waysTest() {
         TestMeta meta = new TestMeta();
@@ -302,6 +350,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
     }
 
+    /**
+     * Test for way length matching
+     */
     @Test
     public void wayLengthTest() {
         TestMeta meta = new TestMeta();
@@ -323,6 +374,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
     }
 
+    /**
+     * Test for area size matching
+     */
     @Test
     public void areaSizeTest() {
         TestMeta meta = new TestMeta();
@@ -344,6 +398,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.WAY, meta, null));
     }
 
+    /**
+     * Test for timestamp checking
+     */
     @Test
     public void timestampTest() {
         TestMeta meta = new TestMeta();
@@ -356,6 +413,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertFalse(c.eval(Type.WAY, meta, null));
     }
 
+    /**
+     * Test for role in relations matching
+     */
     @Test
     public void roleTest() {
         TestMeta meta = new TestMeta();
@@ -368,6 +428,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertFalse(c.eval(Type.WAY, meta, null));
     }
 
+    /**
+     * Test for relations that have a specific role
+     */
     @Test
     public void hasRoleTest() {
         TestMeta meta = new TestMeta();
@@ -380,6 +443,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertFalse(c.eval(Type.WAY, meta, null));
     }
 
+    /**
+     * Test user id matching
+     */
     @Test
     public void userTest() {
         TestMeta meta = new TestMeta();
@@ -392,6 +458,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertFalse(c.eval(Type.WAY, meta, null));
     }
 
+    /**
+     * Test of grouping with parentheses
+     */
     @Test
     public void parentheseTest() {
         Map<String, String> tags = new HashMap<>();
@@ -409,6 +478,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
     }
 
+    /**
+     * Check operator affinity
+     */
     @Test
     public void affinityTest() {
         Map<String, String> tags = new HashMap<>();
@@ -423,6 +495,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
     }
 
+    /**
+     * Check logical not
+     */
     @Test
     public void notTest() {
         Map<String, String> tags = new HashMap<>();
@@ -439,6 +514,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.NODE, null, tags));
     }
 
+    /**
+     * Check for selected element matching
+     */
     @Test
     public void selectedTest() {
         TestMeta meta = new TestMeta();
@@ -454,6 +532,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.NODE, meta, null));
     }
 
+    /**
+     * Check for matching incompletely downloaded relations
+     */
     @Test
     public void incompleteTest() {
         TestMeta meta = new TestMeta();
@@ -469,6 +550,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.RELATION, meta, null));
     }
 
+    /**
+     * Check for element in view box matching
+     */
     @Test
     public void inViewTest() {
         TestMeta meta = new TestMeta();
@@ -484,6 +568,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.RELATION, meta, null));
     }
 
+    /**
+     * Check for all relation members in view matching
+     */
     @Test
     public void allInViewTest() {
         TestMeta meta = new TestMeta();
@@ -499,6 +586,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.RELATION, meta, null));
     }
 
+    /**
+     * Check for in download area matching
+     */
     @Test
     public void inDownloadArea() {
         TestMeta meta = new TestMeta();
@@ -514,6 +604,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.RELATION, meta, null));
     }
 
+    /**
+     * Check for all relation members in download area matching
+     */
     @Test
     public void allInDownloadArea() {
         TestMeta meta = new TestMeta();
@@ -529,6 +622,9 @@ public class JosmFilterIntegrationTest {
         Assert.assertTrue(c.eval(Type.RELATION, meta, null));
     }
 
+    /**
+     * Check preset matching
+     */
     @Test
     public void presetTest() {
         TestMeta meta = new TestMeta();
@@ -541,6 +637,13 @@ public class JosmFilterIntegrationTest {
         Assert.assertFalse(c.eval(Type.NODE, meta, null));
     }
 
+    /**
+     * Parse a filter string and return the Condition object
+     * 
+     * @param filterString the filter string
+     * @param regexp if true use regexps for tag matching
+     * @return a Condition object
+     */
     private Condition parse(@NotNull String filterString, boolean regexp) {
 
         try {

@@ -7,6 +7,11 @@ import org.jetbrains.annotations.NotNull;
 public class User implements Condition {
     final String user;
 
+    /**
+     * Create a Condition that checks if the last editor of an element is the specified user
+     * 
+     * @param user the users display name
+     */
     public User(@NotNull String user) {
         this.user = user;
     }

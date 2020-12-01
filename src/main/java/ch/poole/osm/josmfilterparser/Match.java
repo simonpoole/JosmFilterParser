@@ -171,6 +171,12 @@ public class Match implements Condition {
 
     private static Pattern needsQuotes = Pattern.compile(".*[ \t:].*");
 
+    /**
+     * Add quotes to a string if necessary
+     * 
+     * @param text the string
+     * @return a potentialyl quoted string
+     */
     public static String quote(@NotNull String text) {
         if (needsQuotes.matcher(text).matches()) {
             return "\"" + text + "\"";

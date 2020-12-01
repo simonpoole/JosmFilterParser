@@ -9,6 +9,12 @@ public class ValueFragment implements Condition {
     final String key;
     final String value;
 
+    /**
+     * Create a Condition that checks if an element has tag with a specific key and contains the value
+     * 
+     * @param key the key
+     * @param value the value
+     */
     public ValueFragment(@NotNull String key, @NotNull String value) {
         this.key = key;
         this.value = value;

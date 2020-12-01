@@ -5,6 +5,11 @@ import java.util.Map;
 public class Id implements Condition {
     final long id;
 
+    /**
+     * Create a Condition that checks the id of an OSM element
+     * 
+     * @param id the id that should match
+     */
     public Id(long id) {
         this.id = id;
     }

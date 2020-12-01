@@ -6,6 +6,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class Tags extends Range {
 
+    /**
+     * Create a Condition that checks if an element has a tag count in the specified range
+     * 
+     * @param range the range
+     * @throws ParseException if parsing the range values fail
+     */
     public Tags(@NotNull String range) throws ParseException {
         super(range);
         name = "tags:";

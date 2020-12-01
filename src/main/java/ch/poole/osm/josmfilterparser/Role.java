@@ -7,6 +7,11 @@ import org.jetbrains.annotations.NotNull;
 public class Role implements Condition {
     final String role;
 
+    /**
+     * Create a Condition that checks if the element has the specified role in a relation
+     * 
+     * @param role the role
+     */
     public Role(@NotNull String role) {
         this.role = role;
     }

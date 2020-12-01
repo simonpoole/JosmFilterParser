@@ -5,6 +5,11 @@ import java.util.Map;
 public class Version implements Condition {
     final long version;
 
+    /**
+     * Create a Condition that checks if an element has the specified version
+     * 
+     * @param version the version
+     */
     public Version(long version) {
         this.version = version;
     }

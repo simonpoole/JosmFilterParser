@@ -7,6 +7,11 @@ import org.jetbrains.annotations.NotNull;
 public class ElementType implements Condition {
     final Type elementType;
 
+    /**
+     * Create a Condition that checks the type of OSM element
+     * 
+     * @param elementType the type a OSM element should be
+     */
     public ElementType(@NotNull Type elementType) {
         this.elementType = elementType;
     }
