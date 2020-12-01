@@ -51,6 +51,16 @@ public class JosmFilterParser
 {
   Stack < Boolean > startParen = new Stack < Boolean > ();
 
+  boolean regexp = false;
+
+  Condition condition() throws ParseException {
+    return condition0(false);
+  }
+
+  Condition condition(boolean regexp) throws ParseException {
+    return condition0(regexp);
+  }
+
   void unsupported(String thing) throws ParseException
   {
     ParseException pex = new ParseException("\"" + thing + "\" is unsupported " + token.next.beginLine + ", column " + token.next.beginColumn);
@@ -537,7 +547,7 @@ Condition match() :
     {
       if (s1Quoted || op != null)
       {
-        return new Match(s1, op == null ? null : op.image, s2);
+        return new Match(s1, op == null ? null : op.image, s2, regexp);
       }
       else
       {
@@ -554,16 +564,18 @@ Condition match() :
           case "allinview" : return new AllInview();
           case "indownloadedarea" : return new InDownloadedArea();
           case "allindownloadedarea" : return new AllInDownloadedArea();
-          default : return new Match(s1, null, null);
+          default : return new Match(s1, null, null, regexp);
         }
       }
     }
   }
 }
 
-Condition condition() :
+Condition condition0(boolean regexp) :
 {
   Condition r;
+
+  this.regexp = regexp;
 }
 {
   (

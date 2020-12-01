@@ -3,6 +3,7 @@ package ch.poole.osm.josmfilterparser;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,14 +20,33 @@ public class Match implements Condition {
     private AlphanumComparator  comparator   = null;
     private boolean             keyAsterix;
     private boolean             valueAsterix;
+    private Pattern             keyPattern;
+    private Pattern             valuePattern;
 
     interface Eval {
-        boolean eval(Type type, Meta meta, Map<String, String> tags);
+        /**
+         * Evaluate against against concrete tags
+         * 
+         * @param type type of object
+         * @param meta meta information for the object
+         * @param tags the objects tags
+         * @return true if it matched
+         */
+        boolean eval(Map<String, String> tags);
     }
 
     Eval evaluator;
 
-    public Match(@NotNull String key, @Nullable String op, @Nullable String value) {
+    /**
+     * Match tags
+     * 
+     * @param key key to match
+     * @param op kind of match operation
+     * @param value value to match or null
+     * @param regexp key and value are regular expressions
+     * @throws ParseException if regexp is true and parsing a regular expression fails
+     */
+    public Match(@NotNull String key, @Nullable String op, @Nullable String value, boolean regexp) throws ParseException {
         this.key = key;
         this.value = value;
         this.op = op;
@@ -39,18 +59,64 @@ public class Match implements Condition {
             comparator = new AlphanumComparator();
             evaluator = this::valueComparison;
         } else {
-            evaluator = this::tagMatch;
-            keyAsterix = ASTERIX.equals(key);
-            valueAsterix = ASTERIX.equals(value);
+            if (regexp) {
+                evaluator = this::tagRegexpMatch;
+                try {
+                    keyPattern = Pattern.compile(key);
+                    if (value != null) {
+                        valuePattern = Pattern.compile(value);
+                    }
+                } catch (PatternSyntaxException psex) {
+                    throw new ParseException(psex.getLocalizedMessage());
+                }
+            } else {
+                evaluator = this::tagMatch;
+                keyAsterix = ASTERIX.equals(key);
+                valueAsterix = ASTERIX.equals(value);
+            }
         }
     }
 
-    public boolean tagMatch(Type type, Meta meta, Map<String, String> tags) {
+    /**
+     * Match tags against key / value potentially containing regexps
+     * 
+     * @param tags a map holding the tags
+     * @return true if there is a match
+     */
+    private boolean tagRegexpMatch(@NotNull Map<String, String> tags) {
         for (Entry<String, String> tag : tags.entrySet()) {
             String tagKey = tag.getKey();
             String tagValue = tag.getValue();
             if (op == null) {
-                if (tagKey.contains(key) || tagValue.contains(key)) {
+                if (keyPattern.matcher(tagKey).matches() || (tagValue != null && keyPattern.matcher(tagValue).matches())) {
+                    return true;
+                }
+            } else {
+                boolean keyMatches = keyPattern.matcher(tagKey).matches();
+                if (keyMatches && value == null) {
+                    if (tagValue == null || "".equals(tagValue)) {
+                        return true;
+                    }
+                } else if (value != null && valuePattern.matcher(tagValue).matches()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Match tags against key / value potentially containing a * as a wildcard
+     * 
+     * @param tags a map holding the tags
+     * @return true if there is a match
+     */
+    private boolean tagMatch(@NotNull Map<String, String> tags) {
+        for (Entry<String, String> tag : tags.entrySet()) {
+            String tagKey = tag.getKey();
+            String tagValue = tag.getValue();
+            if (op == null) {
+                if (tagKey.contains(key) || (tagValue != null && tagValue.contains(key))) {
                     return true;
                 }
             } else {
@@ -61,12 +127,8 @@ public class Match implements Condition {
                     }
                 } else if (value != null) {
                     boolean valueEquals = value.equals(tagValue);
-                    if (keyAsterix && valueEquals) {
+                    if ((keyAsterix && valueEquals) || (keyEquals && (valueEquals || valueAsterix))) {
                         return true;
-                    } else {
-                        if (keyEquals && (valueEquals || valueAsterix)) {
-                            return true;
-                        }
                     }
                 }
             }
@@ -74,7 +136,13 @@ public class Match implements Condition {
         return false;
     }
 
-    private boolean valueComparison(Type type, Meta meta, @NotNull Map<String, String> tags) {
+    /**
+     * Check if a value comparison hold trues for the tags
+     * 
+     * @param tags a map holding the tags
+     * @return true if there is a match
+     */
+    private boolean valueComparison(@NotNull Map<String, String> tags) {
         String tagValue = tags.get(key);
         if (tagValue == null) {
             return false;
@@ -112,7 +180,10 @@ public class Match implements Condition {
 
     @Override
     public boolean eval(@NotNull Type type, @Nullable Meta meta, @Nullable Map<String, String> tags) {
-        return evaluator.eval(type, meta, tags);
+        if (tags == null) {
+            return false;
+        }
+        return evaluator.eval(tags);
     }
 
     @Override
