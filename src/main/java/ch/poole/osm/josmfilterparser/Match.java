@@ -59,7 +59,7 @@ public class Match implements Condition {
                     if (tagValue == null || "".equals(tagValue)) {
                         return true;
                     }
-                } else {
+                } else if (value != null) {
                     boolean valueEquals = value.equals(tagValue);
                     if (keyAsterix && valueEquals) {
                         return true;
@@ -74,7 +74,7 @@ public class Match implements Condition {
         return false;
     }
 
-    private boolean valueComparison(Type type, Meta meta, Map<String, String> tags) {
+    private boolean valueComparison(Type type, Meta meta, @NotNull Map<String, String> tags) {
         String tagValue = tags.get(key);
         if (tagValue == null) {
             return false;
