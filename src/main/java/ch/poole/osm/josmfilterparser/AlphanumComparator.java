@@ -34,6 +34,13 @@ import java.util.Comparator;
  * AlphanumComparator());
  */
 public class AlphanumComparator implements Comparator<String> {
+
+    /**
+     * Check if char ch is a digit
+     * 
+     * @param ch the char
+     * @return true if a digit
+     */
     private final boolean isDigit(char ch) {
         return ((ch >= 48) && (ch <= 57));
     }
@@ -47,16 +54,18 @@ public class AlphanumComparator implements Comparator<String> {
         if (isDigit(c)) {
             while (marker < slength) {
                 c = s.charAt(marker);
-                if (!isDigit(c))
+                if (!isDigit(c)) {
                     break;
+                }
                 chunk.append(c);
                 marker++;
             }
         } else {
             while (marker < slength) {
                 c = s.charAt(marker);
-                if (isDigit(c))
+                if (isDigit(c)) {
                     break;
+                }
                 chunk.append(c);
                 marker++;
             }
@@ -64,6 +73,7 @@ public class AlphanumComparator implements Comparator<String> {
         return chunk.toString();
     }
 
+    @Override
     public int compare(String s1, String s2) {
         if ((s1 == null) || (s2 == null)) {
             return 0;
@@ -100,8 +110,9 @@ public class AlphanumComparator implements Comparator<String> {
                 result = thisChunk.compareTo(thatChunk);
             }
 
-            if (result != 0)
+            if (result != 0) {
                 return result;
+            }
         }
 
         return s1Length - s2Length;
