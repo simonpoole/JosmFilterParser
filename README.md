@@ -71,6 +71,8 @@ This is what the parser currently supports not necessarily what can be supported
 |✅|__indownloadedarea__          | 
 |✅|__allindownloadedarea__       | 
 
+Version 0.3.0 and later optionally supports regexps instead of the * wildcard.
+
 ## Including in your project
 
 You can either download the jar from github or add the following to your build.gradle
@@ -78,13 +80,13 @@ You can either download the jar from github or add the following to your build.g
 	...
 	    repositories {
 	        ...   
-	        maven { url 'https://dl.bintray.com/simonpoole/osm' } 
+	        jcenter()
 	        ...              
 	    }
 	...
 	
 	dependencies {
 	    ...
-	    compile 'ch.poole.osm:JosmFilterParser:0.0.0'
+	    compile 'ch.poole.osm:JosmFilterParser:0.3.0'
 	    ...
 	}
