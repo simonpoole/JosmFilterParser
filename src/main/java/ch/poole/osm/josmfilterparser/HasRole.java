@@ -19,7 +19,6 @@ public class HasRole implements Condition {
     @Override
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
         return meta.hasRole(role);
-
     }
 
     @Override
