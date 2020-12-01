@@ -64,9 +64,7 @@ public class Match implements Condition {
                     if (keyAsterix && valueEquals) {
                         return true;
                     } else {
-                        if (keyEquals && valueEquals) {
-                            return true;
-                        } else if (keyEquals && valueAsterix) {
+                        if (keyEquals && (valueEquals || valueAsterix)) {
                             return true;
                         }
                     }
