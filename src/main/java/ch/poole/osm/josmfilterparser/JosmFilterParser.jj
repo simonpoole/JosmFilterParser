@@ -528,6 +528,7 @@ Condition match() :
           case "nodes" : return new Nodes(s2);
           case "ways" : return new Ways(s2);
           case "tags" : return new Tags(s2);
+          case "members" : return new Members(s2);
           case "role" : return new Role(s2);
           case "areasize" : return new AreaSize(s2);
           case "waylength" : return new WayLength(s2);

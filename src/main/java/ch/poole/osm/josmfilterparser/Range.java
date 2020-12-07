@@ -6,9 +6,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class Range implements Condition {
+    static final int UNINITALIZED = -1;
+
     private int exact = 0;
-    private int upper = -1;
-    private int lower = -1;
+    private int upper = UNINITALIZED;
+    private int lower = UNINITALIZED;
 
     protected String name;
 
@@ -48,7 +50,7 @@ public abstract class Range implements Condition {
     @Override
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
         int value = getValue(meta, tags);
-        return (upper == -1 && lower == -1) ? value == exact : (value >= lower) && (upper == -1 || value <= upper);
+        return (upper == UNINITALIZED && lower == UNINITALIZED) ? value == exact : (value >= lower) && (upper == UNINITALIZED || value <= upper);
     }
 
     /**
@@ -63,14 +65,14 @@ public abstract class Range implements Condition {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder(name);
-        if (upper == -1 && lower == -1) {
+        if (upper == UNINITALIZED && lower == UNINITALIZED) {
             result.append(Integer.toString(exact));
         } else {
-            if (lower != -1) {
+            if (lower != UNINITALIZED) {
                 result.append(Integer.toString(lower));
             }
             result.append("-");
-            if (upper != -1) {
+            if (upper != UNINITALIZED) {
                 result.append(Integer.toString(upper));
             }
         }

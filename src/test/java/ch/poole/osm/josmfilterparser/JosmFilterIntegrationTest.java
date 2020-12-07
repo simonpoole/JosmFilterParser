@@ -351,6 +351,30 @@ public class JosmFilterIntegrationTest {
     }
 
     /**
+     * Test checking for number of members
+     */
+    @Test
+    public void membersTest() {
+        TestMeta meta = new TestMeta();
+        meta.memberCount = 2;
+        Condition c = parse("members:1", false);
+
+        Assert.assertFalse(c.eval(Type.RELATION, meta, null));
+
+        c = parse("members:2", false);
+        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+
+        c = parse("members:1-2", false);
+        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+
+        c = parse("members:-3", false);
+        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+
+        c = parse("members:1-", false);
+        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+    }
+
+    /**
      * Test for way length matching
      */
     @Test

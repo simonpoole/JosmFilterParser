@@ -55,6 +55,7 @@ public interface Meta {
      * 
      * @return a State
      */
+    @NotNull
     State getState();
 
     /**
@@ -77,6 +78,17 @@ public interface Meta {
      * @return the number of ways the Node is a member of
      */
     int getWayCount();
+
+    /**
+     * If the object is a Relation return the number of members it has
+     * 
+     * If not implemented this returns -1 which should always evaluate to false
+     * 
+     * @return the number of members the Relation has
+     */
+    default int getMemberCount() {
+        return Range.UNINITALIZED;
+    }
 
     /**
      * If the object is a Way and closed return the area it covers

@@ -24,6 +24,7 @@ public class TestMeta implements Meta {
     boolean      isClosed;
     int          nodeCount;
     int          wayCount;
+    int          memberCount;
     int          areaSize;
     int          wayLength;
     List<String> roles = new ArrayList<>();
@@ -83,6 +84,11 @@ public class TestMeta implements Meta {
     }
 
     @Override
+    public int getMemberCount() {
+        return memberCount;
+    }
+
+    @Override
     public int getAreaSize() {
         return areaSize;
     }
@@ -106,12 +112,12 @@ public class TestMeta implements Meta {
     public boolean hasRole(@NotNull String role) {
         return role.equals(hasRole);
     }
-    
+
     @Override
     public Object getPreset(@NotNull String presetPath) {
         return presetPath;
     }
-    
+
     @Override
     public boolean matchesPreset(@NotNull Object preset) {
         return preset.equals(this.preset);
