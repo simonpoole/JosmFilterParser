@@ -67,7 +67,7 @@ test.inputs.files("test-data/filter.txt","test-data/filter.txt-result")
 
 publishing {
     publications {
-        MyPublication(MavenPublication) {
+        Release(MavenPublication) {
             from components.java
             groupId 'ch.poole.osm'
             artifactId 'JosmFilterParser'
@@ -80,7 +80,7 @@ publishing {
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
-    publications = ['MyPublication']
+    publications = ['Release']
     pkg {
         repo = 'osm'
         name = 'JosmFilterParser'
