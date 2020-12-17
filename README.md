@@ -89,6 +89,6 @@ You can either download the jar from github or add the following to your build.g
 	
 	dependencies {
 	    ...
-	    compile 'ch.poole.osm:JosmFilterParser:0.4.0'
+	    compile 'ch.poole.osm:JosmFilterParser:0.4.1'
 	    ...
 	}
