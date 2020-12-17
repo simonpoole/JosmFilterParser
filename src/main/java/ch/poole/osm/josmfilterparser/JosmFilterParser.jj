@@ -53,11 +53,11 @@ public class JosmFilterParser
 
   boolean regexp = false;
 
-  Condition condition() throws ParseException {
+  public Condition condition() throws ParseException {
     return condition0(false);
   }
 
-  Condition condition(boolean regexp) throws ParseException {
+  public Condition condition(boolean regexp) throws ParseException {
     return condition0(regexp);
   }
 
