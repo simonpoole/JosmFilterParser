@@ -37,7 +37,7 @@ user:SimonPoole
 test1 (test2 | test3)
 test1 (test2 | test3) test4
 (missing parentheses should fail
-nested ( parentheses ( must work))
+nested ( parentheses ( must work ))
 "addr:street"="test test"
 "addr:street"=test "addr:postcode"=1234
 preset:"test1/test2/test3"
@@ -73,3 +73,17 @@ power
 railway|route=ferry
 "addr:housenumber" | "addr:interpolation" | "addr:housename"
 waterway -waterway:riverbank
+members:0
+child (building OR highway)
+-child (building OR highway)
+node child highway
+node -child highway
+node child -highway
+node child (building OR highway)
+test1 AND test2
+test1 AND test2 OR test3
+test1 AND (test2 OR test3)
+test1 (test2 test3)
+test1 (test2 AND test3)
+(nested (parentheses  must) work)
+- test

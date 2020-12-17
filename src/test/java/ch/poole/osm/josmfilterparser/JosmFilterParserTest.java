@@ -2,6 +2,7 @@
 package ch.poole.osm.josmfilterparser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -101,6 +102,10 @@ public class JosmFilterParserTest {
                     if (expectedResultCode != null) {
                         assertEquals(expectedResultCode, "2");
                     }
+                } catch (Exception ex) {
+                    System.err.println("Parser exception for " + line + " " + ex.toString());
+                    ex.printStackTrace();
+                    outputExpected.write("4\n");
                 } catch (Error err) {
                     if (err.toString().contains("Lexical")) {
                         lexical++;

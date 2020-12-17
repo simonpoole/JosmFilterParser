@@ -28,6 +28,6 @@ public class ElementState implements Condition {
 
     @Override
     public String toString() {
-        return "type:" + elementState.toString().toLowerCase();
+        return elementState.toString().toLowerCase();
     }
 }

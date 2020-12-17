@@ -1,6 +1,10 @@
 
 package ch.poole.osm.josmfilterparser;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,20 +32,20 @@ public class JosmFilterIntegrationTest {
         tags.put("test", "grrr");
 
         Condition c = parse("test1=*", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
 
         c = parse("test1=grrr", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
 
         c = parse("*=grrr", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
 
         tags.clear();
         tags.put("test1", "");
         c = parse("test1=", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
 
-        Assert.assertFalse(c.eval(Type.NODE, null, null));
+        assertFalse(c.eval(Type.NODE, null, null));
     }
 
     /**
@@ -55,30 +59,30 @@ public class JosmFilterIntegrationTest {
         tags.put("test", "grrr");
 
         Condition c = parse("test1=.*", true);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
 
         c = parse("te+st1=g..r", true);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
 
         c = parse("test1=grRr", true);
-        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        assertFalse(c.eval(Type.NODE, null, tags));
 
         c = parse("tes.1", true);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
 
         c = parse("gr[ri]r", true);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
 
         c = parse("Test1", true);
-        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        assertFalse(c.eval(Type.NODE, null, tags));
 
         c = parse(".*=grrr", true);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
 
         tags.clear();
         tags.put("test1", "");
         c = parse("test1=", true);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
     }
 
     /**
@@ -93,29 +97,29 @@ public class JosmFilterIntegrationTest {
 
         // numerical
         Condition c = parse("test1<200", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
         c = parse("test1<100", false);
-        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        assertFalse(c.eval(Type.NODE, null, tags));
         c = parse("test1>100", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
         c = parse("test1>200", false);
-        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        assertFalse(c.eval(Type.NODE, null, tags));
 
         // alphanumberical
         c = parse("test<\"2005-01-01\"", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
         c = parse("test<\"2004-01-01\"", false);
-        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        assertFalse(c.eval(Type.NODE, null, tags));
         c = parse("test>\"2005-01-01\"", false);
-        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        assertFalse(c.eval(Type.NODE, null, tags));
         c = parse("test>\"2004-01-01\"", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
 
         // other stuff
         c = parse("test2<100", false);
-        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        assertFalse(c.eval(Type.NODE, null, tags));
         c = parse("test<100", false);
-        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        assertFalse(c.eval(Type.NODE, null, tags));
     }
 
     /**
@@ -129,13 +133,13 @@ public class JosmFilterIntegrationTest {
         tags.put("test", "grrr");
 
         Condition c = parse("test1 | test2", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
 
         c = parse("test1=grrr | test2=grrr", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
 
         c = parse("test1 | test", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
     }
 
     /**
@@ -148,10 +152,10 @@ public class JosmFilterIntegrationTest {
         tags.put("test1", "grrr");
         tags.put("test", "grrr");
 
-        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        assertFalse(c.eval(Type.NODE, null, tags));
 
         tags.put("test2", "grrr");
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
     }
 
     /**
@@ -162,8 +166,8 @@ public class JosmFilterIntegrationTest {
         Condition c = parse("type:node", false);
         Map<String, String> tags = new HashMap<>();
 
-        Assert.assertFalse(c.eval(Type.WAY, null, tags));
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertFalse(c.eval(Type.WAY, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
     }
 
     /**
@@ -171,21 +175,21 @@ public class JosmFilterIntegrationTest {
      */
     @Test
     public void valueFragmentTest() {
-        Condition c = parse("test1:rr", false);
+        Condition c; // = parse("test1:rr", false);
         Map<String, String> tags = new HashMap<>();
         tags.put("test1", "grrr");
         tags.put("test", "grrr");
 
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        // assertTrue(c.eval(Type.NODE, null, tags));
 
         c = parse("type1:aa", false);
-        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        assertFalse(c.eval(Type.NODE, null, tags));
 
         c = parse("tes1:rr", false);
-        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        assertFalse(c.eval(Type.NODE, null, tags));
 
         c = parse("-test1:rr", false);
-        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        assertFalse(c.eval(Type.NODE, null, tags));
     }
 
     /**
@@ -197,9 +201,9 @@ public class JosmFilterIntegrationTest {
         Map<String, String> tags = new HashMap<>();
         TestMeta meta = new TestMeta();
         meta.id = 123;
-        Assert.assertTrue(c.eval(Type.WAY, meta, tags));
+        assertTrue(c.eval(Type.WAY, meta, tags));
         c = parse("id:321", false);
-        Assert.assertFalse(c.eval(Type.WAY, meta, tags));
+        assertFalse(c.eval(Type.WAY, meta, tags));
     }
 
     /**
@@ -211,9 +215,9 @@ public class JosmFilterIntegrationTest {
         Map<String, String> tags = new HashMap<>();
         TestMeta meta = new TestMeta();
         meta.changeset = 123;
-        Assert.assertTrue(c.eval(Type.WAY, meta, tags));
+        assertTrue(c.eval(Type.WAY, meta, tags));
         c = parse("changeset:321", false);
-        Assert.assertFalse(c.eval(Type.WAY, meta, tags));
+        assertFalse(c.eval(Type.WAY, meta, tags));
     }
 
     /**
@@ -225,9 +229,9 @@ public class JosmFilterIntegrationTest {
         Map<String, String> tags = new HashMap<>();
         TestMeta meta = new TestMeta();
         meta.version = 123;
-        Assert.assertTrue(c.eval(Type.WAY, meta, tags));
+        assertTrue(c.eval(Type.WAY, meta, tags));
         c = parse("version:321", false);
-        Assert.assertFalse(c.eval(Type.WAY, meta, tags));
+        assertFalse(c.eval(Type.WAY, meta, tags));
     }
 
     /**
@@ -239,7 +243,7 @@ public class JosmFilterIntegrationTest {
         Map<String, String> tags = new HashMap<>();
         TestMeta meta = new TestMeta();
         meta.state = ElementState.State.MODIFIED;
-        Assert.assertTrue(c.eval(Type.WAY, meta, tags));
+        assertTrue(c.eval(Type.WAY, meta, tags));
     }
 
     /**
@@ -251,9 +255,9 @@ public class JosmFilterIntegrationTest {
         Map<String, String> tags = new HashMap<>();
         TestMeta meta = new TestMeta();
         meta.isClosed = true;
-        Assert.assertTrue(c.eval(Type.WAY, meta, tags));
+        assertTrue(c.eval(Type.WAY, meta, tags));
         meta.isClosed = false;
-        Assert.assertFalse(c.eval(Type.WAY, meta, tags));
+        assertFalse(c.eval(Type.WAY, meta, tags));
     }
 
     /**
@@ -266,22 +270,22 @@ public class JosmFilterIntegrationTest {
         tags.put("test1", "grrr");
         tags.put("test", "grrr");
 
-        Assert.assertFalse(c.eval(Type.WAY, null, tags));
+        assertFalse(c.eval(Type.WAY, null, tags));
 
         c = parse("tags:2", false);
-        Assert.assertTrue(c.eval(Type.WAY, null, tags));
+        assertTrue(c.eval(Type.WAY, null, tags));
 
         c = parse("tags:1-2", false);
-        Assert.assertTrue(c.eval(Type.WAY, null, tags));
+        assertTrue(c.eval(Type.WAY, null, tags));
 
         c = parse("tags:-3", false);
-        Assert.assertTrue(c.eval(Type.WAY, null, tags));
+        assertTrue(c.eval(Type.WAY, null, tags));
 
         c = parse("tags:1-", false);
-        Assert.assertTrue(c.eval(Type.WAY, null, tags));
+        assertTrue(c.eval(Type.WAY, null, tags));
 
         c = parse("tags:0", false);
-        Assert.assertTrue(c.eval(Type.WAY, null, null));
+        assertTrue(c.eval(Type.WAY, null, null));
     }
 
     /**
@@ -294,12 +298,12 @@ public class JosmFilterIntegrationTest {
         tags.put("test", "grrr");
 
         Condition c = parse("untagged", false);
-        Assert.assertFalse(c.eval(Type.WAY, null, tags));
+        assertFalse(c.eval(Type.WAY, null, tags));
 
         tags.clear();
-        Assert.assertTrue(c.eval(Type.WAY, null, tags));
+        assertTrue(c.eval(Type.WAY, null, tags));
 
-        Assert.assertTrue(c.eval(Type.WAY, null, null));
+        assertTrue(c.eval(Type.WAY, null, null));
     }
 
     /**
@@ -311,19 +315,19 @@ public class JosmFilterIntegrationTest {
         meta.nodeCount = 2;
         Condition c = parse("nodes:1", false);
 
-        Assert.assertFalse(c.eval(Type.WAY, meta, null));
+        assertFalse(c.eval(Type.WAY, meta, null));
 
         c = parse("nodes:2", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("nodes:1-2", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("nodes:-3", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("nodes:1-", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
     }
 
     /**
@@ -335,19 +339,19 @@ public class JosmFilterIntegrationTest {
         meta.wayCount = 2;
         Condition c = parse("ways:1", false);
 
-        Assert.assertFalse(c.eval(Type.WAY, meta, null));
+        assertFalse(c.eval(Type.WAY, meta, null));
 
         c = parse("ways:2", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("ways:1-2", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("ways:-3", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("ways:1-", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
     }
 
     /**
@@ -359,19 +363,19 @@ public class JosmFilterIntegrationTest {
         meta.memberCount = 2;
         Condition c = parse("members:1", false);
 
-        Assert.assertFalse(c.eval(Type.RELATION, meta, null));
+        assertFalse(c.eval(Type.RELATION, meta, null));
 
         c = parse("members:2", false);
-        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+        assertTrue(c.eval(Type.RELATION, meta, null));
 
         c = parse("members:1-2", false);
-        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+        assertTrue(c.eval(Type.RELATION, meta, null));
 
         c = parse("members:-3", false);
-        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+        assertTrue(c.eval(Type.RELATION, meta, null));
 
         c = parse("members:1-", false);
-        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+        assertTrue(c.eval(Type.RELATION, meta, null));
     }
 
     /**
@@ -383,19 +387,19 @@ public class JosmFilterIntegrationTest {
         meta.wayLength = 20;
         Condition c = parse("waylength:1", false);
 
-        Assert.assertFalse(c.eval(Type.WAY, meta, null));
+        assertFalse(c.eval(Type.WAY, meta, null));
 
         c = parse("waylength:20", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("waylength:10-20", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("waylength:-30", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("waylength:10-", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
     }
 
     /**
@@ -407,19 +411,19 @@ public class JosmFilterIntegrationTest {
         meta.areaSize = 200;
         Condition c = parse("areasize:100", false);
 
-        Assert.assertFalse(c.eval(Type.WAY, meta, null));
+        assertFalse(c.eval(Type.WAY, meta, null));
 
         c = parse("areasize:200", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("areasize:100-200", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("areasize:-300", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("areasize:100-", false);
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
     }
 
     /**
@@ -431,10 +435,10 @@ public class JosmFilterIntegrationTest {
         meta.timestamp = ElementTimestamp.parseDateTime("2005-10-01");
         Condition c = parse("timestamp:2004-1-5T14:00/2010", false);
 
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("timestamp:2011/", false);
-        Assert.assertFalse(c.eval(Type.WAY, meta, null));
+        assertFalse(c.eval(Type.WAY, meta, null));
     }
 
     /**
@@ -446,10 +450,10 @@ public class JosmFilterIntegrationTest {
         meta.roles.add("stop");
         Condition c = parse("role:stop", false);
 
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("role:false", false);
-        Assert.assertFalse(c.eval(Type.WAY, meta, null));
+        assertFalse(c.eval(Type.WAY, meta, null));
     }
 
     /**
@@ -461,10 +465,10 @@ public class JosmFilterIntegrationTest {
         meta.hasRole = "stop";
         Condition c = parse("hasRole:stop", false);
 
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("hasRole:platform", false);
-        Assert.assertFalse(c.eval(Type.WAY, meta, null));
+        assertFalse(c.eval(Type.WAY, meta, null));
     }
 
     /**
@@ -476,10 +480,10 @@ public class JosmFilterIntegrationTest {
         meta.user = "SimonPoole";
         Condition c = parse("user:SimonPoole", false);
 
-        Assert.assertTrue(c.eval(Type.WAY, meta, null));
+        assertTrue(c.eval(Type.WAY, meta, null));
 
         c = parse("user:PooleSimon", false);
-        Assert.assertFalse(c.eval(Type.WAY, meta, null));
+        assertFalse(c.eval(Type.WAY, meta, null));
     }
 
     /**
@@ -492,31 +496,38 @@ public class JosmFilterIntegrationTest {
         tags.put("test", "grrr");
 
         Condition c = parse("(test1 test2) | test3", false);
-        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        assertTrue(c instanceof Or);
+        assertFalse(c.eval(Type.NODE, null, tags));
 
         c = parse("(test1 | test2)  test", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c instanceof And);
+        assertTrue(c.eval(Type.NODE, null, tags));
 
         c = parse("test1 (test2 | test)", false);
-        System.err.println(c.toString());
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c instanceof And);
+        assertTrue(c.eval(Type.NODE, null, tags));
     }
 
     /**
-     * Check operator affinity
+     * Check operator precedence
      */
     @Test
-    public void affinityTest() {
+    public void precedenceTest() {
         Map<String, String> tags = new HashMap<>();
         tags.put("test1", "grrr");
         tags.put("test", "grrr");
 
         Condition c = parse("test1 test2 | test3", false);
-        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        assertTrue(c instanceof Or);
+        assertTrue(((Or) c).c1 instanceof And);
+        assertFalse(c.eval(Type.NODE, null, tags));
         c = parse("test1 test2 | test", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c instanceof Or);
+        assertTrue(c.eval(Type.NODE, null, tags));
         c = parse("test1 | test2 test", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c instanceof Or);
+        assertTrue(((Or) c).c2 instanceof And);
+        assertTrue(c.eval(Type.NODE, null, tags));
     }
 
     /**
@@ -529,13 +540,16 @@ public class JosmFilterIntegrationTest {
         tags.put("test", "grrr");
 
         Condition c = parse("-test1", false);
-        Assert.assertFalse(c.eval(Type.NODE, null, tags));
+        assertTrue(c instanceof Not);
+        assertFalse(c.eval(Type.NODE, null, tags));
 
         c = parse("-test2", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c instanceof Not);
+        assertTrue(c.eval(Type.NODE, null, tags));
 
         c = parse("-(test2 | test3)", false);
-        Assert.assertTrue(c.eval(Type.NODE, null, tags));
+        assertTrue(c instanceof Not);
+        assertTrue(c.eval(Type.NODE, null, tags));
     }
 
     /**
@@ -547,13 +561,15 @@ public class JosmFilterIntegrationTest {
         meta.selected = true;
 
         Condition c = parse("selected", false);
-        Assert.assertTrue(c.eval(Type.NODE, meta, null));
+        assertTrue(c instanceof Selected);
+        assertTrue(c.eval(Type.NODE, meta, null));
 
         c = parse("-selected", false);
-        Assert.assertFalse(c.eval(Type.NODE, meta, null));
+        assertTrue(c instanceof Not);
+        assertFalse(c.eval(Type.NODE, meta, null));
 
         meta.selected = false;
-        Assert.assertTrue(c.eval(Type.NODE, meta, null));
+        assertTrue(c.eval(Type.NODE, meta, null));
     }
 
     /**
@@ -565,13 +581,15 @@ public class JosmFilterIntegrationTest {
         meta.isIncomplete = true;
 
         Condition c = parse("incomplete", false);
-        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+        assertTrue(c instanceof Incomplete);
+        assertTrue(c.eval(Type.RELATION, meta, null));
 
         c = parse("-incomplete", false);
-        Assert.assertFalse(c.eval(Type.RELATION, meta, null));
+        assertTrue(c instanceof Not);
+        assertFalse(c.eval(Type.RELATION, meta, null));
 
         meta.isIncomplete = false;
-        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+        assertTrue(c.eval(Type.RELATION, meta, null));
     }
 
     /**
@@ -583,13 +601,15 @@ public class JosmFilterIntegrationTest {
         meta.isInview = true;
 
         Condition c = parse("inview", false);
-        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+        assertTrue(c instanceof Inview);
+        assertTrue(c.eval(Type.RELATION, meta, null));
 
         c = parse("-inview", false);
-        Assert.assertFalse(c.eval(Type.RELATION, meta, null));
+        assertTrue(c instanceof Not);
+        assertFalse(c.eval(Type.RELATION, meta, null));
 
         meta.isInview = false;
-        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+        assertTrue(c.eval(Type.RELATION, meta, null));
     }
 
     /**
@@ -601,13 +621,15 @@ public class JosmFilterIntegrationTest {
         meta.isAllInview = true;
 
         Condition c = parse("allinview", false);
-        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+        assertTrue(c instanceof AllInview);
+        assertTrue(c.eval(Type.RELATION, meta, null));
 
         c = parse("-allinview", false);
-        Assert.assertFalse(c.eval(Type.RELATION, meta, null));
+        assertTrue(c instanceof Not);
+        assertFalse(c.eval(Type.RELATION, meta, null));
 
         meta.isAllInview = false;
-        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+        assertTrue(c.eval(Type.RELATION, meta, null));
     }
 
     /**
@@ -619,13 +641,15 @@ public class JosmFilterIntegrationTest {
         meta.isInDownloadedArea = true;
 
         Condition c = parse("indownloadedarea", false);
-        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+        assertTrue(c.eval(Type.RELATION, meta, null));
+        assertTrue(c instanceof InDownloadedArea);
 
         c = parse("-indownloadedarea", false);
-        Assert.assertFalse(c.eval(Type.RELATION, meta, null));
+        assertTrue(c instanceof Not);
+        assertFalse(c.eval(Type.RELATION, meta, null));
 
         meta.isInDownloadedArea = false;
-        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+        assertTrue(c.eval(Type.RELATION, meta, null));
     }
 
     /**
@@ -637,13 +661,15 @@ public class JosmFilterIntegrationTest {
         meta.isAllInDownloadedArea = true;
 
         Condition c = parse("allindownloadedarea", false);
-        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+        assertTrue(c instanceof AllInDownloadedArea);
+        assertTrue(c.eval(Type.RELATION, meta, null));
 
         c = parse("-allindownloadedarea", false);
-        Assert.assertFalse(c.eval(Type.RELATION, meta, null));
+        assertTrue(c instanceof Not);
+        assertFalse(c.eval(Type.RELATION, meta, null));
 
         meta.isAllInDownloadedArea = false;
-        Assert.assertTrue(c.eval(Type.RELATION, meta, null));
+        assertTrue(c.eval(Type.RELATION, meta, null));
     }
 
     /**
@@ -655,10 +681,58 @@ public class JosmFilterIntegrationTest {
         meta.preset = "test1/test2";
 
         Condition c = parse("preset:\"test1/test2\"", false);
-        Assert.assertTrue(c.eval(Type.NODE, meta, null));
+        assertTrue(c instanceof Preset);
+        assertTrue(c.eval(Type.NODE, meta, null));
 
         c = parse("preset:\"test1/test\"", false);
-        Assert.assertFalse(c.eval(Type.NODE, meta, null));
+        assertTrue(c instanceof Preset);
+        assertFalse(c.eval(Type.NODE, meta, null));
+    }
+
+    /**
+     * Check child matching
+     */
+    @Test
+    public void childTest() {
+        TestMeta meta = new TestMeta();
+        meta.isChild = true;
+
+        Condition c = parse("child building", false);
+        assertTrue(c instanceof Child);
+        assertTrue(c.eval(Type.NODE, meta, null));
+
+        meta.isChild = false;
+        c = parse("child highway", false);
+        assertTrue(c instanceof Child);
+        assertFalse(c.eval(Type.NODE, meta, null));
+
+        meta.isChild = true;
+        c = parse("child (highway | building)", false);
+        assertTrue(c instanceof Child);
+        assertTrue(c.eval(Type.NODE, meta, null));
+
+        meta.isChild = true;
+        c = parse("node child highway", false);
+        assertTrue(c instanceof And);
+        assertTrue(((And) c).c2 instanceof Child);
+    }
+
+    /**
+     * Check parent matching
+     */
+    @Test
+    public void parentTest() {
+        TestMeta meta = new TestMeta();
+        meta.isParent = true;
+
+        Condition c = parse("parent building", false);
+        assertTrue(c instanceof Parent);
+        assertTrue(c.eval(Type.NODE, meta, null));
+
+        meta.isParent = false;
+        c = parse("parent highway", false);
+        assertTrue(c instanceof Parent);
+        assertFalse(c.eval(Type.NODE, meta, null));
     }
 
     /**
@@ -674,11 +748,9 @@ public class JosmFilterIntegrationTest {
             JosmFilterParser parser = new JosmFilterParser(new ByteArrayInputStream(filterString.getBytes()));
             return parser.condition(regexp);
         } catch (ParseException pex) {
-            System.err.println("Parser exception " + pex.toString());
-            Assert.fail(pex.toString());
+            fail(pex.toString());
         } catch (Error err) {
-            System.err.println("Parser err " + err.toString());
-            Assert.fail(err.toString());
+            fail(err.toString());
         }
         return null;
     }
