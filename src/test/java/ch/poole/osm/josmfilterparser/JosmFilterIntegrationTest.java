@@ -86,6 +86,26 @@ public class JosmFilterIntegrationTest {
     }
 
     /**
+     * Test tag matching with ~operator (value regexps)
+     */
+    @Test
+    public void matchValueRegexpTest() {
+
+        Map<String, String> tags = new HashMap<>();
+        tags.put("test1", "grrr");
+        tags.put("test", "grrr");
+
+        Condition c = parse("test1~.*", false);
+        assertTrue(c.eval(Type.NODE, null, tags));
+
+        c = parse("test1~g..r", false);
+        assertTrue(c.eval(Type.NODE, null, tags));
+
+        c = parse("test1~grRr", false);
+        assertFalse(c.eval(Type.NODE, null, tags));
+    }
+
+    /**
      * Test alphanumeric value comparisons
      */
     @Test

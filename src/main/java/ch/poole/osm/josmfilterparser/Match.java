@@ -9,9 +9,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class Match implements Condition {
+
     private static final String LT           = "<";
     private static final String GT           = ">";
     private static final String EQUALS       = "=";
+    private static final String TILDE        = "~";
     private static final String ASTERIX      = "*";
     private final String        key;
     private final String        value;
@@ -50,31 +52,51 @@ public class Match implements Condition {
         this.key = key;
         this.value = value;
         this.op = op;
-        if (!EQUALS.equals(op) && op != null) {
-            try {
-                numericValue = Double.parseDouble(value);
-            } catch (NumberFormatException e) {
-                // ignore
-            }
-            comparator = new AlphanumComparator();
-            evaluator = this::valueComparison;
-        } else {
-            if (regexp) {
-                evaluator = this::tagRegexpMatch;
+        try {
+            if (GT.equals(op) || LT.equals(op)) {
                 try {
+                    numericValue = Double.parseDouble(value);
+                } catch (NumberFormatException e) {
+                    // ignore
+                }
+                comparator = new AlphanumComparator();
+                evaluator = this::valueComparison;
+            } else if (TILDE.equals(op)) {
+                evaluator = this::tagRegexpValueMatch;
+                valuePattern = Pattern.compile(value);
+            } else {
+                if (regexp) {
+                    evaluator = this::tagRegexpMatch;
                     keyPattern = Pattern.compile(key);
                     if (value != null) {
                         valuePattern = Pattern.compile(value);
                     }
-                } catch (PatternSyntaxException psex) {
-                    throw new ParseException(psex.getLocalizedMessage());
+                } else {
+                    evaluator = this::tagMatch;
+                    keyAsterix = ASTERIX.equals(key);
+                    valueAsterix = ASTERIX.equals(value);
                 }
-            } else {
-                evaluator = this::tagMatch;
-                keyAsterix = ASTERIX.equals(key);
-                valueAsterix = ASTERIX.equals(value);
+            }
+        } catch (PatternSyntaxException psex) {
+            throw new ParseException(psex.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Match tags against key and a value potentially containing a regexp
+     * 
+     * @param tags a map holding the tags
+     * @return true if there is a match
+     */
+    private boolean tagRegexpValueMatch(@NotNull Map<String, String> tags) {
+        for (Entry<String, String> tag : tags.entrySet()) {
+            String tagKey = tag.getKey();
+            String tagValue = tag.getValue();
+            if (tagKey.contains(key) && valuePattern.matcher(tagValue).matches()) {
+                return true;
             }
         }
+        return false;
     }
 
     /**
