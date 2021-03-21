@@ -27,7 +27,7 @@ options
 
   static = false;
 
-  LOOKAHEAD= 255;
+  LOOKAHEAD= 5;
   IGNORE_CASE = true;
   FORCE_LA_CHECK = true;
   CHOICE_AMBIGUITY_CHECK = 2;
@@ -81,18 +81,6 @@ TOKEN_MGR_DECLS :
   Stack < Integer > state = new Stack < Integer > ();
 }
 
-< DEFAULT, LITERAL_STRING_STATE >
-TOKEN :
-{
-  < CHAR : ~[ "-", "\"", "\\", "|", " ", "\t", "<", "=", ">", ":", "(", ")" ] > : LITERAL_STRING_STATE
-}
-
-< FRAGMENT_STRING_STATE >
-TOKEN :
-{
-  < FRAGMENTCHAR : ~[ "\"", "\\", "|", " ", "\t", "<", "=", ">", "(", ")" ] > : FRAGMENT_STRING_STATE
-}
-
 < DEFAULT, FRAGMENT_STRING_STATE >
 TOKEN :
 {
@@ -113,10 +101,10 @@ TOKEN :
 | < QUOTED_STRING_CHAR : ~[ "\"", "\\" ] >
 }
 
-< DEFAULT, LITERAL_STRING_STATE, FRAGMENT_STRING_STATE >
+< DEFAULT, FRAGMENT_STRING_STATE >
 TOKEN :
 {
-  < WS_COND : [ " ", "\t" ] > : DEFAULT
+  < WS : [ " ", "\t" ] > : DEFAULT
 }
 
 < DEFAULT >
@@ -127,7 +115,57 @@ TOKEN :
 | < MINUS : "-" >
 }
 
-< DEFAULT, LITERAL_STRING_STATE >
+< DEFAULT >
+TOKEN :
+{ 
+  < TYPE : "type:" > : FRAGMENT_STRING_STATE
+| < PRESET : "preset:" > : FRAGMENT_STRING_STATE
+| < NODES : "nodes:" > : FRAGMENT_STRING_STATE
+| < WAYS : "ways:" > : FRAGMENT_STRING_STATE
+| < TAGS : "tags:" > : FRAGMENT_STRING_STATE
+| < MEMBERS : "members:" > : FRAGMENT_STRING_STATE
+| < ROLE : "role:" > : FRAGMENT_STRING_STATE
+| < AREASIZE : "areasize:" > : FRAGMENT_STRING_STATE
+| < WAYLENGTH : "waylength:" > : FRAGMENT_STRING_STATE
+| < USER : "user:" > : FRAGMENT_STRING_STATE
+| < ID : "id:" > : FRAGMENT_STRING_STATE
+| < VERSION : "version:" > : FRAGMENT_STRING_STATE
+| < CHANGESET : "changeset:" > : FRAGMENT_STRING_STATE
+| < TIMESTAMP : "timestamp:" > : FRAGMENT_STRING_STATE
+| < HASROLE : "hasRole:" > : FRAGMENT_STRING_STATE
+| < NTH : "nth:" > : FRAGMENT_STRING_STATE
+| < NTHPERCENT : "nth%:" > : FRAGMENT_STRING_STATE
+}
+
+< FRAGMENT_STRING_STATE >
+TOKEN:
+{
+  < NODE : "node" >
+| < WAY : "way" >
+| < RELATION : "relation" >
+| < FRAGMENT_LITERAL : (~[ "\"", "\\", "|", " ", "\t", "<", "=", ">", "(", ")" ])+ > 
+}
+
+< DEFAULT >
+TOKEN :
+{ 
+  < CLOSED : "closed" >
+| < UNTAGGED : "untagged" >
+| < NEW : "new" >
+| < MODIFIED : "modified" > 
+| < DELETED : "deleted" > 
+| < SELECTED : "selected" > 
+| < INCOMPLETE : "incomplete" >
+| < INVIEW : "inview" >
+| < ALLINVIEW : "allinview" >
+| < INDOWNLOADEDAREA : "indownloadedarea" >
+| < ALLINDOWNLOADEDAREA : "allindownloadedarea" >
+| < CHILD : "child" >
+| < PARENT : "parent" >
+| < LITERAL : (~[ "-", "\"", "\\", "|", " ", "\t", "<", "=", ">", ":", "(", ")" ])+ >
+}
+          
+< DEFAULT >
 TOKEN :
 {
   < BAR : "|" > : DEFAULT
@@ -137,7 +175,7 @@ TOKEN :
 | < DOUBLECOLON : ":" > : FRAGMENT_STRING_STATE
 }
 
-< DEFAULT, LITERAL_STRING_STATE >
+< DEFAULT >
 TOKEN :
 {
   < LPAREN : "(" >
@@ -157,83 +195,27 @@ TOKEN :
  */
 String literal() :
 {
-  StringBuilder builder = new StringBuilder();
+    Token t; 
 }
 {
-  (
-    getChar(builder)
-  )+
+  t = < LITERAL >
   {
-    return builder.toString().trim();
+    return t.image;
   }
 }
 
 /**
- * Add char to StringBuilder
- */
-void getChar(StringBuilder builder) :
-{
-  Token t;
-  String s;
-}
-{
-  (
-    (t = < CHAR >)
-    {
-      if (t.image.length() == 1)
-      {
-        // CHAR
-        builder.append(t.image.charAt(0));
-      }
-    }
-  | 
-    s = quotedLiteral()
-    {
-      builder.append(s);
-    }
-  )
-}
-
-/**
- * Match a value
+ * Match a fragment value
  */
 String fragmentLiteral() :
 {
-  StringBuilder builder = new StringBuilder();
-}
-{
-  (
-    getFragmentChar(builder)
-  )+
-  {
-    return builder.toString().trim();
-  }
-}
-
-/**
- * Add char to StringBuilder
- */
-void getFragmentChar(StringBuilder builder) :
-{
   Token t;
-  String s;
 }
 {
-  (
-    (t = < FRAGMENTCHAR >)
-    {
-      if (t.image.length() == 1)
-      {
-        // CHAR
-        builder.append(t.image.charAt(0));
-      }
-    }
-  | 
-    s = quotedLiteral()
-    {
-      builder.append(s);
-    }
-  )
+  t = < FRAGMENT_LITERAL >
+  {
+    return t.image;
+  }
 }
 
 /**
@@ -282,6 +264,20 @@ String quotedLiteral() :
   }
 }
 
+Token hasNot() :
+{
+  Token n = null;
+}
+{
+  (
+    n = < MINUS > 
+    (< WS >)*
+  )?
+  {
+    return n;
+  }
+}
+
 /**
  * This is fairly convoluted to avoid left recursion 
  */
@@ -289,168 +285,194 @@ Condition combination() :
 {
   Condition r1;
   Condition r2;
+  Condition r3;
   Condition result = null;
   Token not1 = null;
   Token not2 = null;
-  Token child = null;
+  Token not3 = null;
+  Token not4 = null;
+  Token t = null;
+  Token t2 = null;
+  boolean andOp = false;
 }
 {
+  (< WS >)*
   (
-    (< WS_COND >)*
+    // [-] CHILD | PARENT  combination
     (
+      not1 = hasNot()
       (
-        (
-        not1 = < MINUS >
-        )?
+        t = < CHILD >
+      | t = < PARENT >
+      )
+      (< WS >)+
+    )?
+    not2 = hasNot()
+    (
+      // match
+      LOOKAHEAD(match())
+      ( 
         (
           r1 = match()
         )
         {
-          result = r1;
-        }
-        (< WS_COND >)+ 
-        (
-        not2 = < MINUS >
-        )?
-        (
-          r2 = match()
-        )
-        {
-          result = new And(not(not1, r1), not(not2, r2));
+          result = not(not2, r1);
         }
       )
-    |
+    | 
+      // ( combination )
+      LOOKAHEAD( < LPAREN > combination() (< WS >)* < RPAREN >)
       (
-        (
-          (
-          not1 = < MINUS >
-          )?
-          (
-            r1 = match()
-          )
-          {
-            result = r1;
-          }
-          (
-            (
-              (< WS_COND >)+ 
-              < OR > 
-              (< WS_COND >)+
-            )
-          |
-            (
-              (< WS_COND >)* 
-              < BAR > 
-              (< WS_COND >)*
-            )
-          )
-          (
-          not2 = < MINUS >
-          )?
-          (
-            r2 = match()
-          )
-        )
-        {
-          result = new Or(not(not1, r1), not(not2, r2));
-        }
-      )
-    |
-      (
-        (
-        not1 = < MINUS >
-        )?
-        (
-          r1 = match()
-        )
-        {
-          result = not(not1, r1);
-        }
-      )
-    |
-      (
-        (
-          (
-          not1 = < MINUS >
-          )? 
+        ( 
           < LPAREN > 
           r1 = combination() 
-          (< WS_COND >)* 
+          (< WS >)* 
           < RPAREN >
         )
         {
-          result = not(not1, new Brackets(r1));
+          result = not(not2, new Brackets(r1));
         }
       )
     )
+  )
+  {
+    if (t != null)
+    {
+      result = not(not1, t.kind == CHILD ? new Child(result) : new Parent(result));
+    }
+  }
+  (
+    // result OR | AND [[-]CHILD | PARENT] [-] match | ( combination )
     (
       (
         (
-          (< WS_COND >)+ 
-          (
-          not2 = < MINUS >
-          )?
-          (
-            r2 = match()
-          |
-            (
-              (
-                < LPAREN > 
-                r2 = combination() 
-                (< WS_COND >)* 
-                < RPAREN >
-              )
-              {
-                r2 = new Brackets(r2);
-              }
-            )
-          )
-          {
-            result = new And(result, not(not2, r2));
-          }
+          (< WS >)+ 
+          < OR > 
+          (< WS >)+
         )
       |
         (
+          (< WS >)* 
+          < BAR > 
+          (< WS >)*
+        )
+      |
+        (
+          (< WS >)+
           (
-            (
-              (< WS_COND >)+ 
-              < OR > 
-              (< WS_COND >)+
-            )
-          |
-            (
-              (< WS_COND >)* 
-              < BAR > 
-              (< WS_COND >)*
-            )
-          )
-          (
-          not2 = < MINUS >
+            < AND > 
+            (< WS >)+
           )?
-          (
-            r2 = match()
-          |
-            (
-              (
-                < LPAREN > 
-                r2 = combination() 
-                (< WS_COND >)* 
-                < RPAREN >
-              )
-              {
-                r2 = new Brackets(r2);
-              }
-            )
-          )
         )
         {
-          result = new Or(result, not(not2, r2));
+          andOp = true;
         }
       )
-    )*
-  )
+      (
+        not3 = hasNot()
+        ( 
+          t2 = < CHILD >
+        | t2 = < PARENT >
+        ) 
+        (< WS >)+
+      )?
+      not4 = hasNot()
+      (
+        r2 = match()
+      | 
+        (
+          (
+            < LPAREN > 
+            r2 = combination() 
+            (< WS >)* 
+            < RPAREN >
+          )
+          {
+            r2 = new Brackets(r2);
+          }
+        )
+      )
+      {
+        r2 = not(not4, r2);
+        if (t2 != null)
+        {
+          r2 = not(not3, t2.kind == CHILD ? new Child(r2) : new Parent(r2));
+        }
+        if (andOp)
+        {
+          if (result instanceof Or) {
+            result = new Or(((Or) result).c1, new And(((Or) result).c2, r2));         
+          } else { 
+            result = new And(result, r2);
+          }
+        }
+        else
+        {
+          result = new Or(result, r2);
+        }
+        // as we loop here we need to reset these
+        t2 = null;
+        r2 = null;
+        not3 = null;
+        not4 = null;
+        andOp = false;
+      }
+    )
+  )*
   {
     return result;
+  }
+}
+
+Token functionWithArgument() :
+{
+  Token f = null;
+}
+{
+  (
+    f = < TYPE >
+  | f = < PRESET >
+  | f = < NODES >
+  | f = < WAYS >
+  | f = < TAGS >
+  | f = < MEMBERS >
+  | f = < ROLE >
+  | f = < AREASIZE >
+  | f = < WAYLENGTH >
+  | f = < USER >
+  | f = < ID >
+  | f = < VERSION >
+  | f = < CHANGESET >
+  | f = < TIMESTAMP >
+  | f = < HASROLE >
+  | f = < NTH >
+  | f = < NTHPERCENT >
+  )
+  {
+    return f;
+  }
+}
+
+Token functionWithoutArgument() :
+{
+  Token f = null;
+}
+{
+  (
+    f = < CLOSED >
+  | f = < UNTAGGED >
+  | f = < MODIFIED > 
+  | f = < NEW > 
+  | f = < DELETED >
+  | f = < SELECTED >
+  | f = < INCOMPLETE >
+  | f = < INVIEW >
+  | f = < ALLINVIEW >
+  | f = < INDOWNLOADEDAREA >
+  | f = < ALLINDOWNLOADEDAREA >
+  )
+  {
+    return f;
   }
 }
 
@@ -461,39 +483,64 @@ Condition match() :
   String s2 = null;
   boolean s2Quoted = false;
   Token op = null;
+  Token f1 = null;
+  Token f2 = null;
+  Token v = null;
 }
 {
   (
     (
+      LOOKAHEAD(quotedLiteral())
       (
         s1 = quotedLiteral()
       )
       {
         s1Quoted = true;
       }
-    | 
-      s1 = literal()
+    |
+      LOOKAHEAD(literal()) (
+        s1 = literal()
+      )
+    |
+      LOOKAHEAD(2, functionWithoutArgument(), { getToken(2).kind != LITERAL })
+      (
+        f1 = functionWithoutArgument()
+      )
+    |
+      LOOKAHEAD(functionWithArgument() (fragmentLiteral() | quotedLiteral() | < NODE > | < WAY > | < RELATION >))
+      (     
+        f1 = functionWithArgument()
+        (           s1 = fragmentLiteral()
+        | s1 = quotedLiteral()
+        | v = < NODE >
+        | v = < WAY >
+        | v = < RELATION >
+        )
+      )
     )
+    
     (
       (
         (
-          (< WS_COND >)*
+          (< WS >)*
           (
             op = < EQ >
           | op = < GT >
           | op = < LT >
           )
-          (< WS_COND >)*
+          (< WS >)*
         )
         (
-          s2 = literal()
-        |
           (
             s2 = quotedLiteral()
           )
           {
             s2Quoted = true;
           }
+        |
+          f2 = functionWithoutArgument()
+        |  
+          s2 = literal()
         )?
       )
     |
@@ -513,35 +560,56 @@ Condition match() :
     )?
   )
   {
-    if (op != null && ":".equals(op.image))
+    if (op == null || DOUBLECOLON == op.kind)
     {
-      if (s1Quoted)
+      if (f1 != null && (s1 != null || v != null))
+      {
+        switch (f1.kind)
+        {
+          case TYPE : return new ElementType(Type.valueOf(v.image.toUpperCase()));
+          case PRESET : return new Preset(s1);
+          case NODES : return new Nodes(s1);
+          case WAYS : return new Ways(s1);
+          case TAGS : return new Tags(s1);
+          case MEMBERS : return new Members(s1);
+          case ROLE : return new Role(s1);
+          case AREASIZE : return new AreaSize(s1);
+          case WAYLENGTH : return new WayLength(s1);
+          case USER : return new User(s1);
+          case ID : return new Id(Long.parseLong(s1));
+          case VERSION : return new Version(Long.parseLong(s1));
+          case CHANGESET : return new Changeset(Long.parseLong(s1));
+          case TIMESTAMP : return new ElementTimestamp(s1);
+          case HASROLE : return new HasRole(s1);
+          case NTH : unsupported(f1.image);
+          case NTHPERCENT : unsupported(f1.image);
+          default : unsupported(f1.image);
+        }
+      }
+      else if (op != null && DOUBLECOLON == op.kind && s2 != null)
       {
         return new ValueFragment(s1, s2);
       }
+      else if (f1 != null)
+      {
+        switch (f1.kind) { 
+          case CLOSED : return new Closed();
+          case UNTAGGED : return new Untagged();
+          case MODIFIED : 
+          case NEW : 
+          case DELETED : return new ElementState(ElementState.State.valueOf(f1.image.toUpperCase()));
+          case SELECTED : return new Selected();
+          case INCOMPLETE : return new Incomplete();
+          case INVIEW : return new Inview();
+          case ALLINVIEW : return new AllInview();
+          case INDOWNLOADEDAREA : return new InDownloadedArea();
+          case ALLINDOWNLOADEDAREA : return new AllInDownloadedArea();
+          default : unsupported(f1.image);
+        }  
+      }
       else
       {
-        switch (s1)
-        {
-          case "type" : return new ElementType(Type.valueOf(s2.toUpperCase()));
-          case "preset" : return new Preset(s2);
-          case "nodes" : return new Nodes(s2);
-          case "ways" : return new Ways(s2);
-          case "tags" : return new Tags(s2);
-          case "members" : return new Members(s2);
-          case "role" : return new Role(s2);
-          case "areasize" : return new AreaSize(s2);
-          case "waylength" : return new WayLength(s2);
-          case "user" : return new User(s2);
-          case "id" : return new Id(Long.parseLong(s2));
-          case "version" : return new Version(Long.parseLong(s2));
-          case "changeset" : return new Changeset(Long.parseLong(s2));
-          case "timestamp" : return new ElementTimestamp(s2);
-          case "hasRole" : return new HasRole(s2);
-          case "nth" : unsupported(s1);
-          case "nth%" : unsupported(s1);
-          default : return new ValueFragment(s1, s2);
-        }
+        return new Match(s1, null, null, regexp);
       }
     }
     else
@@ -550,23 +618,26 @@ Condition match() :
       {
         return new Match(s1, op == null ? null : op.image, s2, regexp);
       }
-      else
+      else if (f2 != null)
       {
-        switch (s1)
+        switch (f2.kind)
         {
-          case "closed" : return new Closed();
-          case "untagged" : return new Untagged();
-          case "modified" : 
-          case "new" : 
-          case "deleted" : return new ElementState(ElementState.State.valueOf(s1.toUpperCase()));
-          case "selected" : return new Selected();
-          case "incomplete" : return new Incomplete();
-          case "inview" : return new Inview();
-          case "allinview" : return new AllInview();
-          case "indownloadedarea" : return new InDownloadedArea();
-          case "allindownloadedarea" : return new AllInDownloadedArea();
-          default : return new Match(s1, null, null, regexp);
+          case CLOSED : return new Closed();
+          case UNTAGGED : return new Untagged();
+          case MODIFIED : 
+          case NEW : 
+          case DELETED : return new ElementState(ElementState.State.valueOf(f2.image.toUpperCase()));
+          case SELECTED : return new Selected();
+          case INCOMPLETE : return new Incomplete();
+          case INVIEW : return new Inview();
+          case ALLINVIEW : return new AllInview();
+          case INDOWNLOADEDAREA : return new InDownloadedArea();
+          case ALLINDOWNLOADEDAREA : return new AllInDownloadedArea();
+          default : unsupported(f2.image);
         }
+      }
+      else {
+        return new Match(s1, null, null, regexp);
       }
     }
   }

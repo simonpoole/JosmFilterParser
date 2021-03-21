@@ -1,6 +1,8 @@
 package ch.poole.osm.josmfilterparser;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -177,4 +179,41 @@ public interface Meta {
      * @return true if in view
      */
     boolean isAllInDownloadedArea();
+    
+    /**
+     * Check if the current element is a child of an element
+     * 
+     * @param type type of the element
+     * @param element the meta interface to the element
+     * @param parents a List of elements
+     * @return true if element is a child
+     */
+    default boolean isChild(@NotNull Type type, @NotNull Meta element, @NotNull List<Object> parents) {
+        return false;
+    }
+
+    /**
+     * Check if the current element is a parent of an element
+     * 
+     * @param type type of the element
+     * @param element the meta interface to the element
+     * @param children a List of elements
+     * @return true if element is a parent
+     */
+    default boolean isParent(@NotNull Type type, @NotNull Meta meta, @NotNull List<Object> children) {
+        return false;
+    }
+    
+    /**
+     * Return a List of Elements that match the condition c
+     * 
+     * This is necessary so that we can cache these results in the caller
+     * 
+     * @param c the Condition
+     * @return a List of elements
+     */
+    @NotNull
+    default List<Object> getMatchingElements(@NotNull Condition c) {
+        return new ArrayList<>();
+    }
 }

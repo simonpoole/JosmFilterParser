@@ -14,9 +14,9 @@
 0	test1 < test2
 0	type:way
 1
-0	type:modified
-0	type:deleted
-0	type:new
+0	modified
+0	deleted
+0	new
 0	closed
 0	tags:1-3
 0	tags:-3
@@ -73,3 +73,17 @@
 0	railway OR route = ferry
 0	"addr:housenumber" OR "addr:interpolation" OR "addr:housename"
 0	waterway -waterway:riverbank
+0	members:0
+0	child (building OR highway)
+0	-child (building OR highway)
+0	node child highway
+0	node -child highway
+0	node child -highway
+0	node child (building OR highway)
+0	test1 test2
+0	test1 test2 OR test3
+0	test1 (test2 OR test3)
+0	test1 (test2 test3)
+0	test1 (test2 test3)
+0	(nested (parentheses must) work)
+0	-test

@@ -37,6 +37,8 @@ public class TestMeta implements Meta {
     boolean      isAllInview;
     boolean      isInDownloadedArea;
     boolean      isAllInDownloadedArea;
+    boolean      isChild;
+    boolean      isParent;
 
     @Override
     public String getUser() {
@@ -146,5 +148,15 @@ public class TestMeta implements Meta {
     @Override
     public boolean isAllInDownloadedArea() {
         return isAllInDownloadedArea;
+    }
+    
+    @Override
+    public boolean isChild(@NotNull Type type, @NotNull Meta element, List<Object> parents) {
+        return isChild;
+    }
+    
+    @Override
+    public boolean isParent(@NotNull Type type, @NotNull Meta meta, @NotNull List<Object> children) {
+        return isParent;
     }
 }
