@@ -28,6 +28,7 @@ This is what the parser currently supports not necessarily what can be supported
 |✅| **-**_key_**:**_valuefragment_      |              |
 |✅| _key_                              |              | 
 |✅| _key_**=**_value_                  |              | 
+|✅| _key_**~**_regexp_                 | in JOSM since 16260 |
 |✅| *key*__=*__                         |              | 
 |✅| _key_**=**                          |              | 
 |✅| __*=__*value*                       |              | 
@@ -52,7 +53,7 @@ This is what the parser currently supports not necessarily what can be supported
 |✅|__timestamp:__                       |              | 
 |✅|__nodes:__*range*                    |              |
 |✅|__ways:__*range*                     |              |
-|✅|__members:__*range*                  | extension    |
+|✅|__members:__*range*                  | in JOSM since 16581 |
 |✅|__tags:__*range*                     |              | 
 |✅|__role:__*role*                      |              |
 |✅|__areasize:__*range*                 |              | 
