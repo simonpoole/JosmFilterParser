@@ -3,18 +3,17 @@
 
 plugins {
     id "ca.coglinc.javacc" version "2.4.0"
-    id "com.jfrog.bintray" version "1.8.4"
 }
 
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: "jacoco"
-apply plugin: 'maven'
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 
-version = '0.4.1'
+version = '0.5.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -40,6 +39,7 @@ compileTestJava {
 javadoc {
     source mainSource, testSource
     exclude '**/*.jj'
+    failOnError = false
 }
 
 task sourcesJar(type: Jar) {
@@ -65,6 +65,11 @@ build.dependsOn replaceVersion
 // test input may change and require rerunning the tests
 test.inputs.files("test-data/filter.txt","test-data/filter.txt-result")
 
+ext {
+    repoUrl = 'https://github.com/simonpoole/JosmFilterParser.git'
+    spdxId = 'BSD 3-Clause'
+}
+
 publishing {
     publications {
         Release(MavenPublication) {
@@ -73,28 +78,43 @@ publishing {
             artifactId 'JosmFilterParser'
             artifact sourcesJar
             artifact javadocJar
+            pom {
+                name = artifactId
+                description = 'This is a simple parser for the JOSM search/filter language' 
+                url = 'https://github.com/simonpoole/JosmFilterParser'
+                scm {
+                    url = repoUrl
+                }
+                licenses {
+                    license {
+                        name = spdxId
+                        url = 'https://raw.githubusercontent.com/simonpoole/JosmFilterParser/master/LICENCE.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'Simon Poole'
+                    }
+                }
+            }
+            repositories {
+                maven {
+                    name = 'sonatype'
+                    credentials {
+                        username ossrhUsername
+                        password ossrhPassword
+                    }
+                    def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                    def snapshotsRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                    url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                }
+            }
         }
     }
 }
 
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
-    publications = ['Release']
-    pkg {
-        repo = 'osm'
-        name = 'JosmFilterParser'
-        licenses = ['BSD 3-Clause']
-        vcsUrl = 'https://github.com/simonpoole/JosmFilterParser.git'
-        version {
-            name = "${project.version}"
-            released  = new Date()
-            gpg {
-                sign = true //Determines whether to GPG sign the files. The default is false
-                passphrase = System.getenv('BINTRAY_PASSPHRASE')
-            }
-        }
-    }
+signing {
+    sign publishing.publications.Release
 }
 
 // In this section you declare where to find the dependencies of your project
@@ -105,8 +125,7 @@ repositories {
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    compile 'org.jetbrains:annotations:15.0'
+    compileOnly 'org.jetbrains:annotations:15.0'
+    testCompileOnly 'org.jetbrains:annotations:15.0'
     testCompile 'junit:junit:4.12'
 }
-
-
