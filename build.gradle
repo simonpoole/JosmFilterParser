@@ -13,7 +13,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 
-version = '0.5.1'
+version = '0.5.2'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -101,8 +101,8 @@ publishing {
                 maven {
                     name = 'sonatype'
                     credentials {
-                        username ossrhUsername
-                        password ossrhPassword
+                        username System.getenv('SONATYPE_USER')
+                        password System.getenv('SONATYPE_PASSWORD')
                     }
                     def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
                     def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
