@@ -36,6 +36,12 @@ compileTestJava {
     source javaccOutput,mainSource,testSource
 }
 
+jjdoc {
+    inputDirectory = file('src/main/java/')
+    outputDirectory = file(project.buildDir.absolutePath + '/generated/jjdoc')
+    arguments = [text: 'true']
+}
+
 javadoc {
     source mainSource, testSource
     exclude '**/*.jj'
