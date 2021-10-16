@@ -420,6 +420,7 @@ Condition combination() :
       }
     )
   )*
+  (< WS >)*
   {
     return result;
   }

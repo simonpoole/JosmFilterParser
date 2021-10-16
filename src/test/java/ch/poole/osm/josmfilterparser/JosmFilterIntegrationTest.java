@@ -49,6 +49,20 @@ public class JosmFilterIntegrationTest {
     }
 
     /**
+     * Test trailing whitespace
+     */
+    @Test
+    public void whitespaceTest() {
+
+        Map<String, String> tags = new HashMap<>();
+        tags.put("test1", "grrr");
+        tags.put("test", "grrr");
+
+        Condition c = parse("test1=* ", false);
+        assertTrue(c.eval(Type.NODE, null, tags));
+    }
+
+    /**
      * Test tag matching with regexps
      */
     @Test
