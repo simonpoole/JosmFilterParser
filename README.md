@@ -35,8 +35,10 @@ This is what the parser currently supports not necessarily what can be supported
 |✅| _key_**>**_value_                  |              | 
 |✅| _key_**<**_value_                  |              | 
 |✅|_expr_ _expr_                        |              |
+|✅|_expr_ __AND__ _expr_               | undocumented in JOSM |
 |✅|_expr_ __&#124;__ _expr_             |              | 
 |✅|_expr_ __OR__ _expr_                 |              | 
+||_expr_ __XOR__ _expr_                 | undocumented in JOSM | 
 |✅|__-__*expr*                           |              | 
 |✅|__(__*expr*__)__                      |              | 
 |✅|__type:node__                        |              | 
