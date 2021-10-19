@@ -87,3 +87,5 @@
 0	test1 (test2 test3)
 0	(nested (parentheses must) work)
 0	-test
+0	tourism XOR amenity
+0	natural = peak OR natural = volcano XOR mountain_pass = yes OR natural = water

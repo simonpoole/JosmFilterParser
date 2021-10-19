@@ -113,6 +113,7 @@ TOKEN [IGNORE_CASE]:
 {
   < AND : "AND" >
 | < OR : "OR" >
+| < XOR : "XOR" >
 | < MINUS : "-" >
 }
 
@@ -296,6 +297,7 @@ Condition combination() :
   Token t = null;
   Token t2 = null;
   boolean andOp = false;
+  boolean xorOp = false;
 }
 {
   (< WS >)*
@@ -344,7 +346,7 @@ Condition combination() :
     }
   }
   (
-    // result OR | AND [[-]CHILD | PARENT] [-] match | ( combination )
+    // result OR | AND | XOR [[-]CHILD | PARENT] [-] match | ( combination )
     (
       (
         (
@@ -358,6 +360,15 @@ Condition combination() :
           < BAR > 
           (< WS >)*
         )
+      |
+        (
+          (< WS >)+ 
+          < XOR > 
+          (< WS >)+
+        )
+        {
+          xorOp = true;
+        }
       |
         (
           (< WS >)+
@@ -404,8 +415,18 @@ Condition combination() :
         {
           if (result instanceof Or) {
             result = new Or(((Or) result).c1, new And(((Or) result).c2, r2));         
+          } else if (result instanceof Xor) {
+            result = new Xor(((Xor) result).c1, new And(((Xor) result).c2, r2));         
           } else { 
             result = new And(result, r2);
+          }
+        }
+        else if (xorOp)
+        {
+          if (result instanceof Or) {
+            result = new Or(((Or) result).c1, new Xor(((Or) result).c2, r2));         
+          } else {
+            result = new Xor(result, r2);
           }
         }
         else
@@ -418,6 +439,7 @@ Condition combination() :
         not3 = null;
         not4 = null;
         andOp = false;
+        xorOp = false;
       }
     )
   )*

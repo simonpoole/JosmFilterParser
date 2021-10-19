@@ -241,6 +241,48 @@ public class JosmFilterIntegrationTest {
         tags.put("test2", "grrr");
         assertTrue(c.eval(Type.NODE, null, tags));
     }
+    
+    /**
+     * Test logical XOR of conditions
+     */
+    @Test
+    public void xorTest() {
+
+        Map<String, String> tags = new HashMap<>();
+        tags.put("test1", "grrr");
+        tags.put("test", "grrr");
+
+        Condition c = parse("test1 xor test2", false);
+        assertTrue(c.eval(Type.NODE, null, tags));
+
+        c = parse("test1=grrr xor test2=grrr", false);
+        assertTrue(c.eval(Type.NODE, null, tags));
+
+        c = parse("test1=grrr xor test=grrr", false);
+        assertFalse(c.eval(Type.NODE, null, tags));
+        
+        c = parse("test1 xor test", false);
+        assertFalse(c.eval(Type.NODE, null, tags));
+        
+        
+        // use "XOR"
+        tags = new HashMap<>();
+        tags.put("test1", "grrr");
+        tags.put("test", "grrr");
+
+        c = parse("test1 XOR test2", false);
+        assertTrue(c.eval(Type.NODE, null, tags));
+
+        c = parse("test1=grrr XOR test2=grrr", false);
+        assertTrue(c.eval(Type.NODE, null, tags));
+        
+        c = parse("test1=grrr XOR test=grrr", false);
+        assertFalse(c.eval(Type.NODE, null, tags));
+
+        c = parse("test1 XOR test", false);
+        assertFalse(c.eval(Type.NODE, null, tags));
+    }
+
 
     /**
      * Test testing for type of OSM element
@@ -617,12 +659,32 @@ public class JosmFilterIntegrationTest {
         assertTrue(c instanceof Or);
         assertTrue(((Or) c).c1 instanceof And);
         assertFalse(c.eval(Type.NODE, null, tags));
+        
         c = parse("test1 test2 | test", false);
         assertTrue(c instanceof Or);
         assertTrue(c.eval(Type.NODE, null, tags));
+        
         c = parse("test1 | test2 test", false);
         assertTrue(c instanceof Or);
         assertTrue(((Or) c).c2 instanceof And);
+        assertTrue(c.eval(Type.NODE, null, tags));
+        
+        c = parse("test1 test2 xor test3", false);
+        assertTrue(c instanceof Xor);
+        assertTrue(((Xor) c).c1 instanceof And);
+        
+        c = parse("test1 xor test2 test", false);
+        assertTrue(c instanceof Xor);
+        assertTrue(((Xor) c).c2 instanceof And);
+        assertTrue(c.eval(Type.NODE, null, tags));
+        
+        c = parse("test1 xor test2 or test3", false);
+        assertTrue(c instanceof Or);
+        assertTrue(((Or) c).c1 instanceof Xor);
+        
+        c = parse("test1 or test2 xor test", false);
+        assertTrue(c instanceof Or);
+        assertTrue(((Or) c).c2 instanceof Xor);
         assertTrue(c.eval(Type.NODE, null, tags));
     }
 
