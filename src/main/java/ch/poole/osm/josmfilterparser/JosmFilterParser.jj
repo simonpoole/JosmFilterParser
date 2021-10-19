@@ -28,7 +28,7 @@ options
   static = false;
 
   LOOKAHEAD= 5;
-  IGNORE_CASE = true;
+  IGNORE_CASE = false;
   FORCE_LA_CHECK = true;
   CHOICE_AMBIGUITY_CHECK = 2;
   OTHER_AMBIGUITY_CHECK = 2;
@@ -109,7 +109,7 @@ TOKEN :
 }
 
 < DEFAULT >
-TOKEN :
+TOKEN [IGNORE_CASE]:
 {
   < AND : "AND" >
 | < OR : "OR" >

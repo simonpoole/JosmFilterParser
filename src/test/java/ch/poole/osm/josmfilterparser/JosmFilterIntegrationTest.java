@@ -174,6 +174,34 @@ public class JosmFilterIntegrationTest {
 
         c = parse("test1 | test", false);
         assertTrue(c.eval(Type.NODE, null, tags));
+        
+        // use "or"
+        tags = new HashMap<>();
+        tags.put("test1", "grrr");
+        tags.put("test", "grrr");
+
+        c = parse("test1 or test2", false);
+        assertTrue(c.eval(Type.NODE, null, tags));
+
+        c = parse("test1=grrr or test2=grrr", false);
+        assertTrue(c.eval(Type.NODE, null, tags));
+
+        c = parse("test1 or test", false);
+        assertTrue(c.eval(Type.NODE, null, tags));
+        
+        // use "OR"
+        tags = new HashMap<>();
+        tags.put("test1", "grrr");
+        tags.put("test", "grrr");
+
+        c = parse("test1 OR test2", false);
+        assertTrue(c.eval(Type.NODE, null, tags));
+
+        c = parse("test1=grrr OR test2=grrr", false);
+        assertTrue(c.eval(Type.NODE, null, tags));
+
+        c = parse("test1 OR test", false);
+        assertTrue(c.eval(Type.NODE, null, tags));
     }
 
     /**
@@ -186,6 +214,28 @@ public class JosmFilterIntegrationTest {
         tags.put("test1", "grrr");
         tags.put("test", "grrr");
 
+        assertFalse(c.eval(Type.NODE, null, tags));
+
+        tags.put("test2", "grrr");
+        assertTrue(c.eval(Type.NODE, null, tags));
+        
+        // use "and"
+        c = parse("test1 and test2", false);
+        tags = new HashMap<>();
+        tags.put("test1", "grrr");
+        tags.put("test", "grrr");
+        
+        assertFalse(c.eval(Type.NODE, null, tags));
+
+        tags.put("test2", "grrr");
+        assertTrue(c.eval(Type.NODE, null, tags));
+        
+        // use "AND"
+        c = parse("test1 AND test2", false);
+        tags = new HashMap<>();
+        tags.put("test1", "grrr");
+        tags.put("test", "grrr");
+        
         assertFalse(c.eval(Type.NODE, null, tags));
 
         tags.put("test2", "grrr");
@@ -278,6 +328,18 @@ public class JosmFilterIntegrationTest {
         TestMeta meta = new TestMeta();
         meta.state = ElementState.State.MODIFIED;
         assertTrue(c.eval(Type.WAY, meta, tags));
+    }
+    
+    /**
+     * Test that operators outside of AND/OR are case sensitive
+     */
+    @Test
+    public void caseSensitiveTest() {
+        Condition c = parse("modified", false);
+        assertTrue(c instanceof ElementState);
+        
+        c = parse("mOdified", false);
+        assertTrue(c instanceof Match);
     }
 
     /**
