@@ -20,7 +20,7 @@ public abstract class Range implements Condition {
      * @param range the range ( "-" is the from - to separator)
      * @throws ParseException if the range can't be parsed
      */
-    public Range(@NotNull String range) throws ParseException {
+    protected Range(@NotNull String range) throws ParseException {
         if (range.indexOf('-') >= 0) {
             String[] lowerUpper = range.split("-", 2);
             if (lowerUpper.length != 2) {
@@ -43,7 +43,11 @@ public abstract class Range implements Condition {
             }
 
         } else {
-            exact = Integer.parseInt(range);
+            try {
+                exact = Integer.parseInt(range);
+            } catch (NumberFormatException e) {
+                throw new ParseException("Illegal integer " + range);
+            }
         }
     }
 
