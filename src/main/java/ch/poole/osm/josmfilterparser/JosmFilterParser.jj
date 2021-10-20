@@ -581,6 +581,8 @@ Condition match() :
           }
         | 
           s2 = fragmentLiteral()
+        |
+          (< WS >)*  
         )
       )
     )?
@@ -635,7 +637,7 @@ Condition match() :
       }
       else
       {
-        return new Match(s1, null, null, regexp);
+        return new Match(s1, op == null ? null : op.image, null, regexp);
       }
     }
     else

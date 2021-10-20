@@ -13,6 +13,7 @@ public class Match implements Condition {
     private static final String LT           = "<";
     private static final String GT           = ">";
     private static final String EQUALS       = "=";
+    private static final String DOUBLECOLON  = ":";
     private static final String TILDE        = "~";
     private static final String ASTERIX      = "*";
     private final String        key;
@@ -29,8 +30,6 @@ public class Match implements Condition {
         /**
          * Evaluate against against concrete tags
          * 
-         * @param type type of object
-         * @param meta meta information for the object
          * @param tags the objects tags
          * @return true if it matched
          */
@@ -64,6 +63,8 @@ public class Match implements Condition {
             } else if (TILDE.equals(op)) {
                 evaluator = this::tagRegexpValueMatch;
                 valuePattern = Pattern.compile(value);
+            } else if (DOUBLECOLON.equals(op) && value == null) {
+                evaluator = this::exactKeyMatch;
             } else {
                 if (regexp) {
                     evaluator = this::tagRegexpMatch;
@@ -159,6 +160,21 @@ public class Match implements Condition {
     }
 
     /**
+     * Look for an exact key match
+     * 
+     * @param tags a map holding the tags
+     * @return true if there is a match
+     */
+    private boolean exactKeyMatch(@NotNull Map<String, String> tags) {
+        for (String k : tags.keySet()) {
+            if (k.equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Check if a value comparison hold trues for the tags
      * 
      * @param tags a map holding the tags
@@ -197,7 +213,7 @@ public class Match implements Condition {
      * Add quotes to a string if necessary
      * 
      * @param text the string
-     * @return a potentialyl quoted string
+     * @return a potentially quoted string
      */
     public static String quote(@NotNull String text) {
         if (needsQuotes.matcher(text).matches()) {
