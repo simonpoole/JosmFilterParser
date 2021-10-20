@@ -89,3 +89,4 @@ test1 (test2 AND test3)
 - test
 tourism XOR amenity
 natural=peak OR natural=volcano XOR mountain_pass=yes OR natural=water
+oneway?

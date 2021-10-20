@@ -10,21 +10,24 @@ import org.jetbrains.annotations.Nullable;
 
 public class Match implements Condition {
 
-    private static final String LT           = "<";
-    private static final String GT           = ">";
-    private static final String EQUALS       = "=";
-    private static final String DOUBLECOLON  = ":";
-    private static final String TILDE        = "~";
-    private static final String ASTERIX      = "*";
-    private final String        key;
-    private final String        value;
-    private final String        op;
-    private Double              numericValue = null;
-    private AlphanumComparator  comparator   = null;
-    private boolean             keyAsterix;
-    private boolean             valueAsterix;
-    private Pattern             keyPattern;
-    private Pattern             valuePattern;
+    private static final String   LT           = "<";
+    private static final String   GT           = ">";
+    private static final String   EQUALS       = "=";
+    private static final String   DOUBLECOLON  = ":";
+    private static final String   QUESTIONMARK = "?";
+    private static final String   TILDE        = "~";
+    private static final String   ASTERIX      = "*";
+    private static final String[] truthy       = { "true", "yes", "1", "on" };
+
+    private final String       key;
+    private final String       value;
+    private final String       op;
+    private Double             numericValue = null;
+    private AlphanumComparator comparator   = null;
+    private boolean            keyAsterix;
+    private boolean            valueAsterix;
+    private Pattern            keyPattern;
+    private Pattern            valuePattern;
 
     interface Eval {
         /**
@@ -65,6 +68,8 @@ public class Match implements Condition {
                 valuePattern = Pattern.compile(value);
             } else if (DOUBLECOLON.equals(op) && value == null) {
                 evaluator = this::exactKeyMatch;
+            } else if (QUESTIONMARK.equals(op) && value == null) {
+                evaluator = this::booleanValueMatch;
             } else {
                 if (regexp) {
                     evaluator = this::tagRegexpMatch;
@@ -78,7 +83,9 @@ public class Match implements Condition {
                     valueAsterix = ASTERIX.equals(value);
                 }
             }
-        } catch (PatternSyntaxException psex) {
+        } catch (
+
+        PatternSyntaxException psex) {
             throw new ParseException(psex.getLocalizedMessage());
         }
     }
@@ -175,6 +182,36 @@ public class Match implements Condition {
     }
 
     /**
+     * Check for a "true" boolean value
+     * 
+     * @param tags a map holding the tags
+     * @return true if there is a match
+     */
+    private boolean booleanValueMatch(@NotNull Map<String, String> tags) {
+        for (Entry<String, String> e : tags.entrySet()) {
+            if (e.getKey().equals(key)) {
+                return isTruthy(e.getValue());
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if value is in a list of "true" equivalent strings
+     * 
+     * @param value value to check
+     * @return true if value is "true"
+     */
+    private boolean isTruthy(@NotNull String value) {
+        for (String t : truthy) {
+            if (t.equalsIgnoreCase(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Check if a value comparison hold trues for the tags
      * 
      * @param tags a map holding the tags
@@ -232,6 +269,8 @@ public class Match implements Condition {
 
     @Override
     public String toString() {
-        return quote(key) + (op != null ? " " + op : "") + (value != null ? " " + quote(value) : "");
+        boolean hasOp = op != null;
+        String space = hasOp && (op.equals(DOUBLECOLON) || op.equals(QUESTIONMARK)) ? "" : " ";
+        return quote(key) + (hasOp ? space + op : "") + (value != null ? " " + quote(value) : "");
     }
 }

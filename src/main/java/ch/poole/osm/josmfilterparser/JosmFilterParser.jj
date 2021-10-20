@@ -145,7 +145,7 @@ TOKEN:
   < NODE : "node" >
 | < WAY : "way" >
 | < RELATION : "relation" >
-| < FRAGMENT_LITERAL : (~[ "\"", "\\", "|", " ", "\t", "<", "=", ">", "~", "(", ")" ])+ > 
+| < FRAGMENT_LITERAL : (~[ "\"", "\\", "|", " ", "\t", "<", "=", ">", "~", "(", ")", "?" ])+ > 
 }
 
 < DEFAULT >
@@ -164,7 +164,7 @@ TOKEN :
 | < ALLINDOWNLOADEDAREA : "allindownloadedarea" >
 | < CHILD : "child" >
 | < PARENT : "parent" >
-| < LITERAL : (~[ "-", "\"", "\\", "|", " ", "\t", "<", "=", ">", "~", ":", "(", ")" ])+ >
+| < LITERAL : (~[ "-", "\"", "\\", "|", " ", "\t", "<", "=", ">", "~", ":", "(", ")", "?" ])+ >
 }
           
 < DEFAULT >
@@ -175,6 +175,7 @@ TOKEN :
 | < GT : ">" > : DEFAULT
 | < LT : "<" > : DEFAULT
 | < TILDE : "~" > : DEFAULT
+| < QUESTIONMARK : "?" > : DEFAULT
 | < DOUBLECOLON : ":" > : FRAGMENT_STRING_STATE
 }
 
@@ -585,10 +586,15 @@ Condition match() :
           (< WS >)*  
         )
       )
+    |
+      (
+        op = < QUESTIONMARK >
+        (< WS >)*  
+      )
     )?
   )
   {
-    if (op == null || DOUBLECOLON == op.kind)
+    if (op == null || DOUBLECOLON == op.kind || QUESTIONMARK == op.kind)
     {
       if (f1 != null && (s1 != null || v != null))
       {

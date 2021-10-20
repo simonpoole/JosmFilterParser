@@ -327,6 +327,26 @@ public class JosmFilterIntegrationTest {
     }
 
     /**
+     * Test boolean value matching
+     */
+    @Test
+    public void booleanValues() {
+        Condition c;
+        Map<String, String> tags = new HashMap<>();
+        tags.put("test", "true");
+        c = parse("test?", false);
+        assertTrue(c.eval(Type.NODE, null, tags));
+        tags.put("test", "1");
+        assertTrue(c.eval(Type.NODE, null, tags));
+        tags.put("test", "yes");
+        assertTrue(c.eval(Type.NODE, null, tags));
+        tags.put("test", "on");
+        assertTrue(c.eval(Type.NODE, null, tags));
+        tags.put("test", "false");
+        assertFalse(c.eval(Type.NODE, null, tags));
+    }
+
+    /**
      * Test OSM id matching
      */
     @Test
