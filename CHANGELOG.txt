@@ -1,0 +1,32 @@
+
+0.6.0:
+
+- Add change log
+- Add boolean value matching
+- Support exact key match
+- Make Range a bit more robust and add specific test
+- Implement XOR
+- Just make AND, OR case insensitive
+- Document AND and XOR
+
+0.5.3:
+
+- Update readme
+- Bump version
+- Ignore trailing whitespace
+- Add badges
+- Fail on sonar fail
+  Remove travis config, add sonar scanning to actions
+- Use environment instead of gradle vars for credentials
+
+0.5.1:
+ 
+- Fix broken jar, rename github actions file
+- Add dummy gradle.properties for CI
+- Fix snapshot url
+
+0.5.0:
+
+- Use sonatype/maven central as binary repository
+- Support for ~operator to match with regexps
+- Re-factor parser to be more conventional

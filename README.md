@@ -26,9 +26,9 @@ This is what the parser currently supports not necessarily what can be supported
 |✅| __"Baker Street"__                 |              | 
 |✅| _key_**:**_valuefragment_          |              |
 |✅| **-**_key_**:**_valuefragment_      |              |
-|| _key_**:**                           | undocumented in JOSM |
+|✅| _key_**:**                           | undocumented in JOSM |
 |✅| _key_                              |              | 
-|| _key_**?**                           | undocumented in JOSM |
+|✅| _key_**?**                           | undocumented in JOSM |
 |✅| _key_**=**_value_                  |              | 
 |✅| _key_**~**_regexp_                 | in JOSM since 16260 |
 |✅| *key*__=*__                         |              | 
@@ -80,6 +80,8 @@ This is what the parser currently supports not necessarily what can be supported
 
 Version 0.3.0 and later optionally supports regexps instead of the * wildcard.
 
+Backslash style quoting is supported in quote strings for backslash and double quotes, it is not supported in unquoted strings.
+
 ## Including in your project
 
 You can either download the jar from github or add the following to your build.gradle
@@ -94,6 +96,6 @@ You can either download the jar from github or add the following to your build.g
 	
 	dependencies {
 	    ...
-	    compile 'ch.poole.osm:JosmFilterParser:0.5.3'
+	    compile 'ch.poole.osm:JosmFilterParser:0.6.0'
 	    ...
 	}
