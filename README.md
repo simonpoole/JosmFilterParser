@@ -82,6 +82,8 @@ Version 0.3.0 and later optionally supports regexps instead of the * wildcard.
 
 Backslash style quoting is supported in quote strings for backslash and double quotes, it is not supported in unquoted strings.
 
+More documentation on the grammar can be found in the [documentation repository](https://github.com/simonpoole/JosmFilterDoc).
+
 ## Including in your project
 
 You can either download the jar from github or add the following to your build.gradle
