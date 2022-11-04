@@ -14,9 +14,14 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 
-version = '0.7.1'
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+version = '0.7.2'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withJavadocJar()
+    withSourcesJar()
+}
 
 ext {
     javaccOutput = file(project.buildDir.absolutePath + '/generated/javacc/ch/poole/osm/josmfilterparser')
@@ -35,23 +40,6 @@ compileJava {
 
 compileTestJava {
     source javaccOutput,mainSource,testSource
-}
-
-javadoc {
-    source mainSource, testSource
-    exclude '**/*.jj'
-    failOnError = false
-}
-
-task sourcesJar(type: Jar) {
-    from mainSource, testSource
-    classifier = 'sources'
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-    //	options.encoding = 'UTF-8'
 }
 
 jacocoTestReport {
@@ -90,9 +78,9 @@ ext {
 publishing {
     publications {
         Release(MavenPublication) {
-            from components.java
             groupId 'ch.poole.osm'
             artifactId 'JosmFilterParser'
+            artifact jar
             artifact sourcesJar
             artifact javadocJar
             pom {
