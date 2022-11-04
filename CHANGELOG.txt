@@ -1,3 +1,7 @@
+0.7.0:
+
+- Add link to documentation repo
+- Add ElementState.UNCHANGED to allow implementations of Meta to be consistent
 
 0.6.0:
 

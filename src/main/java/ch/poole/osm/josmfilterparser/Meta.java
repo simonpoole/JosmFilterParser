@@ -117,7 +117,7 @@ public interface Meta {
     /**
      * Check if the element is selected
      * 
-     * @return
+     * @return true if selected
      */
     boolean isSelected();
 
@@ -142,6 +142,7 @@ public interface Meta {
      * Check if the object matches with a preset or a preset group
      * 
      * @param preset the path to the preset or group
+     * @return true if the object matches
      */
     boolean matchesPreset(@NotNull Object preset);
 
@@ -196,7 +197,7 @@ public interface Meta {
      * Check if the current element is a parent of an element
      * 
      * @param type type of the element
-     * @param element the meta interface to the element
+     * @param meta the meta interface to the element
      * @param children a List of elements
      * @return true if element is a parent
      */
