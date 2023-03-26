@@ -30,4 +30,9 @@ public class ElementState implements Condition {
     public String toString() {
         return elementState.toString().toLowerCase();
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
 }

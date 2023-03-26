@@ -49,6 +49,7 @@ public class ElementTimestamp implements Condition {
      * Parse a date using the very 2nd system syndromish
      * 
      * @param datetime the String to parse
+     * @return seconds since the epoch
      */
     public static long parseDateTime(@NotNull String datetime) throws DateTimeParseException {
         TemporalAccessor ta = inputFormat.parseBest(datetime, LocalDateTime::from, LocalDate::from, YearMonth::from, Year::from);
@@ -80,5 +81,10 @@ public class ElementTimestamp implements Condition {
             result.append(LocalDateTime.ofEpochSecond(upper, 0, ZoneOffset.UTC).format(outputFormat));
         }
         return result.toString();
+    }
+
+    @Override
+    public Condition toDNF() {
+        return this;
     }
 }

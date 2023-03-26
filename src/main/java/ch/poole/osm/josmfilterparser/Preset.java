@@ -29,4 +29,9 @@ public class Preset implements Condition {
     public String toString() {
         return "preset:\"" + presetPath + "\"";
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
 }

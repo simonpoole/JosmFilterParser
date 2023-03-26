@@ -4,11 +4,11 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class Not implements Condition {
+public class Not implements Condition, LogicalOperator {
     final Condition c1;
 
     /**
-     * Logically NOT of a condition
+     * Logical NOT of a condition
      * 
      * @param c1 the Condition
      */
@@ -22,7 +22,38 @@ public class Not implements Condition {
     }
 
     @Override
+    public String toOverpass() {
+        if (c1 instanceof Match) {
+            Match match = new Match((Match) c1);
+            match.negate();
+            return match.toOverpass();
+        }
+        return "!" + c1.toOverpass();
+    }
+
+    @Override
     public String toString() {
         return "-" + c1.toString();
+    }
+
+    @Override
+    public Condition toDNF() {
+        if (c1 instanceof Not) {
+            return ((Not) c1).c1.toDNF();
+        }
+        if (c1 instanceof And) {
+            return new Or(new Not(((And) c1).c1).toDNF(), new Not(((And) c1).c2).toDNF());
+        }
+        if (c1 instanceof Or) {
+            return new And(new Not(((Or) c1).c1).toDNF(), new Not(((Or) c1).c2).toDNF());
+        }
+        if (c1 instanceof Brackets) {
+            return new Not(((Brackets) c1).c).toDNF();
+        }
+        if (c1 instanceof LogicalOperator) {
+            throw new UnsupportedOperationException(
+                    this.getClass().getCanonicalName() + " is not supported for conversion to DNF for " + c1.getClass().getCanonicalName());
+        }
+        return this;
     }
 }

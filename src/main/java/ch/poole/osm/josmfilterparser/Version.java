@@ -23,4 +23,14 @@ public class Version implements Condition {
     public String toString() {
         return "version:" + Long.toString(version);
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
+
+    @Override
+    public String toOverpass() {
+        return "(if:version() == " + version + ")";
+    }
 }

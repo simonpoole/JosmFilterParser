@@ -21,4 +21,9 @@ public class Ways extends Range {
     int getValue(Meta meta, Map<String, String> tags) {
         return meta.getWayCount();
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
 }

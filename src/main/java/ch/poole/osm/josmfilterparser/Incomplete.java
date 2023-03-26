@@ -13,4 +13,9 @@ public class Incomplete implements Condition {
     public String toString() {
         return "incomplete";
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
 }

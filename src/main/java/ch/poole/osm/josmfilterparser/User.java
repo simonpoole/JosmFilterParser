@@ -26,4 +26,14 @@ public class User implements Condition {
     public String toString() {
         return "user:" + user;
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
+
+    @Override
+    public String toOverpass() {
+        return "(user:\"" + user + "\")";
+    }
 }

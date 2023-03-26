@@ -13,4 +13,9 @@ public class AllInview implements Condition {
     public String toString() {
         return "allinview";
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
 }

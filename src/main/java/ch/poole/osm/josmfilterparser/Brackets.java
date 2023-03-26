@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class Brackets implements Condition {
+public class Brackets implements Condition, LogicalOperator {
     final Condition c;
 
     /**

@@ -23,4 +23,9 @@ public class Changeset implements Condition {
     public String toString() {
         return "changeset:" + Long.toString(changeset);
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
 }

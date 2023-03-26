@@ -13,4 +13,9 @@ public class Inview implements Condition {
     public String toString() {
         return "inview";
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
 }

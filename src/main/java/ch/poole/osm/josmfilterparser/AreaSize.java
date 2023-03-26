@@ -21,4 +21,9 @@ public class AreaSize extends Range {
     int getValue(Meta meta, Map<String, String> tags) {
         return meta.getAreaSize();
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
 }

@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class Xor implements Condition {
+public class Xor implements Condition, LogicalOperator {
     final Condition c1;
     final Condition c2;
 
@@ -27,5 +27,10 @@ public class Xor implements Condition {
     @Override
     public String toString() {
         return c1.toString() + " XOR " + c2.toString();
+    }
+
+    @Override
+    public Condition toDNF() {
+        return new Or(new And(c1, new Not(c2)), new And(new Not(c1), c2)).toDNF();
     }
 }

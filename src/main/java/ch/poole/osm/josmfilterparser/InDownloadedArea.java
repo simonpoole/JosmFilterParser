@@ -13,4 +13,9 @@ public class InDownloadedArea implements Condition {
     public String toString() {
         return "indownloadedarea";
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
 }

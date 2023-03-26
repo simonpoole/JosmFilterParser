@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class And implements Condition {
+public class And implements Condition, LogicalOperator {
     final Condition c1;
     final Condition c2;
 
@@ -27,5 +27,36 @@ public class And implements Condition {
     @Override
     public String toString() {
         return c1.toString() + " " + c2.toString();
+    }
+
+    @Override
+    public Condition toDNF() {
+        Condition temp = c1;
+        if (c1 instanceof Brackets) {
+            temp = ((Brackets) c1).c;
+        }
+        temp = temp.toDNF();
+        if (temp instanceof Or) {
+            return new Or(new And(((Or) temp).c1, c2), new And(((Or) temp).c2, c2)).toDNF();
+        }
+
+        temp = c2;
+        if (c2 instanceof Brackets) {
+            temp = ((Brackets) c2).c;
+        }
+        temp = temp.toDNF();
+        if (temp instanceof Or) {
+            return new Or(new And(((Or) temp).c1, c1), new And(((Or) temp).c2, c1)).toDNF();
+        }
+
+        return new And(c1.toDNF(), c2.toDNF());
+    }
+
+    @Override
+    public String toOverpass() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(c1.toOverpass());
+        builder.append(c2.toOverpass());
+        return builder.toString();
     }
 }

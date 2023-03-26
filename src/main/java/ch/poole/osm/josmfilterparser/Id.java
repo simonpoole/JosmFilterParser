@@ -23,4 +23,14 @@ public class Id implements Condition {
     public String toString() {
         return "id:" + Long.toString(id);
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
+
+    @Override
+    public String toOverpass() {
+        return "(" + Long.toString(id) + ")";
+    }
 }
