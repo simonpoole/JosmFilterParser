@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -919,6 +918,40 @@ public class JosmFilterIntegrationTest {
         c = parse("parent highway", false);
         assertTrue(c instanceof Parent);
         assertFalse(c.eval(Type.NODE, meta, null));
+    }
+
+    /**
+     * Test tricky parsing
+     * 
+     * This fails if AND is replaced by a space
+     */
+    @Test
+    public void parseTest1() {
+        Condition c = parse("test1= AND test2=", false);
+        assertTrue(c instanceof And);
+        assertTrue(((And) c).c1 instanceof Match);
+        assertTrue(((And) c).c2 instanceof Match);
+        System.out.println(c.toString());
+    }
+
+    /**
+     * Test tricky parsing
+     */
+    @Test
+    public void parseTest2() {
+        Condition c = parse("test1= type:way", false);
+        assertTrue(c instanceof And);
+        assertTrue(((And) c).c1 instanceof Match);
+        assertTrue(((And) c).c2 instanceof ElementType);
+    }
+
+    /**
+     * Test tricky parsing
+     */
+    @Test
+    public void parseTest3() {
+        Condition c = parse("test1:", false);
+        assertTrue(c instanceof Match);
     }
 
     /**
