@@ -931,7 +931,6 @@ public class JosmFilterIntegrationTest {
         assertTrue(c instanceof And);
         assertTrue(((And) c).c1 instanceof Match);
         assertTrue(((And) c).c2 instanceof Match);
-        System.out.println(c.toString());
     }
 
     /**
@@ -952,6 +951,92 @@ public class JosmFilterIntegrationTest {
     public void parseTest3() {
         Condition c = parse("test1:", false);
         assertTrue(c instanceof Match);
+    }
+
+    /**
+     * Test "in", only used for Overpass queries
+     */
+    @Test
+    public void inTest1() {
+        Condition c = parse("in Zürich", false);
+        assertTrue(c instanceof In);
+    }
+
+    /**
+     * Test "in", only used for Overpass queries
+     */
+    @Test
+    public void inTest2() {
+        Condition c = parse("test=a in Zürich", false);
+        assertTrue(c instanceof And);
+    }
+
+    /**
+     * Test "in", only used for Overpass queries
+     */
+    @Test
+    public void inTest3() {
+        Condition c = parse("test=a | in Zürich", false);
+        assertTrue(c instanceof Or);
+    }
+    
+    /**
+     * Test "in", only used for Overpass queries
+     */
+    @Test
+    public void inTest4() {
+        Condition c = parse("in Zürich", false);
+        assertTrue(c instanceof In);
+        TestMeta meta = new TestMeta();
+        try {
+            c.eval(Type.NODE, meta, null);
+            fail("expected exception");
+        } catch (UnsupportedOperationException uoex) {
+            // good
+        }
+    }
+    
+    /**
+     * Test "in", only used for Overpass queries
+     */
+    @Test
+    public void aroundTest1() {
+        Condition c = parse("around Zürich", false);
+        assertTrue(c instanceof Around);
+    }
+
+    /**
+     * Test "around", only used for Overpass queries
+     */
+    @Test
+    public void aroundTest2() {
+        Condition c = parse("test=a around Zürich", false);
+        assertTrue(c instanceof And);
+    }
+
+    /**
+     * Test "around", only used for Overpass queries
+     */
+    @Test
+    public void aroundTest3() {
+        Condition c = parse("test=a | around Zürich", false);
+        assertTrue(c instanceof Or);
+    }
+    
+    /**
+     * Test "around", only used for Overpass queries
+     */
+    @Test
+    public void aroundTest4() {
+        Condition c = parse("around Zürich", false);
+        assertTrue(c instanceof Around);
+        TestMeta meta = new TestMeta();
+        try {
+            c.eval(Type.NODE, meta, null);
+            fail("expected exception");
+        } catch (UnsupportedOperationException uoex) {
+            // good
+        }
     }
 
     /**

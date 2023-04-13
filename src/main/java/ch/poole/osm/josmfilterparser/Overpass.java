@@ -1,5 +1,10 @@
 package ch.poole.osm.josmfilterparser;
 
+import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -8,6 +13,8 @@ public final class Overpass {
     static final String SEMICOLON     = ";\n";
     static final String CLOSE_BRACKET = ")\n";
     static final String OPEN_BRACKET  = "(\n";
+
+    private static final Pattern DEACCENT_PATTERN = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
 
     /**
      * Private constructor
@@ -26,8 +33,14 @@ public final class Overpass {
      */
     @NotNull
     public static String transform(@NotNull Condition condition) {
+        Condition asDNF = condition.toDNF();
         StringBuilder result = new StringBuilder();
-        appendAsOverpass(result, condition.toDNF());
+        List<String> regions = new ArrayList<>();
+        findRegions(asDNF, regions);
+        for (String region : regions) {
+            result.append("{{geocodeArea:" + region + "}}->." + normalize(region) + ";\n");
+        }
+        appendAsOverpass(result, asDNF);
         return result.toString();
     }
 
@@ -38,6 +51,7 @@ public final class Overpass {
      * @param c the Condition
      */
     static void appendAsOverpass(@NotNull StringBuilder builder, @NotNull Condition c) {
+
         ElementType type = findType(c);
         if (!(c instanceof LogicalOperator) || ((c instanceof And) && type == null)) {
             builder.append(OPEN_BRACKET);
@@ -78,5 +92,54 @@ public final class Overpass {
             return (ElementType) c;
         }
         return null;
+    }
+
+    /**
+     * Recursively build a list of regions used
+     * 
+     * @param c the Condition to check
+     * @param list the List to add to
+     */
+    @NotNull
+    private static void findRegions(@NotNull Condition c, List<String> list) {
+        if (c instanceof And) {
+            findRegions(((And) c).c1, list);
+            findRegions(((And) c).c2, list);
+        } else if (c instanceof Or) {
+            findRegions(((Or) c).c1, list);
+            findRegions(((Or) c).c2, list);
+        } else if (c instanceof Xor) {
+            findRegions(((Xor) c).c1, list);
+            findRegions(((Xor) c).c2, list);
+        } else if (c instanceof Not) {
+            findRegions(((Not) c).c1, list);
+        } else if (c instanceof Brackets) {
+            findRegions(((Brackets) c).c, list);
+        } else if (c instanceof Parent) {
+            findRegions(((Parent) c).c, list);
+        } else if (c instanceof Child) {
+            findRegions(((Child) c).c, list);
+        } else if (c instanceof In) {
+            list.add(((In) c).getRegion());
+        }
+    }
+
+    /**
+     * Normalize a string and replace whitespace with underscores
+     * 
+     * @param str the input string
+     * @return a normalized String
+     */
+    static String normalize(@NotNull String str) {
+        String deaccented = DEACCENT_PATTERN.matcher(Normalizer.normalize(str, Normalizer.Form.NFD)).replaceAll("");
+        StringBuilder result = new StringBuilder();
+        for (char c : deaccented.toCharArray()) {
+            if (Character.isWhitespace(c) || !Character.isAlphabetic(c)) {
+                result.append('_');
+                continue;
+            }
+            result.append(c);
+        }
+        return result.toString();
     }
 }

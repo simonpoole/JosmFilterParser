@@ -315,7 +315,7 @@ public class OverpassConversionTest {
         c = c.toDNF();
         assertEquals("[test]", c.toOverpass());
     }
-    
+
     /**
      * Check match conversion
      */
@@ -325,7 +325,7 @@ public class OverpassConversionTest {
         c = c.toDNF();
         assertEquals("[!test]", c.toOverpass());
     }
-    
+
     /**
      * Check match conversion
      */
@@ -335,7 +335,7 @@ public class OverpassConversionTest {
         c = c.toDNF();
         assertEquals("[test~\"^$\"]", c.toOverpass());
     }
-    
+
     /**
      * Check match conversion
      */
@@ -345,7 +345,7 @@ public class OverpassConversionTest {
         c = c.toDNF();
         assertEquals("[test!~\"^$\"]", c.toOverpass());
     }
-    
+
     /**
      * Check match conversion
      */
@@ -355,7 +355,7 @@ public class OverpassConversionTest {
         c = c.toDNF();
         assertEquals("[test~\"[a-z]*\"]", c.toOverpass());
     }
-    
+
     /**
      * Check match conversion
      */
@@ -375,7 +375,7 @@ public class OverpassConversionTest {
         c = c.toDNF();
         assertEquals("[test~\".*\"]", c.toOverpass());
     }
-    
+
     /**
      * Check match conversion
      */
@@ -385,7 +385,7 @@ public class OverpassConversionTest {
         c = c.toDNF();
         assertEquals("[~\".*\"!~\"^test$\"]", c.toOverpass());
     }
-    
+
     /**
      * Check match conversion
      */
@@ -395,7 +395,7 @@ public class OverpassConversionTest {
         c = c.toDNF();
         assertEquals("[~\".*\"~\"^test$\"]", c.toOverpass());
     }
-    
+
     /**
      * Check match conversion
      */
@@ -405,7 +405,37 @@ public class OverpassConversionTest {
         c = c.toDNF();
         assertEquals("[test~\"^(true|yes|1|on)$\"]", c.toOverpass());
     }
-    
+
+    /**
+     * Check in conversion
+     */
+    @Test
+    public void in1() {
+        Condition c = parse("highway=residential in \"Le Landeron\" type:way", false);
+        c = c.toDNF();
+        assertEquals("{{geocodeArea:Le Landeron}}->.Le_Landeron;\n" + "way[highway=residential](area.Le_Landeron);\n", Overpass.transform(c));
+    }
+
+    /**
+     * Check around conversion
+     */
+    @Test
+    public void around1() {
+        Condition c = parse("highway=residential around \"Le Landeron\" type:way", false);
+        c = c.toDNF();
+        assertEquals("way[highway=residential](around:1000,{{geocodeCoords:Le Landeron}});\n", Overpass.transform(c));
+    }
+
+    /**
+     * Check inview conversion
+     */
+    @Test
+    public void inview1() {
+        Condition c = parse("highway=residential inview type:way", false);
+        c = c.toDNF();
+        assertEquals("way[highway=residential]({{bbox}});\n", Overpass.transform(c));
+    }
+
     /**
      * Parse a filter string and return the Condition object
      * 

@@ -165,6 +165,8 @@ TOKEN :
 | < ALLINDOWNLOADEDAREA : "allindownloadedarea" >
 | < CHILD : "child" >
 | < PARENT : "parent" >
+| < IN : "in" >
+| < AROUND : "around" >
 | < LITERAL : (~[ "-", "\"", "\\", "|", " ", "\t", "<", "=", ">", "~", ":", "(", ")", "?" ])+ >
 }
           
@@ -299,6 +301,7 @@ Condition combination() :
   Token t2 = null;
   boolean andOp = false;
   boolean xorOp = false;
+  String in = null;
 }
 {
   (< WS >)*
@@ -441,6 +444,7 @@ Condition combination() :
         not4 = null;
         andOp = false;
         xorOp = false;
+        in = null;
       }
     )
   )*
@@ -532,6 +536,20 @@ Condition match() :
         f1 = functionWithoutArgument()
       )
     |
+      (
+        (  
+            f1 = < IN >
+          | 
+            f1 = < AROUND >
+        )
+        (< WS >)+
+        (
+            s1 = literal()
+          |
+            s1 = quotedLiteral()
+        )
+       ) 
+    |
       LOOKAHEAD(functionWithArgument() (fragmentLiteral() | quotedLiteral() | < NODE > | < WAY > | < RELATION >))
       (     
         f1 = functionWithArgument()
@@ -613,6 +631,8 @@ Condition match() :
           case CHANGESET : return new Changeset(Long.parseLong(s1));
           case TIMESTAMP : return new ElementTimestamp(s1);
           case HASROLE : return new HasRole(s1);
+          case IN : return new In(s1);
+          case AROUND : return new Around(s1);
           case NTH : unsupported(f1.image);
           case NTHPERCENT : unsupported(f1.image);
           default : unsupported(f1.image);
