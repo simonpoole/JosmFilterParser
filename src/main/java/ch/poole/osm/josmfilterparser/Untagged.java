@@ -13,4 +13,14 @@ public class Untagged implements Condition {
     public String toString() {
         return "untagged";
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
+
+    @Override
+    public String toOverpass() {
+        return "(if:count_tags() == 0)";
+    }
 }

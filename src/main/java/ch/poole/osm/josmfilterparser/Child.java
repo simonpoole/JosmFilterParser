@@ -5,10 +5,10 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class Child implements Condition {
+public class Child implements Condition, LogicalOperator {
     final Condition c;
-    List<Object> parents = null;
-    
+    List<Object>    parents = null;
+
     /**
      * Match if we are a child of an element for which Condition c is true
      * 

@@ -13,4 +13,14 @@ public class Closed implements Condition {
     public String toString() {
         return "closed";
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
+
+    @Override
+    public String toOverpass() {
+        return "(if:is_closed() == 1)";
+    }
 }

@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class Match implements Condition {
 
+    private static final String   REG_EXP_ANY  = "\".*\"";
     private static final String   LT           = "<";
     private static final String   GT           = ">";
     private static final String   EQUALS       = "=";
@@ -17,7 +18,7 @@ public class Match implements Condition {
     private static final String   QUESTIONMARK = "?";
     private static final String   TILDE        = "~";
     private static final String   ASTERIX      = "*";
-    private static final String[] truthy       = { "true", "yes", "1", "on" };
+    private static final String[] TRUTHY       = { "true", "yes", "1", "on" };
 
     private final String       key;
     private final String       value;
@@ -28,6 +29,7 @@ public class Match implements Condition {
     private boolean            valueAsterix;
     private Pattern            keyPattern;
     private Pattern            valuePattern;
+    private boolean            negate;
 
     interface Eval {
         /**
@@ -83,11 +85,34 @@ public class Match implements Condition {
                     valueAsterix = ASTERIX.equals(value);
                 }
             }
-        } catch (
-
-        PatternSyntaxException psex) {
+        } catch (PatternSyntaxException psex) {
             throw new ParseException(psex.getLocalizedMessage());
         }
+    }
+
+    /**
+     * Construct a copy of an instance
+     * 
+     * @param match the Match to copy
+     */
+    Match(@NotNull Match match) {
+        key = match.key;
+        value = match.value;
+        op = match.op;
+        numericValue = match.numericValue;
+        comparator = match.comparator;
+        keyAsterix = match.keyAsterix;
+        valueAsterix = match.valueAsterix;
+        keyPattern = match.keyPattern;
+        valuePattern = match.valuePattern;
+        negate = match.negate;
+    }
+
+    /**
+     * Set the negate flag, this is only used for overpass output
+     */
+    void negate() {
+        negate = true;
     }
 
     /**
@@ -203,7 +228,7 @@ public class Match implements Condition {
      * @return true if value is "true"
      */
     private boolean isTruthy(@NotNull String value) {
-        for (String t : truthy) {
+        for (String t : TRUTHY) {
             if (t.equalsIgnoreCase(value)) {
                 return true;
             }
@@ -244,7 +269,7 @@ public class Match implements Condition {
         return comparator.compare(tagValue, value) < 0;
     }
 
-    private static Pattern needsQuotes = Pattern.compile(".*[ \t:].*");
+    private final static Pattern NEEDS_QUOTES = Pattern.compile(".*[ \t:].*");
 
     /**
      * Add quotes to a string if necessary
@@ -253,7 +278,22 @@ public class Match implements Condition {
      * @return a potentially quoted string
      */
     public static String quote(@NotNull String text) {
-        if (needsQuotes.matcher(text).matches()) {
+        if (NEEDS_QUOTES.matcher(text).matches()) {
+            return "\"" + text + "\"";
+        }
+        return text;
+    }
+
+    private final static Pattern NEEDS_QUOTES_OVERPASS = Pattern.compile(".*[ \t:\\[\\]\\(\\)\\{\\}].*");
+
+    /**
+     * Add quotes to a string if necessary
+     * 
+     * @param text the string
+     * @return a potentially quoted string
+     */
+    public static String quoteOverpass(@NotNull String text) {
+        if (NEEDS_QUOTES_OVERPASS.matcher(text).matches()) {
             return "\"" + text + "\"";
         }
         return text;
@@ -268,9 +308,78 @@ public class Match implements Condition {
     }
 
     @Override
+    public String toOverpass() {
+        StringBuilder builder = new StringBuilder();
+        if (op != null) {
+            builder.append("[");
+            if (value != null && !"".equals(value) && !valueAsterix) {
+                builder.append(keyAsterix ? TILDE + REG_EXP_ANY : quoteOverpass(key));
+                negate(builder);
+                switch (op) {
+                case EQUALS:
+                    if (keyAsterix) {
+                        builder.append(TILDE);
+                        builder.append("\"^" + value + "$\"");
+                    } else {
+                        builder.append(EQUALS);
+                        builder.append(quoteOverpass(value));
+                    }
+                    break;
+                case TILDE:
+                    builder.append(TILDE);
+                    builder.append("\"" + value + "\"");
+                    break;
+                default:
+                    throw new UnsupportedOperationException("\"" + op + "\" with value is not supported for Overpass QL output");
+                }
+            } else {
+                switch (op) {
+                case EQUALS:
+                    builder.append(quoteOverpass(key));
+                    negate(builder);
+                    builder.append(TILDE);
+                    builder.append(valueAsterix ? REG_EXP_ANY : "\"^$\"");
+                    break;
+                case DOUBLECOLON:
+                    negate(builder);
+                    builder.append(quoteOverpass(key));
+                    // exact match already done
+                    break;
+                case QUESTIONMARK:
+                    builder.append(quoteOverpass(key));
+                    negate(builder);
+                    builder.append(TILDE);
+                    builder.append("\"^(true|yes|1|on)$\"");
+                    break;
+                default:
+                    throw new UnsupportedOperationException("\"" + op + "\" without value is not supported for Overpass QL output");
+                }
+            }
+            builder.append("]");
+        } else {
+            throw new UnsupportedOperationException("substring match is not supported for Overpass QL output");
+        }
+        return builder.toString();
+    }
+
+    /**
+     * @param builder
+     */
+    private void negate(StringBuilder builder) {
+        if (negate) {
+            builder.append("!");
+        }
+    }
+
+    @Override
     public String toString() {
         boolean hasOp = op != null;
         String space = hasOp && (op.equals(DOUBLECOLON) || op.equals(QUESTIONMARK)) ? "" : " ";
         return quote(key) + (hasOp ? space + op : "") + (value != null ? " " + quote(value) : "");
+    }
+
+    @Override
+    public Condition toDNF() {
+        return this;
     }
 }

@@ -21,4 +21,9 @@ public class Nodes extends Range {
     int getValue(Meta meta, Map<String, String> tags) {
         return meta.getNodeCount();
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
 }

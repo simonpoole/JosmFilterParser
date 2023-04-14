@@ -13,4 +13,9 @@ public class Selected implements Condition {
     public String toString() {
         return "selected";
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
 }

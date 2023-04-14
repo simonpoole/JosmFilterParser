@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class Parent implements Condition {
+public class Parent implements Condition, LogicalOperator {
     final Condition c;
     List<Object>    children = null;
 

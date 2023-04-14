@@ -19,11 +19,15 @@ public class Role implements Condition {
     @Override
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
         return meta.getRoles().contains(role);
-
     }
 
     @Override
     public String toString() {
         return "role:" + role;
+    }
+
+    @Override
+    public Condition toDNF() {
+        return this;
     }
 }

@@ -25,4 +25,14 @@ public class ElementType implements Condition {
     public String toString() {
         return "type:" + elementType.toString().toLowerCase();
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
+
+    @Override
+    public String toOverpass() {
+        return "";
+    }
 }

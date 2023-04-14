@@ -7,8 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public class Members extends Range {
 
     /**
-     * Create a Condition that checks if a relation has a number of members in the range
-     * This is an extension
+     * Create a Condition that checks if a relation has a number of members in the range This is an extension
      * 
      * @param range the range
      * @throws ParseException if parsing the range values fail
@@ -21,5 +20,10 @@ public class Members extends Range {
     @Override
     int getValue(Meta meta, Map<String, String> tags) {
         return meta.getMemberCount();
+    }
+
+    @Override
+    public Condition toDNF() {
+        return this;
     }
 }

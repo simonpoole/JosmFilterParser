@@ -36,4 +36,9 @@ public class ValueFragment implements Condition {
     public String toString() {
         return Match.quote(key) + ":" + Match.quote(value);
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
 }

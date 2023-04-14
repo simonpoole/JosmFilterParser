@@ -25,4 +25,9 @@ public class HasRole implements Condition {
     public String toString() {
         return "hasRole:" + role;
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
 }

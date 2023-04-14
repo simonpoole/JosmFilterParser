@@ -8,9 +8,9 @@ import org.jetbrains.annotations.Nullable;
 public abstract class Range implements Condition {
     static final int UNINITALIZED = -1;
 
-    private int exact = 0;
-    private int upper = UNINITALIZED;
-    private int lower = UNINITALIZED;
+    protected int exact = 0;
+    protected int upper = UNINITALIZED;
+    protected int lower = UNINITALIZED;
 
     protected String name;
 

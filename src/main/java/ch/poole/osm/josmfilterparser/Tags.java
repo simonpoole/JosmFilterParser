@@ -21,4 +21,26 @@ public class Tags extends Range {
     int getValue(Meta meta, Map<String, String> tags) {
         return tags != null ? tags.size() : 0;
     }
+
+    @Override
+    public Condition toDNF() {
+        return this;
+    }
+
+    @Override
+    public String toOverpass() {
+        final boolean upperUnset = upper == UNINITALIZED;
+        final boolean lowerUnset = lower == UNINITALIZED;
+        if (upperUnset && lowerUnset) {
+            return "(if:count_tags() == " + Integer.toString(exact) + ")";
+        }
+        StringBuilder builder = new StringBuilder();
+        if (!lowerUnset) {
+            builder.append("(if:count_tags() >= " + Integer.toString(lower) + ")");
+        }
+        if (!upperUnset) {
+            builder.append("(if:count_tags() <= " + Integer.toString(upper) + ")");
+        }
+        return builder.toString();
+    }
 }
