@@ -18,4 +18,9 @@ public class Inview implements Condition {
     public Condition toDNF() {
         return this;
     }
+    
+    @Override
+    public String toOverpass() {
+        return "({{bbox}})";
+    }
 }

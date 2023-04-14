@@ -73,10 +73,12 @@ This is what the parser currently supports not necessarily what can be supported
 |✅|__hasRole:__*role*                   |                        |        |
 ||__nth:__*number*                    |                         |        |
 ||__nth%:__*number*                   |                         |       |
-|✅|__inview__                           |                        |        |
+|✅|__inview__                           |                        | ✅                 |
 |✅|__allinview__                        |                        |        |
 |✅|__indownloadedarea__                 |                        |        |
 |✅|__allindownloadedarea__              |                        |        |
+|✅|__in__ *place*                       | only overpass queries  | ✅                 |
+|✅|__around__ *place*                   | only overpass queries  | ✅                   |
 
 Version 0.3.0 and later optionally supports regexps instead of the * wildcard.
 
