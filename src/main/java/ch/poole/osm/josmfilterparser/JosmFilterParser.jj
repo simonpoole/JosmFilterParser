@@ -27,7 +27,7 @@ options
 
   static = false;
 
-  LOOKAHEAD= 5;
+  LOOKAHEAD= 6;
   IGNORE_CASE = false;
   FORCE_LA_CHECK = true;
   CHOICE_AMBIGUITY_CHECK = 2;
@@ -113,6 +113,7 @@ TOKEN [IGNORE_CASE]:
 {
   < AND : "AND" >
 | < OR : "OR" >
+| < BAR : "|" > 
 | < XOR : "XOR" >
 | < MINUS : "-" >
 }
@@ -170,8 +171,7 @@ TOKEN :
 < DEFAULT >
 TOKEN :
 {
-  < BAR : "|" > : DEFAULT
-| < EQ : "=" > : DEFAULT
+  < EQ : "=" > : DEFAULT
 | < GT : ">" > : DEFAULT
 | < LT : "<" > : DEFAULT
 | < TILDE : "~" > : DEFAULT
@@ -444,7 +444,6 @@ Condition combination() :
       }
     )
   )*
-  (< WS >)*
   {
     return result;
   }
@@ -544,8 +543,7 @@ Condition match() :
         )
       )
     )
-    
-    (
+    (   
       (
         (
           (< WS >)*
@@ -553,22 +551,25 @@ Condition match() :
             op = < EQ >
           | op = < GT >
           | op = < LT >
-          | op = < TILDE >
+          | op = < TILDE >            
           )
-          (< WS >)*
+          (< WS >)*      
         )
         (
-          (
-            s2 = quotedLiteral()
-          )
-          {
-            s2Quoted = true;
-          }
-        |
-          f2 = functionWithoutArgument()
-        |  
-          s2 = literal()
-        )?
+            (
+              s2 = quotedLiteral()
+            )
+            {
+              s2Quoted = true;
+            }
+          |
+            s2 = literal()        
+        ) 
+      )
+    |
+      (
+        (< WS >)*
+        op = < EQ >  
       )
     |
       (
@@ -582,14 +583,11 @@ Condition match() :
           }
         | 
           s2 = fragmentLiteral()
-        |
-          (< WS >)*  
-        )
+        )?
       )
     |
       (
-        op = < QUESTIONMARK >
-        (< WS >)*  
+        op = < QUESTIONMARK >  
       )
     )?
   )
@@ -687,6 +685,7 @@ Condition condition0(boolean regexp) :
   (
     r = combination()
   )
+  (< WS >)*
   < EOF >
   {
     return r;
