@@ -1,5 +1,7 @@
 package ch.poole.osm.josmfilterparser;
 
+import static ch.poole.osm.josmfilterparser.I18n.tr;
+
 import java.util.Map;
 
 public class In implements Condition {
@@ -25,7 +27,7 @@ public class In implements Condition {
 
     @Override
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
-        throw new UnsupportedOperationException("in is only supported for Overpass queries");
+        throw new UnsupportedOperationException(tr("only_overpass", "in"));
     }
 
     @Override

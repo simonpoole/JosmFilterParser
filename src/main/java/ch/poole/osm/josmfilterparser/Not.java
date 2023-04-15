@@ -1,5 +1,7 @@
 package ch.poole.osm.josmfilterparser;
 
+import static ch.poole.osm.josmfilterparser.I18n.tr;
+
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
@@ -51,8 +53,7 @@ public class Not implements Condition, LogicalOperator {
             return new Not(((Brackets) c1).c).toDNF();
         }
         if (c1 instanceof LogicalOperator) {
-            throw new UnsupportedOperationException(
-                    this.getClass().getCanonicalName() + " is not supported for conversion to DNF for " + c1.getClass().getCanonicalName());
+            throw new UnsupportedOperationException(tr("conversion_from_to_dnf_not_supported", this.getClass().getSimpleName(), c1.getClass().getSimpleName()));
         }
         return this;
     }

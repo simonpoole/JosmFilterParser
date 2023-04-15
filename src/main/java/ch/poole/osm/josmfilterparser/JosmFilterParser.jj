@@ -40,6 +40,9 @@ options
 
 PARSER_BEGIN(JosmFilterParser)
 package ch.poole.osm.josmfilterparser;
+
+import static ch.poole.osm.josmfilterparser.I18n.tr;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,19 +56,28 @@ public class JosmFilterParser
 
   boolean regexp = false;
 
-  public Condition condition() throws ParseException {
-    return condition0(false);
+  public Condition condition() throws JosmFilterParseException {
+    return condition(false);
   }
 
-  public Condition condition(boolean regexp) throws ParseException {
-    return condition0(regexp);
+  public Condition condition(boolean regexp) throws JosmFilterParseException {  
+    try
+    {
+      return condition0(regexp);
+    }
+    catch (JosmFilterParseException ex)
+    {
+      throw ex;
+    }
+    catch (ParseException ex)
+    {
+      throw new JosmFilterParseException(ex);
+    }
   }
 
   void unsupported(String thing) throws ParseException
   {
-    ParseException pex = new ParseException("\"" + thing + "\" is unsupported " + token.next.beginLine + ", column " + token.next.beginColumn);
-    pex.currentToken = token;
-    throw pex;
+    throw new JosmFilterParseException(tr("unsupported", thing), token);
   }
   
   Condition not(Token notToken, Condition condition)

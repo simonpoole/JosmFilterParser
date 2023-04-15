@@ -1,8 +1,12 @@
 package ch.poole.osm.josmfilterparser;
 
+import static ch.poole.osm.josmfilterparser.I18n.tr;
+
 import java.util.Map;
 
 public class Around implements Condition {
+    private static final int DEFAULT_RADIUS = 1000;
+
     private final String region;
 
     /**
@@ -25,7 +29,7 @@ public class Around implements Condition {
 
     @Override
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
-        throw new UnsupportedOperationException("in is only supported for Overpass queries");
+        throw new UnsupportedOperationException(tr("only_overpass", "around"));
     }
 
     @Override
@@ -40,6 +44,6 @@ public class Around implements Condition {
 
     @Override
     public String toOverpass() {
-        return "(around:1000,{{geocodeCoords:" + region + "}})";
+        return "(around:" + DEFAULT_RADIUS + ",{{geocodeCoords:" + region + "}})";
     }
 }

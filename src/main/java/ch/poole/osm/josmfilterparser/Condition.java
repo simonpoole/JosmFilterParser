@@ -1,5 +1,7 @@
 package ch.poole.osm.josmfilterparser;
 
+import static ch.poole.osm.josmfilterparser.I18n.tr;
+
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +33,7 @@ public interface Condition {
      */
     @NotNull
     default String toOverpass() {
-        throw new UnsupportedOperationException(this.getClass().getCanonicalName() + " is not supported for Overpass QL output");
+        throw new UnsupportedOperationException(tr("overpass_not_supported", this.getClass().getSimpleName()));
     }
 
     /**
@@ -41,6 +43,6 @@ public interface Condition {
      */
     @NotNull
     default Condition toDNF() {
-        throw new UnsupportedOperationException(this.getClass().getCanonicalName() + " is not supported for conversion to DNF");
+        throw new UnsupportedOperationException(tr("conversion_to_dnf_not_supported", this.getClass().getSimpleName()));
     }
 }

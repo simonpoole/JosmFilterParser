@@ -1,5 +1,7 @@
 package ch.poole.osm.josmfilterparser;
 
+import static ch.poole.osm.josmfilterparser.I18n.tr;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
@@ -52,7 +54,7 @@ public class Match implements Condition {
      * @param regexp key and value are regular expressions
      * @throws ParseException if regexp is true and parsing a regular expression fails
      */
-    public Match(@NotNull String key, @Nullable String op, @Nullable String value, boolean regexp) throws ParseException {
+    public Match(@NotNull String key, @Nullable String op, @Nullable String value, boolean regexp) throws JosmFilterParseException {
         this.key = key;
         this.value = value;
         this.op = op;
@@ -86,7 +88,7 @@ public class Match implements Condition {
                 }
             }
         } catch (PatternSyntaxException psex) {
-            throw new ParseException(psex.getLocalizedMessage());
+            throw new JosmFilterParseException(psex.getLocalizedMessage());
         }
     }
 
@@ -269,7 +271,7 @@ public class Match implements Condition {
         return comparator.compare(tagValue, value) < 0;
     }
 
-    private final static Pattern NEEDS_QUOTES = Pattern.compile(".*[ \t:].*");
+    private static final Pattern NEEDS_QUOTES = Pattern.compile(".*[ \t:].*");
 
     /**
      * Add quotes to a string if necessary
@@ -284,7 +286,7 @@ public class Match implements Condition {
         return text;
     }
 
-    private final static Pattern NEEDS_QUOTES_OVERPASS = Pattern.compile(".*[ \t:\\[\\]\\(\\)\\{\\}].*");
+    private static final Pattern NEEDS_QUOTES_OVERPASS = Pattern.compile(".*[ \t:\\[\\]\\(\\)\\{\\}].*");
 
     /**
      * Add quotes to a string if necessary
@@ -330,7 +332,7 @@ public class Match implements Condition {
                     builder.append("\"" + value + "\"");
                     break;
                 default:
-                    throw new UnsupportedOperationException("\"" + op + "\" with value is not supported for Overpass QL output");
+                    throw new UnsupportedOperationException(tr("op_with_value_not_supported", op));
                 }
             } else {
                 switch (op) {
@@ -352,20 +354,22 @@ public class Match implements Condition {
                     builder.append("\"^(true|yes|1|on)$\"");
                     break;
                 default:
-                    throw new UnsupportedOperationException("\"" + op + "\" without value is not supported for Overpass QL output");
+                    throw new UnsupportedOperationException(tr("op_without_value_not_supported", op));
                 }
             }
             builder.append("]");
         } else {
-            throw new UnsupportedOperationException("substring match is not supported for Overpass QL output");
+            throw new UnsupportedOperationException(tr("substring_match_not_supported"));
         }
         return builder.toString();
     }
 
     /**
-     * @param builder
+     * Generate negated output
+     * 
+     * @param builder the StringBuilder we are appending to
      */
-    private void negate(StringBuilder builder) {
+    private void negate(@NotNull StringBuilder builder) {
         if (negate) {
             builder.append("!");
         }
