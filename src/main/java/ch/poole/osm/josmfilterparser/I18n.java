@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Translation support for {@link JosmFilterParser}
+ * Translation support for JosmFilterParser
  * 
  * @author JOSM team, Simon Legner
  */

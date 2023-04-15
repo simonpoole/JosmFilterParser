@@ -52,7 +52,7 @@ public class Match implements Condition {
      * @param op kind of match operation
      * @param value value to match or null
      * @param regexp key and value are regular expressions
-     * @throws ParseException if regexp is true and parsing a regular expression fails
+     * @throws JosmFilterParseException if regexp is true and parsing a regular expression fails
      */
     public Match(@NotNull String key, @Nullable String op, @Nullable String value, boolean regexp) throws JosmFilterParseException {
         this.key = key;

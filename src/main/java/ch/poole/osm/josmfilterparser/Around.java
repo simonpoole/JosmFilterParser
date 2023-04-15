@@ -4,17 +4,19 @@ import static ch.poole.osm.josmfilterparser.I18n.tr;
 
 import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Around implements Condition {
     private static final int DEFAULT_RADIUS = 1000;
 
     private final String region;
 
     /**
-     * Create a Condition that checks the id of an OSM element
+     * Create a Condition that returns true if the objects are around a region
      * 
-     * @param id the id that should match
+     * @param region the region
      */
-    public Around(String region) {
+    public Around(@NotNull String region) {
         this.region = region;
     }
 
