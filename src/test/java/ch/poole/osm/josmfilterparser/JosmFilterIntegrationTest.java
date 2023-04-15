@@ -1,12 +1,15 @@
 
 package ch.poole.osm.josmfilterparser;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
@@ -979,7 +982,7 @@ public class JosmFilterIntegrationTest {
         Condition c = parse("test=a | in Zürich", false);
         assertTrue(c instanceof Or);
     }
-    
+
     /**
      * Test "in", only used for Overpass queries
      */
@@ -995,7 +998,7 @@ public class JosmFilterIntegrationTest {
             // good
         }
     }
-    
+
     /**
      * Test "in", only used for Overpass queries
      */
@@ -1022,7 +1025,7 @@ public class JosmFilterIntegrationTest {
         Condition c = parse("test=a | around Zürich", false);
         assertTrue(c instanceof Or);
     }
-    
+
     /**
      * Test "around", only used for Overpass queries
      */
@@ -1036,6 +1039,21 @@ public class JosmFilterIntegrationTest {
             fail("expected exception");
         } catch (UnsupportedOperationException uoex) {
             // good
+        }
+    }
+
+    /**
+     * Minimal translation support test
+     */
+    @Test
+    public void translationSupport() {
+        I18n.setLocale(Locale.GERMAN);
+        try {
+            JosmFilterParser parser = new JosmFilterParser(new ByteArrayInputStream("test=< Zürich".getBytes()));
+            parser.condition();
+            fail("this should have thrown an exception");
+        } catch (ParseException pex) {
+            assertEquals("Gefunden:  \"<\" \"< \" bei Zeile 1, Spalte 5" + System.lineSeparator() + "Erwartet: <EOF>", pex.getMessage());
         }
     }
 

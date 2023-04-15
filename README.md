@@ -8,7 +8,7 @@
         try {
             JosmFilterParser parser = new JosmFilterParser(new ByteArrayInputStream(filterString.getBytes()));
             boolean matches = parser.condition(false).eval(...);
-        } catch (ParseException pex) {
+        } catch (JosmFilterParseException pex) {
             ...
         } catch (Error err) {
             ...
