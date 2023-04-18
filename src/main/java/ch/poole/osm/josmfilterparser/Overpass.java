@@ -1,8 +1,8 @@
 package ch.poole.osm.josmfilterparser;
 
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +35,7 @@ public final class Overpass {
     public static String transform(@NotNull Condition condition) {
         Condition asDNF = condition.toDNF();
         StringBuilder result = new StringBuilder();
-        List<String> regions = new ArrayList<>();
+        Set<String> regions = new HashSet<>();
         findRegions(asDNF, regions);
         for (String region : regions) {
             result.append("{{geocodeArea:" + region + "}}->." + normalize(region) + ";\n");
@@ -101,7 +101,7 @@ public final class Overpass {
      * @param list the List to add to
      */
     @NotNull
-    private static void findRegions(@NotNull Condition c, List<String> list) {
+    private static void findRegions(@NotNull Condition c, Set<String> list) {
         if (c instanceof And) {
             findRegions(((And) c).c1, list);
             findRegions(((And) c).c2, list);
