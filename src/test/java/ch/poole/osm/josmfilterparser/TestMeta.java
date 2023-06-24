@@ -3,6 +3,7 @@ package ch.poole.osm.josmfilterparser;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,29 +17,41 @@ import ch.poole.osm.josmfilterparser.ElementState.State;
  */
 public class TestMeta implements Meta {
 
-    long         id;
-    long         version;
-    long         changeset;
-    long         timestamp;
-    State        state;
-    boolean      isClosed;
-    int          nodeCount;
-    int          wayCount;
-    int          memberCount;
-    int          areaSize;
-    int          wayLength;
-    List<String> roles = new ArrayList<>();
-    String       user;
-    boolean      selected;
-    String       hasRole;
-    String       preset;
-    boolean      isIncomplete;
-    boolean      isInview;
-    boolean      isAllInview;
-    boolean      isInDownloadedArea;
-    boolean      isAllInDownloadedArea;
-    boolean      isChild;
-    boolean      isParent;
+    Type                type;
+    Map<String, String> tags;
+    long                id;
+    long                version;
+    long                changeset;
+    long                timestamp;
+    State               state;
+    boolean             isClosed;
+    int                 nodeCount;
+    int                 wayCount;
+    int                 memberCount;
+    int                 areaSize;
+    int                 wayLength;
+    List<String>        roles = new ArrayList<>();
+    String              user;
+    boolean             selected;
+    String              hasRole;
+    String              preset;
+    boolean             isIncomplete;
+    boolean             isInview;
+    boolean             isAllInview;
+    boolean             isInDownloadedArea;
+    boolean             isAllInDownloadedArea;
+    boolean             isChild;
+    boolean             isParent;
+
+    @Override
+    public Type getType() {
+        return type;
+    }
+
+    @Override
+    public Map<String, String> getTags() {
+        return tags;
+    }
 
     @Override
     public String getUser() {
@@ -149,14 +162,19 @@ public class TestMeta implements Meta {
     public boolean isAllInDownloadedArea() {
         return isAllInDownloadedArea;
     }
-    
+
     @Override
     public boolean isChild(@NotNull Type type, @NotNull Meta element, List<Object> parents) {
         return isChild;
     }
-    
+
     @Override
     public boolean isParent(@NotNull Type type, @NotNull Meta meta, @NotNull List<Object> children) {
         return isParent;
+    }
+
+    @Override
+    public @NotNull Meta wrap(Object o) {
+        return new TestMeta();
     }
 }

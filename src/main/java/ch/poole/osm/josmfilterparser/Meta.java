@@ -3,6 +3,7 @@ package ch.poole.osm.josmfilterparser;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,6 +17,26 @@ import ch.poole.osm.josmfilterparser.ElementState.State;
  *
  */
 public interface Meta {
+
+    /**
+     * Get the Type of the OSM object
+     * 
+     * @return the Type
+     */
+    @NotNull
+    default Type getType() {
+        throw new IllegalArgumentException("getType is unsupported");
+    }
+
+    /**
+     * Get the OSM elements tags
+     * 
+     * @return a Map of KV tupels
+     */
+    @Nullable
+    default Map<String, String> getTags() {
+        throw new IllegalArgumentException("getTags is unsupported");
+    }
 
     /**
      * Get the OSM display name
@@ -180,7 +201,7 @@ public interface Meta {
      * @return true if in view
      */
     boolean isAllInDownloadedArea();
-    
+
     /**
      * Check if the current element is a child of an element
      * 
@@ -204,7 +225,7 @@ public interface Meta {
     default boolean isParent(@NotNull Type type, @NotNull Meta meta, @NotNull List<Object> children) {
         return false;
     }
-    
+
     /**
      * Return a List of Elements that match the condition c
      * 
@@ -217,4 +238,13 @@ public interface Meta {
     default List<Object> getMatchingElements(@NotNull Condition c) {
         return new ArrayList<>();
     }
+    
+    /**
+     * Get an Meta implementing object 
+     * 
+     * @param o imput object
+     * @return returns something that implements this interface
+     */
+    @NotNull
+    Meta wrap(Object o);
 }
