@@ -14,7 +14,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 
-version = '0.9.0'
+version = '0.9.1'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -44,7 +44,7 @@ compileTestJava {
 
 jacocoTestReport {
     reports {
-        xml.enabled true
+        xml.required=true
     }
 }
 
@@ -142,5 +142,5 @@ repositories {
 dependencies {
     compileOnly 'org.jetbrains:annotations:15.0'
     testCompileOnly 'org.jetbrains:annotations:15.0'
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 }
