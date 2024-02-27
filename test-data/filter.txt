@@ -90,3 +90,4 @@ test1 (test2 AND test3)
 tourism XOR amenity
 natural=peak OR natural=volcano XOR mountain_pass=yes OR natural=water
 oneway?
+highway=cyclist_waiting_aid -child (type:way highway: (oneway? OR oneway="-1"))

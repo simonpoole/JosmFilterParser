@@ -271,7 +271,7 @@ public class Match implements Condition {
         return comparator.compare(tagValue, value) < 0;
     }
 
-    private static final Pattern NEEDS_QUOTES = Pattern.compile(".*[ \t:].*");
+    private static final Pattern NEEDS_QUOTES = Pattern.compile(".*[ \t:\\-].*");
 
     /**
      * Add quotes to a string if necessary
