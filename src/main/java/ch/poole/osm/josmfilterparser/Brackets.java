@@ -25,4 +25,9 @@ public class Brackets implements Condition, LogicalOperator {
     public String toString() {
         return "(" + c.toString() + ")";
     }
+    
+    @Override
+    public String toDebugString() {
+        return "(" + c.toDebugString() + ")";
+    }
 }

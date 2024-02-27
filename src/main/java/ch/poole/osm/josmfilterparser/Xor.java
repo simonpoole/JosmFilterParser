@@ -20,6 +20,12 @@ public class Xor implements Condition, LogicalOperator {
     }
 
     @Override
+    public void reset() {
+        c1.reset();
+        c2.reset();
+    }
+
+    @Override
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
         return c1.eval(type, meta, tags) ^ c2.eval(type, meta, tags);
     }
@@ -27,6 +33,11 @@ public class Xor implements Condition, LogicalOperator {
     @Override
     public String toString() {
         return c1.toString() + " XOR " + c2.toString();
+    }
+
+    @Override
+    public String toDebugString() {
+        return c1.toDebugString() + " XOR " + c2.toDebugString();
     }
 
     @Override

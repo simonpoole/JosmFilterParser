@@ -25,6 +25,13 @@ public interface Condition {
     public boolean eval(@NotNull Type type, @Nullable Meta meta, @Nullable Map<String, String> tags);
 
     /**
+     * Reset any state created during evaluation
+     */
+    default void reset() {
+        // do nothing
+    }
+
+    /**
      * Generate the appropriate Overpass QL for the expression, this assumes that the logic is in DNF
      * 
      * @see <a href="https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL">Overpass QL</a>
@@ -44,5 +51,15 @@ public interface Condition {
     @NotNull
     default Condition toDNF() {
         throw new UnsupportedOperationException(tr("conversion_to_dnf_not_supported", this.getClass().getSimpleName()));
+    }
+
+    /**
+     * Return a string for debugging
+     * 
+     * @return a String
+     */
+    @NotNull
+    default String toDebugString() {
+        return toString();
     }
 }

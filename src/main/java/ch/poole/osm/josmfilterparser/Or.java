@@ -28,12 +28,23 @@ public class Or implements Condition, LogicalOperator {
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
         return c1.eval(type, meta, tags) || c2.eval(type, meta, tags);
     }
+    
+    @Override
+    public void reset() {
+        c1.reset();
+        c2.reset();
+    }
 
     @Override
     public String toString() {
         return c1.toString() + " OR " + c2.toString();
     }
 
+    @Override
+    public String toDebugString() {
+        return c1.toDebugString() + " OR " + c2.toDebugString();
+    }
+    
     @Override
     public Condition toDNF() {
         if (c1 instanceof LogicalOperator || c2 instanceof LogicalOperator) {

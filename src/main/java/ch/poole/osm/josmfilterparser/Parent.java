@@ -27,7 +27,18 @@ public class Parent implements Condition, LogicalOperator {
     }
 
     @Override
+    public void reset() {
+        c.reset();
+        children = null;
+    }
+
+    @Override
     public String toString() {
         return "parent " + c.toString();
+    }
+
+    @Override
+    public String toDebugString() {
+        return "parent " + c.toDebugString();
     }
 }

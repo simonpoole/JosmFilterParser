@@ -22,7 +22,12 @@ public class Not implements Condition, LogicalOperator {
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
         return !c1.eval(type, meta, tags);
     }
-
+    
+    @Override
+    public void reset() {
+        c1.reset();
+    }
+    
     @Override
     public String toOverpass() {
         if (c1 instanceof Match) {
@@ -36,6 +41,11 @@ public class Not implements Condition, LogicalOperator {
     @Override
     public String toString() {
         return "-" + c1.toString();
+    }
+    
+    @Override
+    public String toDebugString() {
+        return "-" + c1.toDebugString();
     }
 
     @Override

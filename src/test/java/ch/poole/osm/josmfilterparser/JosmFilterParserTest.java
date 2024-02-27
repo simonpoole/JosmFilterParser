@@ -43,6 +43,7 @@ public class JosmFilterParserTest {
         BufferedReader inputRules = null;
         BufferedReader inputExpected = null;
         BufferedWriter outputExpected = null;
+        BufferedWriter outputDebug = null;
         String line = null;
         try {
 
@@ -53,6 +54,7 @@ public class JosmFilterParserTest {
                 System.out.println("File not found " + fnfex.toString());
             }
             outputExpected = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(inputFile + "-result-temp"), "UTF8"));
+            outputDebug = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(inputFile + "-result-debug"), "UTF8"));
 
             String expectedResultCode = null;
             String expectedResult = null;
@@ -75,6 +77,7 @@ public class JosmFilterParserTest {
 
                     successful++;
                     outputExpected.write("0\t" + rs.toString() + "\n");
+                    outputDebug.write("0\t" + rs.toDebugString() + "\n");
                     if (expectedResultCode != null) {
                         assertEquals(expectedResultCode, "0");
                         if (expectedResult != null) {
@@ -90,6 +93,7 @@ public class JosmFilterParserTest {
                     pex.printStackTrace();
                     errors++;
                     outputExpected.write("1\n");
+                    outputDebug.write("1\n");
                     if (expectedResultCode != null) {
                         assertEquals(expectedResultCode, "1");
                     }
@@ -99,6 +103,7 @@ public class JosmFilterParserTest {
                     lexical++;
                     errors++;
                     outputExpected.write("2\n");
+                    outputDebug.write("2\n");
                     if (expectedResultCode != null) {
                         assertEquals(expectedResultCode, "2");
                     }
@@ -106,6 +111,7 @@ public class JosmFilterParserTest {
                     System.err.println("Parser exception for " + line + " " + ex.toString());
                     ex.printStackTrace();
                     outputExpected.write("4\n");
+                    outputDebug.write("4\n");
                 } catch (Error err) {
                     if (err.toString().contains("Lexical")) {
                         lexical++;
@@ -115,6 +121,7 @@ public class JosmFilterParserTest {
                     }
                     errors++;
                     outputExpected.write("3\n");
+                    outputDebug.write("3\n");
                     if (expectedResultCode != null) {
                         assertEquals(expectedResultCode, "3");
                     }
@@ -141,6 +148,14 @@ public class JosmFilterParserTest {
             if (outputExpected != null) {
                 try {
                     outputExpected.close();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            if (outputDebug != null) {
+                try {
+                    outputDebug.close();
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

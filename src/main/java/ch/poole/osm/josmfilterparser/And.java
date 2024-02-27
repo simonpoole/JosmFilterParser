@@ -25,8 +25,19 @@ public class And implements Condition, LogicalOperator {
     }
 
     @Override
+    public void reset() {
+        c1.reset();
+        c2.reset();
+    }
+
+    @Override
     public String toString() {
         return c1.toString() + " " + c2.toString();
+    }
+
+    @Override
+    public String toDebugString() {
+        return c1.toDebugString() + " AND " + c2.toDebugString();
     }
 
     @Override
