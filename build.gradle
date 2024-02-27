@@ -1,6 +1,17 @@
 /*
  */
 
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.github.breadmoirai:github-release:2.5.2"
+    }
+}
+
 plugins {
     id "ca.coglinc.javacc" version "2.4.0"
     id "org.sonarqube" version "3.0"
@@ -12,7 +23,7 @@ apply plugin: 'eclipse'
 apply plugin: "jacoco"
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
-
+apply plugin: "com.github.breadmoirai.github-release"
 
 version = '0.10.0'
 
@@ -27,6 +38,7 @@ ext {
     javaccOutput = file(project.buildDir.absolutePath + '/generated/javacc/ch/poole/osm/josmfilterparser')
     mainSource = file('src/main/java/ch/poole/osm/josmfilterparser')
     testSource = file('src/test/java/ch/poole/osm/josmfilterparser')
+    githubToken = System.getenv('GITHUB_TOKEN')
 }
 
 compileJavacc {
@@ -130,6 +142,16 @@ publishing {
 
 signing {
     sign publishing.publications.Release
+}
+
+githubRelease {
+    token project.ext.githubToken == null ? "" : project.ext.githubToken    
+    owner = "simonpoole"
+    tagName = project.version
+    releaseName = project.version
+    targetCommitish = "main" 
+    generateReleaseNotes = true 
+    overwrite = true
 }
 
 // In this section you declare where to find the dependencies of your project
