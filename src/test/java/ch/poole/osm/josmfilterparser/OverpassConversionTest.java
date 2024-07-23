@@ -156,6 +156,24 @@ public class OverpassConversionTest {
     }
 
     /**
+     * Check logical and
+     */
+    @Test
+    public void andTest4() {
+        Condition c = parse("(test1=a test2=b) test3=bla", false);
+        dump(c, 0);
+        assertTrue(c instanceof And);
+        assertTrue(((And) c).c1 instanceof Brackets);
+        c = c.toDNF();
+        dump(c, 0);
+        assertTrue(c instanceof And);
+        assertTrue(((And) c).c1 instanceof And);
+        // @formatter:off
+        assertEquals("[test1=a][test2=b][test3=bla]", c.toOverpass());
+       // @formatter:on
+    }
+
+    /**
      * Check logical not
      */
     @Test
@@ -417,6 +435,16 @@ public class OverpassConversionTest {
     }
 
     /**
+     * Check in conversion
+     */
+    @Test
+    public void in2() {
+        Condition c = parse("(highway=residential and residential=house) in \"Le Landeron\" type:way ", false);
+        c = c.toDNF();
+        assertEquals("{{geocodeArea:Le Landeron}}->.Le_Landeron;\n" + "way[highway=residential][residential=house](area.Le_Landeron);\n", Overpass.transform(c));
+    }
+
+    /**
      * Check around conversion
      */
     @Test
@@ -448,8 +476,9 @@ public class OverpassConversionTest {
         try {
             JosmFilterParser parser = new JosmFilterParser(new ByteArrayInputStream(filterString.getBytes()));
             return parser.condition(regexp);
-        } catch (ParseException pex) {
-            fail(pex.toString());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            fail(ex.toString());
         } catch (Error err) {
             fail(err.toString());
         }
