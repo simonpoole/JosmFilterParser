@@ -1,3 +1,41 @@
+0.11.1:
+
+- Add reset to Bracket condition
+
+0.11.0:
+
+- Return condition in brackets when converting them to DNF
+
+0.10.0:
+
+- Bump version for release
+- Enclose negative number literals in quotes
+- Add support for debugging output and add ability to reset any state
+
+0.9.1:
+
+- Migrate to gradle 8
+
+
+0.9.0:
+
+- Expand Meta interface for JOSM template support
+
+0.8.2:
+
+- Add more translations
+
+0.8.1:
+
+- Use a set instead of a List for de-duplication
+
+0.8.0:
+
+- Add gradle task to update translations
+- Add support for exception message translation
+- Support "in" and "around specifically for Overpass
+- Add support for Overpass QL output
+
 0.7.2;
 
 - Fix gradle publishing config
