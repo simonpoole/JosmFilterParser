@@ -21,6 +21,11 @@ public class Brackets implements Condition, LogicalOperator {
     }
 
     @Override
+    public void reset() {
+        c.reset();
+    }
+    
+    @Override
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
         return c.eval(type, meta, tags);
     }
