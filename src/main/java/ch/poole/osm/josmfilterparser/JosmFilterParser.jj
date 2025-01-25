@@ -626,28 +626,32 @@ Condition match() :
     {
       if (f1 != null && (s1 != null || v != null))
       {
-        switch (f1.kind)
-        {
-          case TYPE : return new ElementType(Type.valueOf(v.image.toUpperCase()));
-          case PRESET : return new Preset(s1);
-          case NODES : return new Nodes(s1);
-          case WAYS : return new Ways(s1);
-          case TAGS : return new Tags(s1);
-          case MEMBERS : return new Members(s1);
-          case ROLE : return new Role(s1);
-          case AREASIZE : return new AreaSize(s1);
-          case WAYLENGTH : return new WayLength(s1);
-          case USER : return new User(s1);
-          case ID : return new Id(Long.parseLong(s1));
-          case VERSION : return new Version(Long.parseLong(s1));
-          case CHANGESET : return new Changeset(Long.parseLong(s1));
-          case TIMESTAMP : return new ElementTimestamp(s1);
-          case HASROLE : return new HasRole(s1);
-          case IN : return new In(s1);
-          case AROUND : return new Around(s1);
-          case NTH : unsupported(f1.image);
-          case NTHPERCENT : unsupported(f1.image);
-          default : unsupported(f1.image);
+        try { 
+	      switch (f1.kind)
+	      {
+	        case TYPE : return new ElementType(Type.valueOf(v.image.toUpperCase()));
+	        case PRESET : return new Preset(s1);
+	        case NODES : return new Nodes(s1);
+	        case WAYS : return new Ways(s1);
+	        case TAGS : return new Tags(s1);
+	        case MEMBERS : return new Members(s1);
+	        case ROLE : return new Role(s1);
+	        case AREASIZE : return new AreaSize(s1);
+	        case WAYLENGTH : return new WayLength(s1);
+	        case USER : return new User(s1);
+	        case ID : return new Id(Long.parseLong(s1));
+	        case VERSION : return new Version(Long.parseLong(s1));
+	        case CHANGESET : return new Changeset(Long.parseLong(s1));
+	        case TIMESTAMP : return new ElementTimestamp(s1);
+	        case HASROLE : return new HasRole(s1);
+	        case IN : return new In(s1);
+	        case AROUND : return new Around(s1);
+	        case NTH : unsupported(f1.image);
+	        case NTHPERCENT : unsupported(f1.image);
+            default : unsupported(f1.image);
+	      }
+        } catch (NumberFormatException nfex) {
+          throw new JosmFilterParseException(tr("number_format", s1), token);
         }
       }
       else if (op != null && DOUBLECOLON == op.kind && s2 != null)
