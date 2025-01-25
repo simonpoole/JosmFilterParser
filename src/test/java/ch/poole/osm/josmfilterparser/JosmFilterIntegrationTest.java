@@ -8,7 +8,6 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -360,6 +359,21 @@ public class JosmFilterIntegrationTest {
         assertTrue(c.eval(Type.WAY, meta, tags));
         c = parse("id:321", false);
         assertFalse(c.eval(Type.WAY, meta, tags));
+    }
+    
+    /**
+     * Test OSM id matching
+     */
+    @Test
+    public void idTest2() {
+        try {
+            JosmFilterParser parser = new JosmFilterParser(new ByteArrayInputStream("id:123\r\n".getBytes()));
+            parser.condition(false);
+            fail("Expected parse exception");
+        } catch (JosmFilterParseException pex) {
+            // OK
+            pex.printStackTrace(System.out);
+        }    
     }
 
     /**
@@ -1052,7 +1066,7 @@ public class JosmFilterIntegrationTest {
             JosmFilterParser parser = new JosmFilterParser(new ByteArrayInputStream("test=< Zürich".getBytes()));
             parser.condition();
             fail("this should have thrown an exception");
-        } catch (ParseException pex) {
+        } catch (JosmFilterParseException pex) {
             assertEquals("Gefunden:  \"<\" \"< \" bei Zeile 1, Spalte 5" + System.lineSeparator() + "Erwartet: <EOF>", pex.getMessage());
         }
     }
@@ -1069,7 +1083,7 @@ public class JosmFilterIntegrationTest {
         try {
             JosmFilterParser parser = new JosmFilterParser(new ByteArrayInputStream(filterString.getBytes()));
             return parser.condition(regexp);
-        } catch (ParseException pex) {
+        } catch (JosmFilterParseException pex) {
             fail(pex.toString());
         } catch (Error err) {
             fail(err.toString());
