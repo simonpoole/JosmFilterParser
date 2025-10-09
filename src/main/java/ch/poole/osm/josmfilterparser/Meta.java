@@ -1,5 +1,7 @@
 package ch.poole.osm.josmfilterparser;
 
+import static ch.poole.osm.josmfilterparser.I18n.tr;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -238,9 +240,31 @@ public interface Meta {
     default List<Object> getMatchingElements(@NotNull Condition c) {
         return new ArrayList<>();
     }
-    
+
     /**
-     * Get an Meta implementing object 
+     * Return true if the element is in the region
+     * 
+     * @param meta the meta interface to the element
+     * @param region the region
+     * @return true if in the region
+     */
+    default boolean in(@NotNull Meta meta, @NotNull String region) {
+        throw new UnsupportedOperationException(tr("only_overpass", "in"));
+    }
+
+    /**
+     * Return true if the element is "around" the location
+     * 
+     * @param meta the meta interface to the element
+     * @param location the location
+     * @return true if around the location
+     */
+    default boolean around(@NotNull Meta meta, @NotNull String location) {
+        throw new UnsupportedOperationException(tr("only_overpass", "around"));
+    }
+
+    /**
+     * Get an Meta implementing object
      * 
      * @param o imput object
      * @return returns something that implements this interface
