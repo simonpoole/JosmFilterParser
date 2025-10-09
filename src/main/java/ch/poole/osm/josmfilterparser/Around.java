@@ -9,15 +9,15 @@ import org.jetbrains.annotations.NotNull;
 public class Around implements Condition {
     private static final int DEFAULT_RADIUS = 1000;
 
-    private final String region;
+    private final String location;
 
     /**
-     * Create a Condition that returns true if the objects are around a region
+     * Create a Condition that returns true if the objects are around a location
      * 
-     * @param region the region
+     * @param location the region
      */
-    public Around(@NotNull String region) {
-        this.region = region;
+    public Around(@NotNull String location) {
+        this.location = location;
     }
 
     /**
@@ -26,7 +26,7 @@ public class Around implements Condition {
      * @return the region
      */
     String getRegion() {
-        return region;
+        return location;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class Around implements Condition {
 
     @Override
     public String toString() {
-        return "in " + Match.quote(region);
+        return "around " + Match.quote(location);
     }
 
     @Override
@@ -46,6 +46,6 @@ public class Around implements Condition {
 
     @Override
     public String toOverpass() {
-        return "(around:" + DEFAULT_RADIUS + ",{{geocodeCoords:" + region + "}})";
+        return "(around:" + DEFAULT_RADIUS + ",{{geocodeCoords:" + location + "}})";
     }
 }
