@@ -1,7 +1,5 @@
 package ch.poole.osm.josmfilterparser;
 
-import static ch.poole.osm.josmfilterparser.I18n.tr;
-
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +29,7 @@ public class Around implements Condition {
 
     @Override
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
-        throw new UnsupportedOperationException(tr("only_overpass", "around"));
+        return meta.around(meta, location);
     }
 
     @Override
