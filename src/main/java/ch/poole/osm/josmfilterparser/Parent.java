@@ -1,13 +1,17 @@
 package ch.poole.osm.josmfilterparser;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class Parent implements Condition, LogicalOperator {
-    final Condition c;
-    List<Object>    children = null;
+public class Parent implements Condition, LogicalOperator, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    final Condition    c;
+    List<Serializable> children = null;
 
     /**
      * Match if we are a parent of an element for which Condition c is true

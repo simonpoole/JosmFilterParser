@@ -1,11 +1,15 @@
 package ch.poole.osm.josmfilterparser;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ValueFragment implements Condition {
+public class ValueFragment implements Condition, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     final String key;
     final String value;
 

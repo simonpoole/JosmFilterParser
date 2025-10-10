@@ -2,11 +2,15 @@ package ch.poole.osm.josmfilterparser;
 
 import static ch.poole.osm.josmfilterparser.I18n.tr;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class Not implements Condition, LogicalOperator {
+public class Not implements Condition, LogicalOperator, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     final Condition c1;
 
     /**
@@ -22,12 +26,12 @@ public class Not implements Condition, LogicalOperator {
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
         return !c1.eval(type, meta, tags);
     }
-    
+
     @Override
     public void reset() {
         c1.reset();
     }
-    
+
     @Override
     public String toOverpass() {
         if (c1 instanceof Match) {
@@ -42,7 +46,7 @@ public class Not implements Condition, LogicalOperator {
     public String toString() {
         return "-" + c1.toString();
     }
-    
+
     @Override
     public String toDebugString() {
         return "-" + c1.toDebugString();

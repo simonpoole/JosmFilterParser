@@ -1,11 +1,15 @@
 package ch.poole.osm.josmfilterparser;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class Range implements Condition {
+public abstract class Range implements Condition, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     static final int UNINITALIZED = -1;
 
     protected int exact = 0;

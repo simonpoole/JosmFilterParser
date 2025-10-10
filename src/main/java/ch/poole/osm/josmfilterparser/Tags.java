@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class Tags extends Range {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Create a Condition that checks if an element has a tag count in the specified range
      * 

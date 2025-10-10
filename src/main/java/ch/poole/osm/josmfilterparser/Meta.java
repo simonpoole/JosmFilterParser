@@ -2,6 +2,7 @@ package ch.poole.osm.josmfilterparser;
 
 import static ch.poole.osm.josmfilterparser.I18n.tr;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -156,10 +157,10 @@ public interface Meta {
      * Get a preset from a path specification
      * 
      * @param presetPath the path
-     * @return an Object that should be a instance of a preset for the syste,
+     * @return an Object that should be a instance of a preset for the system,
      */
     @Nullable
-    Object getPreset(@NotNull String presetPath);
+    Serializable getPreset(@NotNull String presetPath);
 
     /**
      * Check if the object matches with a preset or a preset group
@@ -167,7 +168,7 @@ public interface Meta {
      * @param preset the path to the preset or group
      * @return true if the object matches
      */
-    boolean matchesPreset(@NotNull Object preset);
+    boolean matchesPreset(@NotNull Serializable preset);
 
     /**
      * Check if the element is incomplete (this is not defined in the documentation)
@@ -212,7 +213,7 @@ public interface Meta {
      * @param parents a List of elements
      * @return true if element is a child
      */
-    default boolean isChild(@NotNull Type type, @NotNull Meta element, @NotNull List<Object> parents) {
+    default boolean isChild(@NotNull Type type, @NotNull Meta element, @NotNull List<Serializable> parents) {
         return false;
     }
 
@@ -224,7 +225,7 @@ public interface Meta {
      * @param children a List of elements
      * @return true if element is a parent
      */
-    default boolean isParent(@NotNull Type type, @NotNull Meta meta, @NotNull List<Object> children) {
+    default boolean isParent(@NotNull Type type, @NotNull Meta meta, @NotNull List<Serializable> children) {
         return false;
     }
 
@@ -237,7 +238,7 @@ public interface Meta {
      * @return a List of elements
      */
     @NotNull
-    default List<Object> getMatchingElements(@NotNull Condition c) {
+    default List<Serializable> getMatchingElements(@NotNull Condition c) {
         return new ArrayList<>();
     }
 
@@ -270,5 +271,5 @@ public interface Meta {
      * @return returns something that implements this interface
      */
     @NotNull
-    Meta wrap(Object o);
+    Meta wrap(Serializable o);
 }

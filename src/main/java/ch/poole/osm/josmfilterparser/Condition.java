@@ -2,6 +2,7 @@ package ch.poole.osm.josmfilterparser;
 
 import static ch.poole.osm.josmfilterparser.I18n.tr;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
  * @author simon
  *
  */
-public interface Condition {
+public interface Condition extends Serializable {
     /**
      * Evaluate the Condition against a concrete OSM element
      * 

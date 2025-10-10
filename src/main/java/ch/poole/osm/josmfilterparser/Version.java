@@ -1,8 +1,12 @@
 package ch.poole.osm.josmfilterparser;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class Version implements Condition {
+public class Version implements Condition, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     final long version;
 
     /**

@@ -2,6 +2,7 @@ package ch.poole.osm.josmfilterparser;
 
 import static ch.poole.osm.josmfilterparser.I18n.tr;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
@@ -10,7 +11,9 @@ import java.util.regex.PatternSyntaxException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Match implements Condition {
+public class Match implements Condition, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private static final String   REG_EXP_ANY  = "\".*\"";
     private static final String   LT           = "<";
@@ -33,7 +36,7 @@ public class Match implements Condition {
     private Pattern            valuePattern;
     private boolean            negate;
 
-    interface Eval {
+    interface Eval extends Serializable {
         /**
          * Evaluate against against concrete tags
          * 
@@ -43,7 +46,7 @@ public class Match implements Condition {
         boolean eval(Map<String, String> tags);
     }
 
-    Eval evaluator;
+    private Eval evaluator;
 
     /**
      * Match tags

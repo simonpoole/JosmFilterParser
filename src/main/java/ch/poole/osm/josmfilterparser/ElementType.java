@@ -1,10 +1,14 @@
 package ch.poole.osm.josmfilterparser;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ElementType implements Condition {
+public class ElementType implements Condition, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     final Type elementType;
 
     /**

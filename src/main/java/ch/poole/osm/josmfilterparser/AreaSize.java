@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class AreaSize extends Range {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Check if the computes area size of a way is in the specified range
      * 
