@@ -118,7 +118,7 @@ public final class Overpass {
         } else if (c instanceof Parent) {
             findRegions(((Parent) c).c, list);
         } else if (c instanceof Child) {
-            findRegions(((Child) c).c, list);
+            findRegions(((Child) c).getCondition(), list);
         } else if (c instanceof In) {
             list.add(((In) c).getRegion());
         }

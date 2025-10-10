@@ -24,6 +24,7 @@
 
 package ch.poole.osm.josmfilterparser;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -33,7 +34,9 @@ import java.util.Comparator;
  * To use this class: Use the static "sort" method from the java.util.Collections class: Collections.sort(your list, new
  * AlphanumComparator());
  */
-public class AlphanumComparator implements Comparator<String> {
+public class AlphanumComparator implements Comparator<String>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Check if char ch is a digit

@@ -1,14 +1,17 @@
 package ch.poole.osm.josmfilterparser;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class Brackets implements Condition, LogicalOperator {
-    
+public class Brackets implements Condition, LogicalOperator, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private static final String RIGHT_BRACKET = ")";
-    private static final String LEFT_BRACKET = "(";
-    
+    private static final String LEFT_BRACKET  = "(";
+
     final Condition c;
 
     /**
@@ -24,12 +27,12 @@ public class Brackets implements Condition, LogicalOperator {
     public void reset() {
         c.reset();
     }
-    
+
     @Override
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
         return c.eval(type, meta, tags);
     }
-    
+
     @Override
     public Condition toDNF() {
         return c;
@@ -39,7 +42,7 @@ public class Brackets implements Condition, LogicalOperator {
     public String toString() {
         return LEFT_BRACKET + c.toString() + RIGHT_BRACKET;
     }
-    
+
     @Override
     public String toDebugString() {
         return LEFT_BRACKET + c.toDebugString() + RIGHT_BRACKET;

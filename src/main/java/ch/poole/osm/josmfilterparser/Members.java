@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class Members extends Range {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Create a Condition that checks if a relation has a number of members in the range This is an extension
      * 

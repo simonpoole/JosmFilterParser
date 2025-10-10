@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class WayLength extends Range {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Check if the computes length of a way is in the specified range
      * 

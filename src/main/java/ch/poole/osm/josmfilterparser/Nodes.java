@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class Nodes extends Range {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Create a Condition that checks if a way has a number of nodes in the specified range
      * 

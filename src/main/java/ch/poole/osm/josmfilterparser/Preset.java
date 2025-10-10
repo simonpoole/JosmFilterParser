@@ -1,12 +1,16 @@
 package ch.poole.osm.josmfilterparser;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class Preset implements Condition {
+public class Preset implements Condition, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     final String presetPath;
-    Object       preset = null;
+    Serializable preset = null;
 
     /**
      * Check if an object matches with a preset or a preset group

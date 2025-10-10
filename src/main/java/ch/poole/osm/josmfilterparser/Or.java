@@ -4,11 +4,14 @@ import static ch.poole.osm.josmfilterparser.Overpass.CLOSE_BRACKET;
 import static ch.poole.osm.josmfilterparser.Overpass.OPEN_BRACKET;
 import static ch.poole.osm.josmfilterparser.Overpass.appendAsOverpass;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class Or implements Condition, LogicalOperator {
+public class Or implements Condition, LogicalOperator, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     final Condition c1;
     final Condition c2;
@@ -28,7 +31,7 @@ public class Or implements Condition, LogicalOperator {
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
         return c1.eval(type, meta, tags) || c2.eval(type, meta, tags);
     }
-    
+
     @Override
     public void reset() {
         c1.reset();
@@ -44,7 +47,7 @@ public class Or implements Condition, LogicalOperator {
     public String toDebugString() {
         return c1.toDebugString() + " OR " + c2.toDebugString();
     }
-    
+
     @Override
     public Condition toDNF() {
         if (c1 instanceof LogicalOperator || c2 instanceof LogicalOperator) {

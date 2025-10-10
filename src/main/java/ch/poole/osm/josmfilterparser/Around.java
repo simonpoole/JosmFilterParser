@@ -1,11 +1,14 @@
 package ch.poole.osm.josmfilterparser;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class Around implements Condition {
-    private static final int DEFAULT_RADIUS = 1000;
+public class Around implements Condition, Serializable {
+
+    private static final long serialVersionUID = 1L;
+    private static final int  DEFAULT_RADIUS   = 1000;
 
     private final String location;
 

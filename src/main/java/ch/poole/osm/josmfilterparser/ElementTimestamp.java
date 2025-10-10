@@ -1,5 +1,6 @@
 package ch.poole.osm.josmfilterparser;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
@@ -14,7 +15,10 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ElementTimestamp implements Condition {
+public class ElementTimestamp implements Condition, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private long upper = -1;
     private long lower = -1;
 

@@ -1,10 +1,13 @@
 package ch.poole.osm.josmfilterparser;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ElementState implements Condition {
+public class ElementState implements Condition, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public enum State {
         NEW, MODIFIED, DELETED, UNCHANGED

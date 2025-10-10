@@ -1,10 +1,14 @@
 package ch.poole.osm.josmfilterparser;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public class And implements Condition, LogicalOperator {
+public class And implements Condition, LogicalOperator, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     final Condition c1;
     final Condition c2;
 
