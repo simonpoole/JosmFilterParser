@@ -33,6 +33,15 @@ public class Or implements Condition, LogicalOperator, Serializable {
     }
 
     @Override
+    public boolean debugEval(Type type, Meta meta, Map<String, String> tags) {
+        boolean r1 = c1.debugEval(type, meta, tags);
+        boolean r2 = c2.debugEval(type, meta, tags);
+        System.out.println("DEBUG: OR " + r1 + " " + r2);
+        return r1 || r2;
+    }
+
+    
+    @Override
     public void reset() {
         c1.reset();
         c2.reset();

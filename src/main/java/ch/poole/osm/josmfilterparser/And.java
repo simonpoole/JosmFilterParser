@@ -27,6 +27,14 @@ public class And implements Condition, LogicalOperator, Serializable {
     public boolean eval(Type type, Meta meta, Map<String, String> tags) {
         return c1.eval(type, meta, tags) && c2.eval(type, meta, tags);
     }
+    
+    @Override
+    public boolean debugEval(Type type, Meta meta, Map<String, String> tags) {
+        boolean r1 = c1.debugEval(type, meta, tags);
+        boolean r2 = c2.debugEval(type, meta, tags);
+        System.out.println("DEBUG: AND " + r1 + " " + r2);
+        return r1 && r2;
+    }
 
     @Override
     public void reset() {

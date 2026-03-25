@@ -29,6 +29,17 @@ public class Child implements Condition, LogicalOperator, Serializable {
         }
         return meta.isChild(type, meta, parents);
     }
+    
+    @Override
+    public boolean debugEval(Type type, Meta meta, Map<String, String> tags) {
+        if (parents == null) {
+            parents = meta.getMatchingElements(c);
+        }
+        System.out.println("DEBUG CHILD " + parents.size() + " PARENTS");
+        boolean r = meta.isChild(type, meta, parents);
+        System.out.println("DEBUG CHILD " + r);
+        return r;
+    }
 
     @Override
     public void reset() {
