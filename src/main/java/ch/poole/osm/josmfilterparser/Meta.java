@@ -263,6 +263,18 @@ public interface Meta {
     default boolean around(@NotNull Meta meta, @NotNull String location) {
         throw new UnsupportedOperationException(tr("only_overpass", "around"));
     }
+    
+    /**
+     * Return a suitable, potentially translated, for display purposes string for value
+     * 
+     * @param key the tag key
+     * @param value the tag value
+     * @return a value suitable for display 
+     */
+    @NotNull
+    default String displayValue(@NotNull String key, @NotNull String value) {
+        return value;
+    }
 
     /**
      * Get an Meta implementing object
