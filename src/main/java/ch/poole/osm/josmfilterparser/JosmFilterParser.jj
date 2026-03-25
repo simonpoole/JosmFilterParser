@@ -159,7 +159,14 @@ TOKEN:
 | < WAY : "way" > { SwitchTo(state.pop()); }
 | < RELATION : "relation" > { SwitchTo(state.pop()); }
 | < FRAGMENT_LITERAL : (~[ "\"", "\\", "|", " ", "\t", "<", "=", ">", "~", "(", ")", "?" ])+ >
-| < FRAGMENT_LITERAL_END :  ([ "\"", "\\", "|", " ", "\t", "<", "=", ">", "~", "(", ")", "?" ])+> { SwitchTo(state.pop()); }
+  // the following is unlikely to do anything reasonable
+| < FRAGMENT_LITERAL_END :  ([ "\"", "\\", "|", "<", "=", ">", "~", "(", ")", "?" ])> { SwitchTo(state.pop()); }
+}
+
+< FRAGMENT_STRING_STATE >
+TOKEN:
+{ // return a WS token, this allows the parser to ignore this specific token
+  < FRAGMENT_LITERAL_WS_END : ([ " ", "\t" ])> { matchedToken.image = "<WS>"; matchedToken.kind = WS; SwitchTo(state.pop()); }
 }
 
 < DEFAULT >
@@ -191,7 +198,7 @@ TOKEN :
 | < LT : "<" > : DEFAULT
 | < TILDE : "~" > : DEFAULT
 | < QUESTIONMARK : "?" > : DEFAULT
-| < DOUBLECOLON : ":" > : DEFAULT // { state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < DOUBLECOLON : ":" > : DEFAULT
 }
 
 < DEFAULT >
@@ -230,7 +237,7 @@ String fragmentLiteral() :
 {
   Token t;
 }
-{    t = < FRAGMENT_LITERAL > 
+{    t = < FRAGMENT_LITERAL >
     {
         return t.image;
     }
@@ -565,12 +572,12 @@ Condition match() :
       LOOKAHEAD(functionWithArgument() (fragmentLiteral() | quotedLiteral() | < NODE > | < WAY > | < RELATION >))
       (     
         f1 = functionWithArgument()
-        (           s1 = fragmentLiteral()
+        (          s1 = fragmentLiteral()
         | s1 = quotedLiteral()
         | v = < NODE >
         | v = < WAY >
         | v = < RELATION >
-        )    
+        )
       )
     )
     (   
