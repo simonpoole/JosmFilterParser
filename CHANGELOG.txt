@@ -1,3 +1,14 @@
+0.14.0:
+
+- Make parsing, particularly in some corner cases more robust
+- Add support for fetching display values
+
+0.13.0:
+
+- Make the parse tree Serializable
+- Fix broken jar
+- Update sonatype publishing configuration:
+
 0.12.1:
 
 - Fix broken jar
