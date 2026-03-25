@@ -1090,7 +1090,7 @@ public class JosmFilterIntegrationTest {
             parser.condition();
             fail("this should have thrown an exception");
         } catch (JosmFilterParseException pex) {
-            assertEquals("Gefunden:  \"<\" \"< \" bei Zeile 1, Spalte 5" + System.lineSeparator() + "Erwartet: <EOF>", pex.getMessage());
+            assertEquals("Erkannt:  \"<\" \"< \" in Zeile 1, Spalte 5 " + System.lineSeparator() + "Erwartet wurde: <EOF>", pex.getMessage());
         }
     }
 
