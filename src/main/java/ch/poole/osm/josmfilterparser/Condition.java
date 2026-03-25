@@ -25,6 +25,10 @@ public interface Condition extends Serializable {
      */
     public boolean eval(@NotNull Type type, @Nullable Meta meta, @Nullable Map<String, String> tags);
 
+    default boolean debugEval(@NotNull Type type, @Nullable Meta meta, @Nullable Map<String, String> tags) {
+        return eval(type,meta,tags);
+    }
+
     /**
      * Reset any state created during evaluation
      */

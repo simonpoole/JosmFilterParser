@@ -28,6 +28,13 @@ public class Not implements Condition, LogicalOperator, Serializable {
     }
 
     @Override
+    public boolean debugEval(Type type, Meta meta, Map<String, String> tags) {
+        boolean r = c1.debugEval(type, meta, tags);
+        System.out.println("DEBUG: NOT " + r);
+        return !r;
+    }
+
+    @Override
     public void reset() {
         c1.reset();
     }
@@ -49,7 +56,7 @@ public class Not implements Condition, LogicalOperator, Serializable {
 
     @Override
     public String toDebugString() {
-        return "-" + c1.toDebugString();
+        return "NOT[" + c1.toDebugString() + "]";
     }
 
     @Override

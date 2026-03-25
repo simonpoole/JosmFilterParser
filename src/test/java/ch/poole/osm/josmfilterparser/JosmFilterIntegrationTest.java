@@ -288,9 +288,22 @@ public class JosmFilterIntegrationTest {
      */
     @Test
     public void typeTest() {
-        Condition c = parse("type:node", false);
+        Condition c = parse("type:node ", false);
         Map<String, String> tags = new HashMap<>();
 
+        assertFalse(c.eval(Type.WAY, null, tags));
+        assertTrue(c.eval(Type.NODE, null, tags));
+    }
+    
+    /**
+     * Test testing for type of OSM element
+     */
+    @Test
+    public void typeTest2() {
+        Condition c = parse("(test type:node )", false);
+        System.out.println(c.toDebugString());
+        Map<String, String> tags = new HashMap<>();
+        tags.put("test", "grr");
         assertFalse(c.eval(Type.WAY, null, tags));
         assertTrue(c.eval(Type.NODE, null, tags));
     }
@@ -917,6 +930,16 @@ public class JosmFilterIntegrationTest {
         c = parse("node child highway", false);
         assertTrue(c instanceof And);
         assertTrue(((And) c).c2 instanceof Child);
+    }
+  
+    @Test
+    public void childTest2() {
+        TestMeta meta = new TestMeta();
+        meta.isChild = true;
+        Condition c = parse("-child (type:way highway: (oneway? OR oneway=\"-1\"))", false);
+        System.out.println(c.toDebugString());
+        assertTrue(c instanceof Not);
+        assertFalse(c.eval(Type.NODE, meta, null));
     }
 
     /**

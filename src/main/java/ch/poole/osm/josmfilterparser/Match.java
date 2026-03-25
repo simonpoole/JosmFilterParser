@@ -315,55 +315,54 @@ public class Match implements Condition, Serializable {
     @Override
     public String toOverpass() {
         StringBuilder builder = new StringBuilder();
-        if (op != null) {
-            builder.append("[");
-            if (value != null && !"".equals(value) && !valueAsterix) {
-                builder.append(keyAsterix ? TILDE + REG_EXP_ANY : quoteOverpass(key));
-                negate(builder);
-                switch (op) {
-                case EQUALS:
-                    if (keyAsterix) {
-                        builder.append(TILDE);
-                        builder.append("\"^" + value + "$\"");
-                    } else {
-                        builder.append(EQUALS);
-                        builder.append(quoteOverpass(value));
-                    }
-                    break;
-                case TILDE:
-                    builder.append(TILDE);
-                    builder.append("\"" + value + "\"");
-                    break;
-                default:
-                    throw new UnsupportedOperationException(tr("op_with_value_not_supported", op));
-                }
-            } else {
-                switch (op) {
-                case EQUALS:
-                    builder.append(quoteOverpass(key));
-                    negate(builder);
-                    builder.append(TILDE);
-                    builder.append(valueAsterix ? REG_EXP_ANY : "\"^$\"");
-                    break;
-                case DOUBLECOLON:
-                    negate(builder);
-                    builder.append(quoteOverpass(key));
-                    // exact match already done
-                    break;
-                case QUESTIONMARK:
-                    builder.append(quoteOverpass(key));
-                    negate(builder);
-                    builder.append(TILDE);
-                    builder.append("\"^(true|yes|1|on)$\"");
-                    break;
-                default:
-                    throw new UnsupportedOperationException(tr("op_without_value_not_supported", op));
-                }
-            }
-            builder.append("]");
-        } else {
+        if (op == null) {
             throw new UnsupportedOperationException(tr("substring_match_not_supported"));
         }
+        builder.append("[");
+        if (value != null && !"".equals(value) && !valueAsterix) {
+            builder.append(keyAsterix ? TILDE + REG_EXP_ANY : quoteOverpass(key));
+            negate(builder);
+            switch (op) {
+            case EQUALS:
+                if (keyAsterix) {
+                    builder.append(TILDE);
+                    builder.append("\"^" + value + "$\"");
+                } else {
+                    builder.append(EQUALS);
+                    builder.append(quoteOverpass(value));
+                }
+                break;
+            case TILDE:
+                builder.append(TILDE);
+                builder.append("\"" + value + "\"");
+                break;
+            default:
+                throw new UnsupportedOperationException(tr("op_with_value_not_supported", op));
+            }
+        } else {
+            switch (op) {
+            case EQUALS:
+                builder.append(quoteOverpass(key));
+                negate(builder);
+                builder.append(TILDE);
+                builder.append(valueAsterix ? REG_EXP_ANY : "\"^$\"");
+                break;
+            case DOUBLECOLON:
+                negate(builder);
+                builder.append(quoteOverpass(key));
+                // exact match already done
+                break;
+            case QUESTIONMARK:
+                builder.append(quoteOverpass(key));
+                negate(builder);
+                builder.append(TILDE);
+                builder.append("\"^(true|yes|1|on)$\"");
+                break;
+            default:
+                throw new UnsupportedOperationException(tr("op_without_value_not_supported", op));
+            }
+        }
+        builder.append("]");
         return builder.toString();
     }
 
@@ -388,5 +387,10 @@ public class Match implements Condition, Serializable {
     @Override
     public Condition toDNF() {
         return this;
+    }
+
+    @Override
+    public String toDebugString() {
+        return "MATCH[op=" + op + " key=" + key + " value=" + value + "]";
     }
 }

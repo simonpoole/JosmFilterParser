@@ -32,9 +32,9 @@ options
   FORCE_LA_CHECK = true;
   CHOICE_AMBIGUITY_CHECK = 2;
   OTHER_AMBIGUITY_CHECK = 2;
-  DEBUG_PARSER = false;
-  DEBUG_LOOKAHEAD = false;
-  DEBUG_TOKEN_MANAGER = false;
+  DEBUG_PARSER = true;
+  DEBUG_LOOKAHEAD = true;
+  DEBUG_TOKEN_MANAGER = true;
   UNICODE_INPUT = true;
 }
 
@@ -114,7 +114,7 @@ TOKEN :
 | < QUOTED_STRING_CHAR : ~[ "\"", "\\" ] >
 }
 
-< DEFAULT, FRAGMENT_STRING_STATE >
+< DEFAULT >
 TOKEN :
 {
   < WS : [ " ", "\t" ] > : DEFAULT
@@ -133,32 +133,40 @@ TOKEN [IGNORE_CASE]:
 < DEFAULT >
 TOKEN :
 { 
-  < TYPE : "type:" > : FRAGMENT_STRING_STATE
-| < PRESET : "preset:" > : FRAGMENT_STRING_STATE
-| < NODES : "nodes:" > : FRAGMENT_STRING_STATE
-| < WAYS : "ways:" > : FRAGMENT_STRING_STATE
-| < TAGS : "tags:" > : FRAGMENT_STRING_STATE
-| < MEMBERS : "members:" > : FRAGMENT_STRING_STATE
-| < ROLE : "role:" > : FRAGMENT_STRING_STATE
-| < AREASIZE : "areasize:" > : FRAGMENT_STRING_STATE
-| < WAYLENGTH : "waylength:" > : FRAGMENT_STRING_STATE
-| < USER : "user:" > : FRAGMENT_STRING_STATE
-| < ID : "id:" > : FRAGMENT_STRING_STATE
-| < VERSION : "version:" > : FRAGMENT_STRING_STATE
-| < CHANGESET : "changeset:" > : FRAGMENT_STRING_STATE
-| < TIMESTAMP : "timestamp:" > : FRAGMENT_STRING_STATE
-| < HASROLE : "hasRole:" > : FRAGMENT_STRING_STATE
-| < NTH : "nth:" > : FRAGMENT_STRING_STATE
-| < NTHPERCENT : "nth%:" > : FRAGMENT_STRING_STATE
+  < TYPE : "type:" > { state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < PRESET : "preset:" > {state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < NODES : "nodes:" > {state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < WAYS : "ways:" > {state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < TAGS : "tags:" > {state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < MEMBERS : "members:" > { state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < ROLE : "role:" > { state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < AREASIZE : "areasize:" > {state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < WAYLENGTH : "waylength:" > { state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < USER : "user:" > { state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < ID : "id:" > { state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < VERSION : "version:" > { state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < CHANGESET : "changeset:" > { state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < TIMESTAMP : "timestamp:" > { state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < HASROLE : "hasRole:" > { state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < NTH : "nth:" > { state.push(curLexState); }: FRAGMENT_STRING_STATE
+| < NTHPERCENT : "nth%:" > { state.push(curLexState); }: FRAGMENT_STRING_STATE
 }
 
 < FRAGMENT_STRING_STATE >
 TOKEN:
 {
-  < NODE : "node" >
-| < WAY : "way" >
-| < RELATION : "relation" >
-| < FRAGMENT_LITERAL : (~[ "\"", "\\", "|", " ", "\t", "<", "=", ">", "~", "(", ")", "?" ])+ > 
+  < NODE : "node" > { SwitchTo(state.pop()); }
+| < WAY : "way" > { SwitchTo(state.pop()); }
+| < RELATION : "relation" > { SwitchTo(state.pop()); }
+| < FRAGMENT_LITERAL : (~[ "\"", "\\", "|", " ", "\t", "<", "=", ">", "~", "(", ")", "?" ])+ >
+  // the following is unlikely to do anything reasonable
+| < FRAGMENT_LITERAL_END :  ([ "\"", "\\", "|", "<", "=", ">", "~", "(", ")", "?" ])> { SwitchTo(state.pop()); }
+}
+
+< FRAGMENT_STRING_STATE >
+TOKEN:
+{ // return a WS token, this allows the parser to ignore this specific token
+  < FRAGMENT_LITERAL_WS_END : ([ " ", "\t" ])> { matchedToken.image = "<WS>"; matchedToken.kind = WS; SwitchTo(state.pop()); }
 }
 
 < DEFAULT >
@@ -190,7 +198,7 @@ TOKEN :
 | < LT : "<" > : DEFAULT
 | < TILDE : "~" > : DEFAULT
 | < QUESTIONMARK : "?" > : DEFAULT
-| < DOUBLECOLON : ":" > : FRAGMENT_STRING_STATE
+| < DOUBLECOLON : ":" > : DEFAULT
 }
 
 < DEFAULT >
@@ -229,11 +237,10 @@ String fragmentLiteral() :
 {
   Token t;
 }
-{
-  t = < FRAGMENT_LITERAL >
-  {
-    return t.image;
-  }
+{    t = < FRAGMENT_LITERAL >
+    {
+        return t.image;
+    }
 }
 
 /**
@@ -565,7 +572,7 @@ Condition match() :
       LOOKAHEAD(functionWithArgument() (fragmentLiteral() | quotedLiteral() | < NODE > | < WAY > | < RELATION >))
       (     
         f1 = functionWithArgument()
-        (           s1 = fragmentLiteral()
+        (          s1 = fragmentLiteral()
         | s1 = quotedLiteral()
         | v = < NODE >
         | v = < WAY >
@@ -612,7 +619,7 @@ Condition match() :
             s2Quoted = true;
           }
         | 
-          s2 = fragmentLiteral()
+          s2 = literal()
         )?
       )
     |

@@ -293,7 +293,7 @@ public class OverpassConversionTest {
         c = c.toDNF();
         assertEquals("(if:count_tags() == 1)", c.toOverpass());
     }
-
+    
     /**
      * Check tags
      */
