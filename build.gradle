@@ -25,7 +25,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: "com.github.breadmoirai.github-release"
 
-version = '0.14.0'
+version = '0.15.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -154,7 +154,6 @@ githubRelease {
 // In this section you declare where to find the dependencies of your project
 repositories {
     mavenCentral()
-    maven { url 'https://dl.bintray.com/simonpoole/osm' }
 }
 
 // In this section you declare the dependencies for your production and test code
