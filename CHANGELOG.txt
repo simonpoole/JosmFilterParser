@@ -1,3 +1,7 @@
+0.15.0:
+
+- Don't parse hyphens in literals as NOT operators even if they are not quoted
+
 0.14.0:
 
 - Make parsing, particularly in some corner cases more robust

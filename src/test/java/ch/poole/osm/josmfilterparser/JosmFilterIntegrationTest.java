@@ -3,6 +3,7 @@ package ch.poole.osm.josmfilterparser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -1092,6 +1093,15 @@ public class JosmFilterIntegrationTest {
         } catch (JosmFilterParseException pex) {
             assertEquals("Erkannt:  \"<\" \"< \" in Zeile 1, Spalte 5 " + System.lineSeparator() + "Erwartet wurde: <EOF>", pex.getMessage());
         }
+    }
+    
+    /**
+     * Very long expression that includes an - in a literal
+     */
+    @Test
+    public void longFilterTest() {
+        Condition c = parse("shop=* -(shop=yes|shop=agrarian|shop=alcohol|shop=anime|shop=antiques|shop=appliance|shop=art|shop=baby_goods|shop=bag|shop=bakery|shop=bathroom_furnishing|shop=beauty|shop=bed|shop=beverages|shop=bicycle|shop=boat|shop=bookmaker|shop=books|shop=boutique|shop=butcher|shop=candles|shop=cannabis|shop=car|shop=car_parts|shop=car_repair|shop=caravan|shop=carpet|shop=charity|shop=cheese|shop=chemist|shop=chocolate|shop=clothes|shop=coffee|shop=collector|shop=computer|shop=confectionery|shop=convenience|shop=copyshop|shop=cosmetics|shop=country_store|shop=craft|shop=curtain|shop=dairy|shop=deli|shop=department_store|shop=doityourself|shop=doors|shop=dry_cleaning|shop=e-cigarette|shop=electrical|shop=electronics|shop=erotic|shop=fabric|shop=fan|shop=farm|shop=fashion|shop=fashion_accessories|shop=fireplace|shop=fishing|shop=flooring|shop=florist|shop=frame|shop=frozen_food|shop=fuel|shop=funeral_directors|shop=furnace|shop=furniture|shop=games|shop=garden_centre|shop=gas|shop=general|shop=gift|shop=gold_buyer|shop=greengrocer|shop=hairdresser|shop=hairdresser_supply|shop=hardware|shop=health_food|shop=hearing_aids|shop=herbalist|shop=hifi|shop=hookah|shop=houseware|shop=hunting|shop=interior_decoration|shop=jewelry|shop=kiosk|shop=kitchen|shop=laundry|shop=leather|shop=lighting|shop=locksmith|shop=lottery|shop=mall|shop=massage|shop=medical_supply|shop=mobile_phone|shop=mobile_phone_accessories|shop=money_lender|shop=motorcycle|shop=motorcycle_parts|shop=motorcycle_repair|shop=music|shop=musical_instrument|shop=newsagent|shop=nutrition_supplements|shop=optician|shop=organic|shop=outdoor|shop=outpost|shop=paint|shop=party|shop=pastry|shop=pawnbroker|shop=perfumery|shop=pet|shop=pet_grooming|shop=photo|shop=photo_studio|shop=photovoltaic|shop=piercing|shop=pottery|shop=printing|shop=pyrotechnics|shop=radiotechnics|shop=religion|shop=repair|shop=sauna|shop=scuba_diving|shop=seafood|shop=second_hand|shop=security|shop=sewing|shop=shoe_repair|shop=shoes|shop=spices|shop=sports|shop=stationery|shop=storage_rental|shop=supermarket|shop=surf|shop=swimming_pool|shop=tailor|shop=tailor|shop=tattoo|shop=tea|shop=telecommunication|shop=ticket|shop=tiles|shop=tobacco|shop=toys|shop=trade|shop=trade|shop=travel_agency|shop=trophy|shop=tyres|shop=vacant|shop=vacuum_cleaner|shop=variety_store|shop=video|shop=video_games|shop=watches|shop=water|shop=water_sports|shop=weapons|shop=wholesale|shop=wigs|shop=window_blind|shop=wine)", false);
+        assertNotNull(c);
     }
 
     /**

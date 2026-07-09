@@ -187,7 +187,8 @@ TOKEN :
 | < PARENT : "parent" >
 | < IN : "in" >
 | < AROUND : "around" >
-| < LITERAL : (~[ "-", "\"", "\\", "|", " ", "\t", "<", "=", ">", "~", ":", "(", ")", "?" ])+ >
+| < #LITERAL_START_CHAR: ~[ "-", "\"", "\\", "|", " ", "\t", "<", "=", ">", "~", ":", "(", ")", "?" ] >
+| < LITERAL : <LITERAL_START_CHAR> (<LITERAL_START_CHAR> | "-")* >
 }
           
 < DEFAULT >
@@ -295,6 +296,7 @@ Token hasNot() :
 }
 {
   (
+    (< WS >)*
     n = < MINUS > 
     (< WS >)*
   )?
